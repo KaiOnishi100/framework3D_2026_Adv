@@ -1,0 +1,254 @@
+//============================================================
+// Lens Flare Occlusion Temporal Pass
+// Main Depthから現在フレームのSun Visibilityを求め
+// 前フレームのVisibilityとTemporal Blendする
+// 出力:
+//   1x1 R16_FLOAT Texture
+// R:
+//   Lens Flare Visibility
+//   0 = 完全遮蔽
+//   1 = 完全表示
+//============================================================
+
+
+//============================================================
+// t1:
+// Main Scene Depth
+// ※このShaderでは使用しない
+//============================================================
+Texture2D<float> txDepth : register(t1);
+
+
+//============================================================
+// t2:
+// 前フレームのLens Flare Visibility
+// 1x1 Texture
+//============================================================
+Texture2D<float> txPreviousVisibility : register(t2);
+
+
+//============================================================
+// Lens Flare共通Constant Buffer
+//============================================================
+cbuffer LensFlareBuffer : register(b0)
+{
+    //========================================================
+    // xy: Sun Screen UV
+    // z: Lens Flare Enable
+    // w: Intensity
+    //========================================================
+    float4 LightScreenParam;
+
+
+    //========================================================
+    // Lens Flare Color
+    //========================================================
+    float4 FlareColor;
+
+
+    //========================================================
+    // Shape Parameters
+    //========================================================
+    float4 FlareShapeParam;
+
+
+    //========================================================
+    // xy: Screen Size
+    // zw: 1 / Screen Size
+    //========================================================
+    float4 ScreenParam;
+
+
+    //========================================================
+    // Temporal Parameters
+    // x: Delta Time
+    // y: Fade In Speed
+    // z: Fade Out Speed
+    // w: History Valid
+    //   0 = 履歴なし
+    //   1 = 履歴あり
+    //========================================================
+    float4 TemporalParam;
+    
+    
+    //============================================================
+    // Lens Flare Fade Parameters
+    // x: Screen Edge Fade Width
+    //   例: 0.10
+    //   画面端から10%の領域で徐々にFadeする
+    // y: Angular Fade Start
+    //   太陽が画面中央からこの距離以内なら最大強度
+    // z: Angular Fade End
+    //   この距離を超えるとAngular Fadeは0になる
+    // w: 未使用
+    //============================================================
+    float4 FadeParam;
+};
+
+
+//============================================================
+// VS_Copyからの入力
+//============================================================
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// 現在フレームのLens Flare Visibilityを計算
+//============================================================
+float CalculateCurrentVisibility()
+{
+    //========================================================
+    // Camera後方などでLens Flare自体が無効
+    //========================================================
+    if (LightScreenParam.z < 0.5f)
+    {
+        return 0.0f;
+    }
+
+    const float2 lightUV = LightScreenParam.xy;
+
+    //========================================================
+    // 完全に画面外
+    //========================================================
+    if (lightUV.x < 0.0f ||
+        lightUV.x > 1.0f ||
+        lightUV.y < 0.0f ||
+        lightUV.y > 1.0f)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // Depth Texture Size
+    //========================================================
+    uint depthWidth = 1u;
+
+    uint depthHeight = 1u;
+
+    txDepth.GetDimensions(depthWidth, depthHeight);
+
+
+    //========================================================
+    // Sun UV → Pixel座標
+    //========================================================
+    int2 centerPixel = int2(lightUV * float2((float) depthWidth, (float) depthHeight));
+
+
+    centerPixel =
+        clamp(centerPixel, int2(0, 0), int2((int) depthWidth - 1, (int) depthHeight - 1));
+
+
+    //========================================================
+    // 5x5サンプリング
+    // 遮蔽物の端でVisibilityが段階的に変化する
+    //========================================================
+    static const int SAMPLE_RADIUS = 2;
+
+    float visibleSampleCount = 0.0f;
+    float totalSampleCount = 0.0f;
+
+
+    [unroll]
+    for (int offsetY = -SAMPLE_RADIUS; offsetY <= SAMPLE_RADIUS; ++offsetY)
+    {
+        [unroll]
+        for (int offsetX = -SAMPLE_RADIUS; offsetX <= SAMPLE_RADIUS; ++offsetX)
+        {
+            int2 samplePixel = centerPixel + int2(offsetX, offsetY);
+
+
+            samplePixel =
+                clamp(samplePixel, int2(0, 0), int2((int) depthWidth - 1, (int) depthHeight - 1));
+
+
+            //================================================
+            // Main Depth
+            // 1.0付近: Geometryなし
+            // 1.0未満: Geometryあり
+            //================================================
+            const float sceneDepth = txDepth.Load(int3(samplePixel, 0));
+
+            if (sceneDepth >= 0.9999f)
+            {
+                visibleSampleCount += 1.0f;
+            }
+
+            totalSampleCount += 1.0f;
+        }
+    }
+
+
+    return saturate(visibleSampleCount / max(totalSampleCount, 1.0f));
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // 現在フレームのVisibility
+    //========================================================
+    const float currentVisibility = CalculateCurrentVisibility();
+
+
+    //========================================================
+    // 初回フレーム
+    // ※履歴Textureにはまだ意味のある値が入っていないため
+    // ※現在値をそのまま使用する
+    //========================================================
+    if (TemporalParam.w < 0.5f)
+    {
+        return float4(currentVisibility, 0.0f, 0.0f, 1.0f);
+    }
+
+
+    //========================================================
+    // 1x1履歴Texture
+    //========================================================
+    const float previousVisibility =
+        txPreviousVisibility.Load(int3(0, 0, 0));
+
+
+    //========================================================
+    // Fade Speed選択
+    // 現在値 > 前回値
+    //   → Flareが現れる
+    // 現在値 < 前回値
+    //   → Flareが消える
+    //========================================================
+    const bool isFadingIn = currentVisibility > previousVisibility;
+
+    const float fadeSpeed =
+        isFadingIn ? max(TemporalParam.y, 0.0f) : max(TemporalParam.z, 0.0f);
+
+
+    //========================================================
+    // Frame Rate非依存の指数補間
+    // alpha = 1 - exp(-speed * deltaTime)
+    // 60fpsでも144fpsでも
+    // ほぼ同じ速度で変化する
+    //========================================================
+    const float deltaTime = max(TemporalParam.x, 0.0f);
+
+    const float blendAlpha = saturate(1.0f - exp(-fadeSpeed * deltaTime));
+
+
+    //========================================================
+    // Temporal Blend
+    //========================================================
+    const float temporalVisibility =
+        lerp(
+            previousVisibility,
+            currentVisibility,
+            blendAlpha
+        );
+
+    return float4(saturate(temporalVisibility), 0.0f, 0.0f, 1.0f);
+}

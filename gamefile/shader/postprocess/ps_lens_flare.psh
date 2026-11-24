@@ -1,0 +1,631 @@
+//============================================================
+// Lens Flare Pixel Shader
+//
+// HDR SceneにProcedural Lens Flareを加算する
+//
+// Input:
+//   t0 : HDR Scene
+//   b0 : Lens Flare Parameters
+//
+// Output: HDR Scene + Lens Flare
+//============================================================
+
+
+//============================================================
+// 元のHDR Scene
+//============================================================
+Texture2D txScene : register(t0);
+
+//============================================================
+// Main Scene Depth
+// Clear Depth: 1.0
+// Geometry: 1.0より小さい値
+//============================================================
+Texture2D<float> txDepth : register(t1);
+//============================================================
+// Temporal Occlusion結果
+// 1x1 R16_FLOAT
+// R:
+//   0 = 隠れている
+//   1 = 見えている
+//============================================================
+Texture2D<float> txLensFlareVisibility : register(t2);
+
+//============================================================
+// Linear Sampler
+// Screen Textureを補間して読み取る
+// Root Signature側のs0と一致させる
+//============================================================
+SamplerState samLinear : register(s0);
+
+
+//============================================================
+// Lens Flare Constant Buffer
+//============================================================
+cbuffer LensFlareBuffer : register(b0)
+{
+    //========================================================
+    // xy: Directional Light / SunのScreen UV
+    //   左上 = (0, 0)
+    //   右下 = (1, 1)
+    // z: Lens Flare Enable
+    //   0 = 非表示
+    //   1 = 表示
+    // w: Lens Flare全体のIntensity
+    //========================================================
+    float4 LightScreenParam;
+
+
+    //========================================================
+    // rgb: Lens Flare Color
+    // w: 現在は未使用
+    //========================================================
+    float4 FlareColor;
+
+
+    //========================================================
+    // x: Core Glow Radius
+    // y: Halo Radius
+    // z: Ghost Flare Strength
+    // w: Horizontal Streak Strength
+    //========================================================
+    float4 FlareShapeParam;
+
+
+    //========================================================
+    // xy: Screen Size
+    //   x = Width
+    //   y = Height
+    // zw: Screen Sizeの逆数
+    //   z = 1 / Width
+    //   w = 1 / Height
+    //========================================================
+    float4 ScreenParam;
+    
+    //============================================================
+    // Lens Flare Fade Parameters
+    //
+    // x: Screen Edge Fade Width
+    //   例: 0.10
+    //   画面端から10%の領域で徐々にFadeする。
+    // y: Angular Fade Start
+    //   太陽が画面中央からこの距離以内なら最大強度。
+    // z: Angular Fade End
+    //   この距離を超えるとAngular Fadeは0になる。
+    // w: 未使用
+    //============================================================
+    float4 FadeParam;
+
+};
+
+
+//============================================================
+// VS_Copyから受け取るPixel Shader入力
+// Screen VertexにCOLORが存在しないため
+//============================================================
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// 円形Glow
+// centerを中心とした柔らかい光を作る
+//============================================================
+float CalculateGlow(
+    float2 pixelPosition,
+    float2 center,
+    float radius
+)
+{
+    //========================================================
+    // 中心から現在Pixelまでの距離
+    //========================================================
+    const float distanceFromCenter = length(pixelPosition - center);
+
+
+    //========================================================
+    // 中心: 1.0
+    // radius以上: 0.0
+    //========================================================
+    float glow = 1.0f - saturate(distanceFromCenter / max(radius, 0.00001f));
+
+    //========================================================
+    // 3乗することで中央が強く外側へ滑らかに減衰するGlowにする
+    //========================================================
+    glow = glow * glow * glow;
+
+    return glow;
+}
+
+
+//============================================================
+// Ring状Halo
+// 指定したradius付近だけを明るくする
+//============================================================
+float CalculateHalo(
+    float2 pixelPosition,
+    float2 center,
+    float radius
+)
+{
+    //========================================================
+    // 中心からの距離
+    //========================================================
+    const float distanceFromCenter = length(pixelPosition - center);
+
+
+    //========================================================
+    // 指定Radiusからどの程度離れているか
+    //========================================================
+    const float ringDistance = abs(distanceFromCenter - radius);
+
+
+    //========================================================
+    // Ringの太さ
+    // Radiusに比例させることでHaloサイズ変更時にも太さの比率を維持する
+    //========================================================
+    const float ringWidth = max(radius * 0.18f, 0.00001f);
+
+    float halo = 1.0f - saturate(ringDistance / ringWidth);
+
+    //========================================================
+    // Halo輪郭を少しシャープにする
+    //========================================================
+    halo *= halo;
+
+    return halo;
+}
+
+//============================================================
+// Anamorphic Streak
+// 光源中心から横方向へ伸びる線状の光を作る
+//============================================================
+float CalculateStreak(float2 pixelPosition,float2 center)
+{
+    const float2 offset = abs(pixelPosition - center);
+
+    //========================================================
+    // X方向
+    // 減衰を弱くして横へ長く伸ばす
+    //========================================================
+    const float horizontal = exp(-offset.x * 7.0f);
+
+    //========================================================
+    // Y方向
+    // 減衰を強くして細い線にする
+    //========================================================
+    const float vertical = exp(-offset.y * 90.0f);
+
+
+    return horizontal * vertical;
+}
+
+//============================================================
+// Lens Flare Occlusion
+// LightのScreen位置周辺のDepthを調べ
+// 太陽がScene Geometryに隠れている割合を求める
+// 戻り値:
+//   0.0: 完全に隠れている
+//   1.0: 完全に見えている
+//   0～1: 遮蔽物の境界
+//============================================================
+float CalculateLensFlareVisibility(float2 lightScreenUV)
+{
+	//============================================================
+	// 画面外
+	//============================================================
+    if (lightScreenUV.x < 0.0f ||
+		lightScreenUV.x > 1.0f ||
+		lightScreenUV.y < 0.0f ||
+		lightScreenUV.y > 1.0f)
+    {
+        return 0.0f;
+    }
+
+
+	//============================================================
+	// Depth Texture Size
+	//============================================================
+    uint depthWidth = 1u;
+    uint depthHeight = 1u;
+
+
+    txDepth.GetDimensions(depthWidth, depthHeight);
+
+
+	//============================================================
+	// Sun Screen UV → Pixel座標
+	//============================================================
+    const int2 centerPixel =
+		int2(lightScreenUV * float2((float) depthWidth, (float) depthHeight));
+
+
+	//============================================================
+	// 遮蔽判定の広さ
+    //============================================================
+    static const int sampleRadius = 1;
+
+    float visibleSampleCount = 0.0f;
+    float totalSampleCount = 0.0f;
+
+
+	//============================================================
+	// Light周辺のDepthを確認
+	//============================================================
+	[unroll]
+    for (int offsetY = -sampleRadius; offsetY <= sampleRadius; ++offsetY)
+    {
+		[unroll]
+        for (int offsetX = -sampleRadius; offsetX <= sampleRadius; ++offsetX)
+        {
+            int2 pixel = centerPixel + int2(offsetX, offsetY);
+
+
+			//====================================================
+			// Texture範囲へClamp
+			//====================================================
+            pixel = clamp(pixel, int2(0, 0), int2((int) depthWidth - 1, (int) depthHeight - 1));
+
+
+			//====================================================
+			// Depthを直接読み取る
+			// Linear Samplerを使わずLoadすることで
+			// 遮蔽物境界でDepthが補間されるのを防ぐ
+            //====================================================
+            const float sceneDepth = txDepth.Load(int3(pixel, 0));
+
+
+			//====================================================
+			// 通常のDepth Buffer:
+			// 1.0: 何も描画されていない
+			// < 1.0: Geometryあり
+			// 太陽は無限遠として扱うためGeometryが存在しなければVisible
+            //====================================================
+            if (sceneDepth >= 0.9999f)
+            {
+                visibleSampleCount += 1.0f;
+            }
+
+
+            totalSampleCount += 1.0f;
+        }
+    }
+
+
+	//============================================================
+	// 0除算防止
+	//============================================================
+    if (totalSampleCount <= 0.0f)
+    {
+        return 0.0f;
+    }
+
+
+    return saturate(visibleSampleCount / totalSampleCount);
+}
+
+//============================================================
+// Screen Edge Fade
+// 太陽が画面端へ近づくほどLens Flareを弱くする
+// 戻り値:
+//   1.0 画面内部
+//   0.0 画面端または画面外
+//============================================================
+float CalculateScreenEdgeFade(float2 lightScreenUV)
+{
+    //========================================================
+    // 左端までの距離
+    //========================================================
+    const float distanceLeft = lightScreenUV.x;
+
+    //========================================================
+    // 右端までの距離
+    //========================================================
+    const float distanceRight = 1.0f - lightScreenUV.x;
+
+    //========================================================
+    // 上端までの距離
+    //========================================================
+    const float distanceTop = lightScreenUV.y;
+
+    //========================================================
+    // 下端までの距離
+    //========================================================
+    const float distanceBottom = 1.0f - lightScreenUV.y;
+
+
+    //========================================================
+    // 最も近い画面端までの距離
+    // Screen中央: 最大0.5
+    // Screen端: 0
+    // Screen外: 負数
+    //========================================================
+    const float distanceToEdge =
+        min(min(distanceLeft, distanceRight), min(distanceTop, distanceBottom));
+
+    //========================================================
+    // Fade幅
+    //========================================================
+    const float edgeFadeWidth = max(FadeParam.x, 0.00001f);
+
+    return smoothstep(0.0f, edgeFadeWidth, distanceToEdge);
+}
+
+//============================================================
+// Angular Fade
+// 太陽が画面中央に近いほどLens Flareを強くする
+// ※本来はCamera ForwardとSun Directionのdotを使って
+// ※World Spaceで判定することもできるが
+// ※今回はScreen UVを利用して視線角を近似する
+// ※Lens Flareではこの方式でも十分自然に見える
+//============================================================
+float CalculateAngularFade(float2 lightScreenUV)
+{
+    //========================================================
+    // Screen中央
+    //========================================================
+    const float2 screenCenter = float2(0.5f, 0.5f);
+
+    //========================================================
+    // Screen中央からSunまでのOffset
+    //========================================================
+    float2 offset = lightScreenUV - screenCenter;
+
+    //========================================================
+    // Aspect Ratio
+    // 横長画面でX方向だけ距離が不自然にならないよう補正
+    //========================================================
+    const float aspect = ScreenParam.x / max(ScreenParam.y, 1.0f);
+
+    offset.x *= aspect;
+
+    //========================================================
+    // Screen中央からの距離
+    //========================================================
+    const float distanceFromCenter = length(offset);
+
+    //========================================================
+    // Fade開始位置
+    // この距離までは最大強度
+    //========================================================
+    const float fadeStart = max(FadeParam.y, 0.0f);
+
+    //========================================================
+    // Fade終了位置
+    //========================================================
+    const float fadeEnd = max(FadeParam.z, fadeStart + 0.00001f);
+
+
+    //========================================================
+    // 中央: 1.0
+    // 外側: 0.0
+    //========================================================
+    const float fade =
+        1.0f - smoothstep(fadeStart, fadeEnd, distanceFromCenter);
+
+    return saturate(fade);
+}
+
+
+//============================================================
+// Lens Flare Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // 現在のHDR Sceneを取得
+    //========================================================
+    float4 sceneColor =
+        txScene.Sample(
+            samLinear,
+            input.uv
+        );
+
+
+    //========================================================
+    // Lens Flareが無効な場合
+    // LightがCamera後方にある場合などはC++側でz = 0にする
+    //========================================================
+    if (LightScreenParam.z < 0.5f)
+    {
+        return sceneColor;
+    }
+
+
+    //========================================================
+    // Screen Size確認
+    // 0除算防止
+    //========================================================
+    const float screenWidth = max(ScreenParam.x, 1.0f);
+
+    const float screenHeight = max(ScreenParam.y, 1.0f);
+
+
+    //========================================================
+    // Aspect Ratio
+    // UV座標は0～1なので、そのまま円を描くと
+    // 16:9画面では横長に見える
+    // X方向へAspect補正を入れる
+    //========================================================
+    const float aspect = screenWidth / screenHeight;
+
+
+    //========================================================
+    // 現在PixelとLight位置
+    // Flare形状計算用にAspect補正する
+    //========================================================
+    float2 pixelPosition = input.uv;
+    float2 lightPosition = LightScreenParam.xy;
+
+    pixelPosition.x *= aspect;
+    lightPosition.x *= aspect;
+
+
+    //========================================================
+    // Core Glow
+    // 太陽・強い光源の中心部分
+    //========================================================
+    const float core =
+        CalculateGlow(
+            pixelPosition,
+            lightPosition,
+            FlareShapeParam.x
+        );
+
+
+    //========================================================
+    // Halo
+    // Light周辺のRing状Flare
+    //========================================================
+    const float halo =
+        CalculateHalo(
+            pixelPosition,
+            lightPosition,
+            FlareShapeParam.y
+        );
+
+
+    //========================================================
+    // Screen中央
+    // Ghost FlareはLight位置とScreen中央を結ぶ線上へ配置する
+    //========================================================
+    const float2 screenCenter = float2(0.5f, 0.5f);
+
+
+    //========================================================
+    // Light → Screen Center方向
+    // まだAspect補正していない通常UV空間で計算する
+    //========================================================
+    const float2 flareAxis = screenCenter - LightScreenParam.xy;
+
+
+    //========================================================
+    // Ghost Flare 1
+    // Screen中央を越えた位置へ配置
+    //========================================================
+    float2 ghostPosition1 = screenCenter + flareAxis * 0.65f;
+
+
+    //========================================================
+    // Ghost Flare 2
+    // Light側寄りへ別のGhostを配置
+    //========================================================
+    float2 ghostPosition2 = screenCenter - flareAxis * 0.55f;
+
+
+    //========================================================
+    // Ghost座標もAspect補正
+    //========================================================
+    ghostPosition1.x *= aspect;
+    ghostPosition2.x *= aspect;
+
+
+    //========================================================
+    // Ghost 1
+    // 小さな円形Glow
+    //========================================================
+    const float ghost1 =
+        CalculateGlow(
+            pixelPosition,
+            ghostPosition1,
+            FlareShapeParam.x *
+            0.55f
+        );
+
+
+    //========================================================
+    // Ghost 2
+    // Ring状Ghost
+    //========================================================
+    const float ghost2 =
+        CalculateHalo(
+            pixelPosition,
+            ghostPosition2,
+            FlareShapeParam.y *
+            0.50f
+        );
+
+
+    //========================================================
+    // 3. Horizontal Streak
+    //========================================================
+    const float streak =
+        CalculateStreak(
+            pixelPosition,
+            lightPosition
+        );
+
+
+    //========================================================
+    // 各Lens Flare要素を合成
+    // Core: 最も強くする
+    // Halo: 控えめ
+    // Ghost: FlareShapeParam.zで調整
+    // Streak: FlareShapeParam.wで調整
+    //========================================================
+    float flareAmount =
+        core *
+        1.8f +
+        halo *
+        0.35f +
+        ghost1 *
+        FlareShapeParam.z +
+        ghost2 *
+        FlareShapeParam.z *
+        0.5f +
+        streak *
+        FlareShapeParam.w;
+
+    //============================================================
+    // Lens Flare全体Intensity
+    //============================================================
+    flareAmount *= max(LightScreenParam.w, 0.0f);
+
+    
+    //============================================================
+    // Temporal Occlusion
+    // Depthによる遮蔽 + Temporal Fade済み
+    //============================================================
+    const float lensFlareVisibility = txLensFlareVisibility.Load(int3(0, 0, 0));
+
+    //============================================================
+    // Screen Edge Fade
+    // 太陽が画面端へ近づくほど弱くする
+    //============================================================
+    const float screenEdgeFade = CalculateScreenEdgeFade(LightScreenParam.xy);
+    
+    //============================================================
+    // Angular Fade
+    // 太陽が画面中央に近いほど強くする
+    //============================================================
+    const float angularFade = CalculateAngularFade(LightScreenParam.xy);
+    
+    //============================================================
+    // 最終Visibility
+    // Temporal Occlusion
+    //      ×
+    // Screen Edge
+    //      ×
+    // Angular
+    //============================================================
+    const float finalVisibility =
+        saturate(lensFlareVisibility) * screenEdgeFade * angularFade;
+    
+    //============================================================
+    // VisibilityをFlare全体へ適用
+    //============================================================
+    flareAmount *= finalVisibility;
+
+    //========================================================
+    // HDR SceneへLens Flareを加算
+    //========================================================
+    sceneColor.rgb += FlareColor.rgb * flareAmount;
+
+    //========================================================
+    // Scene Alphaは元画像を維持する
+    //========================================================
+    return sceneColor;
+}

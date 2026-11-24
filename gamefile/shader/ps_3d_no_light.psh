@@ -1,0 +1,169 @@
+//============================================================
+// Unlit 3D Pixel Shader
+// 通常: Texture × VertexColor
+// ReceiveShadow有効: 上記へDirectional CSMだけ適用する
+// Particle / Effectでも使用可能
+//============================================================
+
+
+//============================================================
+// Resource / Constant Buffer
+//============================================================
+#include "ps3d/ps_3d_bindings.hlsli"
+
+
+//============================================================
+// Cascade Shadow
+//============================================================
+#include "ps3d/cascade_shadow.hlsli"
+
+#include "ps3d/effect_local_lighting.hlsli"
+
+//============================================================
+// Fog
+//============================================================
+#include "ps3d/fog_common.hlsli"
+
+
+float4 main(pixelIn IN) : SV_Target
+{
+	//========================================================
+	// Diffuse Texture
+	//========================================================
+    float4 textureColor =
+		txDiffuse.Sample(
+			samLinear,
+			IN.tx0
+		);
+
+	//========================================================
+	// Texture
+	// × Vertex Color
+	// × Material Diffuse
+	// Particleの場合、IN.colにParticle Colorが入っている
+	//========================================================
+    float4 color = textureColor * IN.col * Diffuse;
+
+	//========================================================
+	// 完全透明Pixelは破棄
+	//========================================================
+    if (color.a < 0.01f)
+    {
+        discard;
+    }
+
+	//============================================================
+	// Local Lightへ使用する元のParticle色
+	//============================================================
+    const float3 particleBaseColor = color.rgb;
+	
+	//========================================================
+	// 初期状態ではShadowなし
+	//========================================================
+    float shadowVisibility = 1.0f;
+
+	//========================================================
+	// ShadowParam.x
+	// 0: Receive Shadow OFF
+	// 1: Receive Shadow ON
+	//========================================================
+    if (ShadowParam.x > 0.5f)
+    {
+		//====================================================
+		// Billboard ParticleはCamera方向を向いているため
+		// Pixel→Camera方向を疑似的なGeometric Normalとして使う
+		// IN.eye.xyz: CameraPos - WorldPosition
+		//====================================================
+        float3 geometricNormal = normalize(IN.eye.xyz);
+
+        shadowVisibility =
+			EvaluateCascadeShadowFast(
+			    IN,
+			    IN.eye.w,
+			    geometricNormal
+			);
+
+    }
+
+
+	//========================================================
+	// Shadowをどの程度Effectへ反映するか
+	// ShadowParam.y:
+	// 0: Shadowなし
+	// 0.5: 半分
+	// 1: 完全にShadow適用
+	//========================================================
+    const float shadowStrength = saturate(ShadowParam.y);
+
+
+    const float finalShadow =
+		lerp(
+			1.0f,
+			shadowVisibility,
+			shadowStrength
+		);
+
+
+	//========================================================
+	// Effect RGBだけShadowで減衰
+	//========================================================
+    color.rgb *= finalShadow;
+
+	//============================================================
+	// ParticleのWorld座標
+	//============================================================
+    const float3 worldPosition = CameraPos.xyz - IN.eye.xyz;
+
+	//============================================================
+	// Particle用Geometric Normal
+	// Billboard Particleはカメラを向いているため
+	// Camera方向を仮の形状法線として使用する
+	//============================================================
+    float3 geometricNormal = IN.eye.xyz;
+
+    const float normalLengthSquared = dot(geometricNormal, geometricNormal);
+
+    if (normalLengthSquared > 0.000001f)
+    {
+        geometricNormal = normalize(geometricNormal);
+    }
+    else
+    {
+        geometricNormal = float3(0.0f, 1.0f, 0.0f);
+    }
+
+	//============================================================
+	// Point / Spot Light
+	// ShadowParam.z: Local Light Strength
+	// ShadowParam.w: Local Shadow Enable
+	//============================================================
+    if (ShadowParam.z > 0.0001f)
+    {
+        const float3 localLighting =
+			EvaluateEffectLocalLighting(
+			    worldPosition,
+			    geometricNormal,
+			    // Directional Shadow適用前のParticle色
+			    particleBaseColor,
+			    ShadowParam.z,
+			    ShadowParam.w
+			);
+
+
+		//========================================================
+		// Local Lightは独立した光なので加算する
+		// ※ × color *= localShadowではない
+		// ※Point / Spot ShadowはEvaluateEffectLocalLighting()の中で
+		// ※各Light Contributionだけに掛かっている
+		//========================================================
+        color.rgb += localLighting;
+	
+    }
+	//========================================================
+	// Fog
+	// UnlitなのでusePBR = 0
+	//========================================================
+    color.rgb = ApplyFog(color.rgb, IN.eye.w, 0.0f);
+
+    return color;
+}

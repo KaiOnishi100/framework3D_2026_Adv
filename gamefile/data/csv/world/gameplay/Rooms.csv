@@ -1,0 +1,78 @@
+Id,DisplayName,Area,Floor,MinX,MinY,MinZ,MaxX,MaxY,MaxZ
+#============================================================
+# Exterior
+#============================================================
+
+FrontGrounds,屋敷前庭,MainBuilding,Outdoor,-30,-1,-32,30,5,-0.01
+
+#============================================================
+# Main Building 1F
+#============================================================
+
+Main1F_EntranceHall,玄関ホール,MainBuilding,Floor1,-5.85,-1,0.15,5.85,4.4,7.85
+Main1F_CentralHall,中央ホール,MainBuilding,Floor1,-8.85,-1,8.15,8.85,4.4,23.85
+Main1F_EastCorridor,東廊下,MainBuilding,Floor1,9.15,-1,8.15,15.85,4.4,23.85
+Main1F_PowerRoom,電源室,MainBuilding,Floor1,16.15,-1,12.15,25.75,4.4,19.85
+Main1F_WestCorridor,西廊下,MainBuilding,Floor1,-15.85,-1,8.15,-9.15,4.4,23.85
+Main1F_Study,書斎,MainBuilding,Floor1,-25.75,-1,8.15,-16.15,4.4,15.85
+Main1F_Library,図書室,MainBuilding,Floor1,-25.75,-1,16.15,-16.15,4.4,23.85
+Main1F_GrandStairHall,大階段ホール,MainBuilding,Floor1,-9.85,-1.0,24.15,9.85,4.4,35.85
+Main2F_GrandLanding,2階大階段踊り場,MainBuilding,Floor2,-8.85,4.45,33.85,8.85,8.90,35.85
+
+#============================================================
+# Main Building Floor2
+#============================================================
+
+Main2F_WestGallery,2階西ギャラリー,MainBuilding,Floor2,-8.95,4.45,26.15,-6.55,8.90,33.75
+Main2F_SouthBalcony,2階南バルコニー,MainBuilding,Floor2,-6.45,4.45,24.15,6.45,8.90,26.05
+Main2F_EastGallery,2階東ギャラリー,MainBuilding,Floor2,6.55,4.45,26.15,8.95,8.90,33.75
+Main2F_WestBedroom,2階西寝室,MainBuilding,Floor2,-18.10,4.45,26.05,-9.30,8.90,33.45
+Main2F_EastBedroom,2階東寝室,MainBuilding,Floor2,9.30,4.45,26.05,18.10,8.90,33.45
+Main2F_WestDressingRoom,2階西衣装室,MainBuilding,Floor2,-25.85,4.45,26.05,-18.45,8.90,33.45
+Main2F_EastPrivateRoom,2階東私室,MainBuilding,Floor2,18.45,4.45,26.05,25.85,8.90,33.45
+
+Courtyard_Main,中庭,Courtyard,Outdoor,26.15,-1.0,10.15,45.85,4.0,25.85
+
+#============================================================
+# Main Building Basement1
+#============================================================
+
+MainB1_Stairwell,本館地下階段,MainBuilding,Basement1,-13.90,-5.50,-1.80,-11.10,-1.05,8.05
+
+MainB1_ServiceCorridor,本館地下サービス廊下,MainBuilding,Basement1,-14.85,-5.50,-13.85,-10.15,-0.10,-1.75
+
+MainB1_BoilerRoom,本館地下ボイラー室,MainBuilding,Basement1,-24.85,-5.50,-13.85,-15.15,-0.10,-8.40
+
+MainB1_StorageRoom,本館地下倉庫,MainBuilding,Basement1,-9.85,-5.50,-13.85,-0.15,-0.10,-8.40
+
+#============================================================
+# Annex Floor1
+#============================================================
+
+Annex1F_EntranceHall,別館玄関ホール,Annex,Floor1,46.15,-1.0,14.15,53.85,4.40,21.85
+Annex1F_MainCorridor,別館主廊下,Annex,Floor1,54.15,-1.0,16.15,73.85,4.40,19.85
+Annex1F_Office,別館事務室,Annex,Floor1,46.15,-1.0,22.15,53.85,4.40,30.85
+Annex1F_Archive,別館資料室,Annex,Floor1,54.15,-1.0,20.15,63.85,4.40,30.85
+Annex1F_Laboratory,別館研究室,Annex,Floor1,64.15,-1.0,20.15,73.85,4.40,30.85
+
+#============================================================
+# Annex 1F South Area
+#============================================================
+
+Annex1F_Storage,別館倉庫,Annex,Floor1,46.15,-1.0,5.15,55.85,4.40,13.85
+Annex1F_ServiceArea,別館設備区画,Annex,Floor1,56.15,-1.0,5.15,73.85,4.40,15.85
+
+#============================================================
+# Annex Basement1
+#============================================================
+
+AnnexB1_Stairwell,別館地下階段,Annex,Basement1,66.55,-5.50,6.85,69.45,-1.05,15.15
+
+AnnexB1_MainCorridor,別館地下主廊下,Annex,Basement1,48.15,-5.50,5.15,59.85,-0.10,7.85
+AnnexB1_EntryArea,別館地下入口,Annex,Basement1,60.15,-5.50,5.15,69.85,-0.10,7.85
+
+AnnexB1_ObservationRoom,別館地下観察室,Annex,Basement1,48.15,-5.50,8.15,56.85,-0.10,19.85
+AnnexB1_ExperimentalRoom,別館地下実験室,Annex,Basement1,57.15,-5.50,8.15,65.85,-0.10,19.85
+
+AnnexB1_CentralResearch,別館中央研究区画,Annex,Basement1,54.15,-5.50,20.15,69.85,-0.10,29.85
+AnnexB1_ControlRoom,別館制御室,Annex,Basement1,56.15,-5.50,30.15,67.85,-0.10,37.85

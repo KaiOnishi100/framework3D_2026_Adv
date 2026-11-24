@@ -1,0 +1,132 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Main2F - East Private Room
+#============================================================
+
+
+#============================================================
+# Floor
+#============================================================
+Art_Main2F_EastPrivateRoom_Floor,MansionArt,22.15,4.51,29.75,0,90,0,1.114286,1,0.481250,data/model/mansion/architecture/floor/corridor_floor_7x16.vnm
+
+#============================================================
+# South Wall
+#============================================================
+
+# X=18.45～19.85
+Art_Main2F_EastPrivateRoom_SouthWall_01,MansionArt,19.1525,4.50,26.0805,0,180,0,0.7025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# X=19.85～21.85
+Art_Main2F_EastPrivateRoom_SouthWall_02,MansionArt,20.85,4.50,26.0805,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# X=21.85～23.85
+Art_Main2F_EastPrivateRoom_SouthWall_03,MansionArt,22.85,4.50,26.0805,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# X=23.85～25.85
+Art_Main2F_EastPrivateRoom_SouthWall_04,MansionArt,24.8475,4.50,26.0805,0,180,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# North Wall
+#============================================================
+
+Art_Main2F_EastPrivateRoom_NorthWall_01,MansionArt,19.1525,4.50,33.4195,0,0,0,0.7025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+Art_Main2F_EastPrivateRoom_NorthWall_02,MansionArt,20.85,4.50,33.4195,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+Art_Main2F_EastPrivateRoom_NorthWall_03,MansionArt,22.85,4.50,33.4195,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+Art_Main2F_EastPrivateRoom_NorthWall_04,MansionArt,24.8475,4.50,33.4195,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# East Wall
+#============================================================
+
+# Z=25.85～27.85
+Art_Main2F_EastPrivateRoom_EastWall_01,MansionArt,25.7695,4.50,26.8525,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=27.85～29.85
+Art_Main2F_EastPrivateRoom_EastWall_02,MansionArt,25.7695,4.50,28.85,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=29.85～31.85
+Art_Main2F_EastPrivateRoom_EastWall_03,MansionArt,25.7695,4.50,30.85,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=31.85～33.65
+Art_Main2F_EastPrivateRoom_EastWall_04,MansionArt,25.7695,4.50,32.7475,0,90,0,0.9025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# West Wall - Bedroom Entrance
+#============================================================
+#------------------------------------------------------------
+# West Wall - South Section
+#------------------------------------------------------------
+
+Art_Main2F_EastPrivateRoom_WestWall_S01,MansionArt,18.5305,4.50,26.9025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+Art_Main2F_EastPrivateRoom_WestWall_S02,MansionArt,18.5305,4.50,28.2975,0,-90,0,0.4025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#------------------------------------------------------------
+# West Wall - North Section
+#------------------------------------------------------------
+
+Art_Main2F_EastPrivateRoom_WestWall_N01,MansionArt,18.5305,4.50,31.3525,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+Art_Main2F_EastPrivateRoom_WestWall_N02,MansionArt,18.5305,4.50,33.0975,0,-90,0,0.7525,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Door Frame - Bedroom Side Entrance
+#============================================================
+
+Art_Main2F_EastPrivateRoom_DoorFrame,MansionArt,18.5305,4.50,29.50,0,-90,0,0.8,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+
+
+#============================================================
+# Door Upper Panel
+#============================================================
+
+Art_Main2F_EastPrivateRoom_DoorUpper,MansionArt,18.5305,8.10,29.50,0,-90,0,0.808824,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+
+#============================================================
+# Main2F - East Private Room Furniture
+#============================================================
+#============================================================
+# Antique Desk
+#============================================================
+
+Art_Main2F_EastPrivateRoom_AntiqueDesk,MansionArt,23.50,4.50,31.50,0,0,0,1,1,1,data/model/mansion/props/desk/antique_desk_01.vnm
+
+
+#============================================================
+# Gothic Cabinet
+#============================================================
+
+Art_Main2F_EastPrivateRoom_DocumentCabinet,MansionArt,20.50,4.50,32.85,0,180,0,1,1,1,data/model/mansion/props/bedroom/gothic_cabinet_01.vnm
+
+
+#============================================================
+# Antique Painting
+#============================================================
+
+Art_Main2F_EastPrivateRoom_Painting_01,MansionArt,22.00,6.70,26.20,0,180,0,1.3,1.3,1.3,data/model/mansion/props/wall_decor/fancy_picture_frame_01.vnm
+
+
+#============================================================
+# Ceiling Chandelier
+#============================================================
+
+Art_Main2F_EastPrivateRoom_Chandelier,MansionArt,22.15,8.95,29.50,0,0,0,0.50,0.50,0.50,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+# 東私室の床に置いた紙束
+Art46B_EastPrivateRoom_Papers,MansionArt,23.00,4.52,32.40,0,45,0,0.90,1.00,0.90,data/model/mansion/props/prop_paper_stack_01.vnm
+
+# STEP47 - East Private Room
+# 南側、西寄りの壁に配置
+# 既存の机はX=23.50 / Z=31.50
+Art47_EastPrivate_Bookshelf_Sparse,MansionArt,20.25,4.50,26.70,0,0,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_sparse_01.vnm

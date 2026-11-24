@@ -1,0 +1,416 @@
+//============================================================
+// SSGI Temporal Reprojection
+//
+// t0 Current Filtered GI
+// t1 Previous GI
+// t2 Motion Vector
+// t3 Current Depth
+// t4 Current Normal
+// t5 Previous Geometry
+//
+// Previous Geometry:
+//
+// RGB = Previous World Normal
+// A   = Previous Device Depth
+//============================================================
+
+Texture2D<float4> txCurrentGI : register(t0);
+
+Texture2D<float4> txPreviousGI : register(t1);
+
+Texture2D<float2> txMotionVector : register(t2);
+
+Texture2D<float> txDepth : register(t3);
+
+Texture2D<float4> txSurface : register(t4);
+
+Texture2D<float4> txPreviousGeometry : register(t5);
+
+SamplerState samLinear : register(s0);
+
+SamplerState samPoint : register(s1);
+
+
+cbuffer SSGITemporalBuffer : register(b0)
+{
+    float4x4 InverseViewProjection;
+
+    float4x4 PreviousInverseViewProjection;
+
+    float4 ScreenParameters;
+
+    float4 FullScreenParameters;
+
+    // x History Weight
+    // y World Position Threshold
+    // z Normal Threshold
+    // w Motion Response
+    float4 TemporalParameters;
+
+    // x History Valid
+    // y Neighborhood Clamp Expand
+    float4 HistoryParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+struct TemporalOutput
+{
+    //============================================================
+    // Temporal GI
+    //============================================================
+    float4 gi : SV_Target0;
+
+    //============================================================
+    // Current Geometryを次Frame用Historyへ保存
+    // RGB: Normal
+    // A: Device Depth
+    //============================================================
+    float4 geometry : SV_Target1;
+};
+
+
+//============================================================
+// Depth → World Position
+//============================================================
+bool ReconstructWorldPosition(
+    float2 uv,
+    float depth,
+    float4x4 inverseVP,
+    out float3 worldPosition
+)
+{
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    const float4 worldH = mul(clipPosition, inverseVP);
+
+
+    if (abs(worldH.w) <= 0.000001f)
+    {
+        worldPosition = 0.0f;
+        return false;
+    }
+
+    worldPosition = worldH.xyz / worldH.w;
+
+    return true;
+}
+
+
+//============================================================
+// Current GIの3x3 Neighborhood Rangeを取得
+// Previous Historyをこの範囲へClampすることで
+// Ghostingや過去Frameの異常な色を抑制する
+//============================================================
+void GetNeighborhoodRange(
+    float2 uv,
+    out float3 minColor,
+    out float3 maxColor
+)
+{
+    minColor = 1e20f;
+
+    maxColor = -1e20f;
+
+
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            const float2 sampleUV =
+                uv +
+                float2((float) x, (float) y) *
+                ScreenParameters.zw;
+
+
+            const float3 sampleColor =
+                txCurrentGI.SampleLevel(
+                    samLinear,
+                    sampleUV,
+                    0.0f
+                ).rgb;
+
+
+            minColor = min(minColor, sampleColor);
+            maxColor = max(maxColor, sampleColor);
+        }
+    }
+
+
+    //============================================================
+    // ※少し余裕を持たせる
+    // ※完全ClampするとTemporal蓄積効果まで弱くなるため
+    //============================================================
+    const float expand = max(HistoryParameters.y, 0.0f);
+
+    const float3 range = maxColor - minColor;
+
+    minColor -= range * expand;
+    maxColor += range * expand;
+}
+
+
+//============================================================
+// Main
+//============================================================
+TemporalOutput main(PixelInput input)
+{
+    TemporalOutput output = (TemporalOutput) 0;
+
+
+    //========================================================
+    // Current GI
+    //========================================================
+    const float4 currentGI =
+        txCurrentGI.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Current Depth
+    //========================================================
+    const float currentDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Current Normal
+    //========================================================
+    float3 currentNormal =
+        txSurface.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        ).xyz;
+
+
+    if (dot(currentNormal, currentNormal) > 0.0001f)
+    {
+        currentNormal = normalize(currentNormal);
+    }
+
+
+    //========================================================
+    // Geometry Historyは必ず現在Frame情報を書き込む
+    //========================================================
+    output.geometry = float4(currentNormal, currentDepth);
+
+
+    //========================================================
+    // Historyがまだ存在しない場合
+    //========================================================
+    if (HistoryParameters.x < 0.5f)
+    {
+        output.gi = currentGI;
+        return output;
+    }
+
+
+    //========================================================
+    // Motion Vector
+    //========================================================
+    const float2 velocity =
+        txMotionVector.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    const float2 previousUV = input.uv - velocity;
+
+
+    //========================================================
+    // Previous UVがScreen外
+    //========================================================
+    if (previousUV.x <= 0.0f ||
+        previousUV.x >= 1.0f ||
+        previousUV.y <= 0.0f ||
+        previousUV.y >= 1.0f)
+    {
+        output.gi = currentGI;
+
+        return output;
+    }
+
+
+    //========================================================
+    // Previous Geometry
+    //========================================================
+    const float4 previousGeometry =
+        txPreviousGeometry.SampleLevel(
+            samPoint,
+            previousUV,
+            0.0f
+        );
+
+
+    float3 previousNormal = previousGeometry.rgb;
+
+
+    if (dot(previousNormal, previousNormal) > 0.0001f)
+    {
+        previousNormal = normalize(previousNormal);
+    }
+
+    const float previousDepth = previousGeometry.a;
+
+    //========================================================
+    // Current World Position
+    //========================================================
+    float3 currentWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+            input.uv,
+            currentDepth,
+            InverseViewProjection,
+            currentWorldPosition))
+    {
+        output.gi = currentGI;
+
+        return output;
+    }
+
+
+    //========================================================
+    // Previous Historyに保存されたDepthから
+    // Previous World Positionを復元する
+    //========================================================
+    float3 previousWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+            previousUV,
+            previousDepth,
+            PreviousInverseViewProjection,
+            previousWorldPosition))
+    {
+        output.gi = currentGI;
+
+        return output;
+    }
+
+
+    //========================================================
+    // Disocclusion Reject
+    //========================================================
+    const float worldPositionDifference =
+        length(currentWorldPosition - previousWorldPosition);
+
+
+    if (worldPositionDifference > max(TemporalParameters.y, 0.0001f))
+    {
+        output.gi = currentGI;
+
+        return output;
+    }
+
+
+    //========================================================
+    // Normal Reject
+    // Surface方向が大きく変わっていれば別Surfaceと判断
+    //========================================================
+    const float normalSimilarity =
+        dot(currentNormal, previousNormal);
+
+
+    if (normalSimilarity < TemporalParameters.z)
+    {
+        output.gi =
+            currentGI;
+
+        return output;
+    }
+
+
+    //========================================================
+    // Previous GI
+    //========================================================
+    float4 previousGI =
+        txPreviousGI.SampleLevel(
+            samLinear,
+            previousUV,
+            0.0f
+        );
+
+
+    //========================================================
+    // Neighborhood Clamp
+    //========================================================
+    float3 neighborhoodMin;
+
+    float3 neighborhoodMax;
+
+
+    GetNeighborhoodRange(
+        input.uv,
+        neighborhoodMin,
+        neighborhoodMax
+    );
+
+
+    previousGI.rgb =
+        clamp(
+            previousGI.rgb,
+            neighborhoodMin,
+            neighborhoodMax
+        );
+
+
+    //========================================================
+    // Motion Pixels
+    // ※UVではなくPixel単位で評価する
+    //========================================================
+    const float motionPixels =
+        length(velocity * FullScreenParameters.xy);
+
+
+    //========================================================
+    // Motionが大きいほどHistoryを減らす
+    //========================================================
+    const float motionWeight =
+        exp(-motionPixels * max(TemporalParameters.w, 0.0f));
+
+
+    //========================================================
+    // Final History Weight
+    //========================================================
+    const float historyWeight =
+        saturate(TemporalParameters.x * motionWeight);
+
+
+    //========================================================
+    // Temporal Resolve
+    //========================================================
+    const float3 resolvedGI =
+        lerp(currentGI.rgb, previousGI.rgb, historyWeight);
+
+    const float resolvedConfidence =
+        lerp(currentGI.a, previousGI.a, historyWeight);
+
+    output.gi = float4(max(resolvedGI, 0.0f), saturate(resolvedConfidence));
+
+    return output;
+}

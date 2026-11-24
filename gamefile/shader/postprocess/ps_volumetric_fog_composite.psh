@@ -1,0 +1,60 @@
+//============================================================
+// Volumetric Fog Composite
+// t0: HDR Scene
+// t1: Half Resolution Volumetric Fog
+// Fog Texture:
+// RGB = In-Scattering
+// A   = Transmittance
+//============================================================
+
+Texture2D<float4> txScene : register(t0);
+
+Texture2D<float4> txVolumetricFog : register(t1);
+
+
+SamplerState samLinear : register(s0);
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Original HDR Scene
+    //========================================================
+    const float4 sceneColor =
+        txScene.Sample(
+            samLinear,
+            input.uv
+        );
+
+
+    //========================================================
+    // Half Resolution Fog
+    // Linear SamplingでFull ResolutionへUpsample
+    //========================================================
+    const float4 fog =
+        txVolumetricFog.Sample(
+            samLinear,
+            input.uv
+        );
+
+
+    const float transmittance = saturate(fog.a);
+
+
+    //========================================================
+    // Volume Rendering Equation
+    // Final = SurfaceRadiance * Transmittance + InScattering
+    //========================================================
+    const float3 finalColor =
+        sceneColor.rgb * transmittance + fog.rgb;
+
+
+    return float4(finalColor, sceneColor.a);
+}

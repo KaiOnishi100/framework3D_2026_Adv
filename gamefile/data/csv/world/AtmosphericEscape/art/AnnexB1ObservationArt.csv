@@ -1,0 +1,46 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex B1 - Observation Room
+#
+# X=48～57
+# Z=8～20
+#
+# Center=(52.5,-4.50,14.0)
+#
+# 排気弁パズルがある部屋。
+#============================================================
+
+Art_AnnexB1_Observation_Architecture,MansionArt,52.5,-4.50,14.0,0,180,0,1,1,1,data/model/mansion/architecture/annexb1/annexb1_observation.vnm
+
+
+#============================================================
+# STEP 28 - Annex B1 Observation Room
+#
+# X=48～57
+# Z=8～20
+#
+# 既存：
+#   SafetyVent (52.5,16.5)
+#   DOC_007   (50.5,17.0)
+#   DOC_012   (54.5,15.5)
+#============================================================
+
+# 観察用モニター
+Art_AnnexB1_Observation_Monitor,MansionArt,55.1,-4.5,11.3,0,90,0,1,1,1,data/model/mansion/props/annexb1/annexb1_monitor_console_01.vnm
+
+# 奥の検体保管ポッド
+Art_AnnexB1_Observation_Pod,MansionArt,55.1,-4.5,18.6,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_specimen_pod_01.vnm
+
+# 壁沿いの書類キャビネット
+Art_AnnexB1_Observation_FileCabinet,MansionArt,49.4,-4.5,11.5,0,90,0,1,1,1,data/model/mansion/props/annex/annex_file_cabinet_01.vnm
+
+# 天井灯
+Art_AnnexB1_Observation_Light,MansionArt,52.5,-0.48,14.0,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+
+
+# STEP40 - Observation Door Frame
+# 地下メイン廊下から観察室への入口
+Art40_AnnexB1_ObservationDoorFrame,MansionArt,52.5,-4.50,8.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_b1_doorframe_200.vnm
+

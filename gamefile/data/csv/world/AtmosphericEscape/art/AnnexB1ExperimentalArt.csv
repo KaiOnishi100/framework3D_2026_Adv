@@ -1,0 +1,72 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex B1 - Experimental Room
+#
+# X=57～66
+# Z=8～20
+#
+# Center=(61.5,-4.50,14.0)
+#
+# 冷却装置・安全制御装置がある部屋。
+#============================================================
+
+Art_AnnexB1_Experimental_Architecture,MansionArt,61.5,-4.50,14.0,0,180,0,1,1,1,data/model/mansion/architecture/annexb1/annexb1_experimental.vnm
+
+
+#============================================================
+# STEP 28 - Annex B1 Experimental Room
+#
+# X=57～66
+# Z=8～20
+#
+# 既存：
+#   SafetyCooling    (60,15)
+#   SafetyController (63,17)
+#============================================================
+
+# 西側の研究作業台
+Art_AnnexB1_Experimental_Bench_01,MansionArt,58.6,-4.5,11.5,0,90,0,1,1,1,data/model/mansion/props/annex/annex_lab_bench_01.vnm
+
+# 東側の研究作業台
+Art_AnnexB1_Experimental_Bench_02,MansionArt,64.6,-4.5,12.0,0,-90,0,1,1,1,data/model/mansion/props/annex/annex_lab_bench_01.vnm
+
+# 北東側の検体ポッド
+Art_AnnexB1_Experimental_Pod,MansionArt,64.4,-4.5,18.5,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_specimen_pod_01.vnm
+
+# 天井灯
+Art_AnnexB1_Experimental_Light,MansionArt,61.5,-0.48,13.5,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+
+
+# STEP40 - Experimental Door Frame
+# 地下メイン廊下から実験室への入口
+Art40_AnnexB1_ExperimentalDoorFrame,MansionArt,61.5,-4.50,8.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_b1_doorframe_200.vnm
+
+
+#============================================================
+# STEP46 - Annex B1 Experimental Props
+#
+# 床Y=-4.50
+#============================================================
+
+Art46_AnnexB1Experimental_Canister_01,MansionArt,58.0,-4.50,17.5,0,20,0,1,1,1,data/model/mansion/props/prop_metal_canister_01.vnm
+Art46_AnnexB1Experimental_Toolbox_01,MansionArt,62.8,-4.50,11.4,0,35,0,1,1,1,data/model/mansion/props/prop_toolbox_metal_01.vnm
+Art46_AnnexB1Experimental_Stain_01,MansionArt,60.7,-4.478,10.3,0,0,0,1,1,1,data/model/mansion/props/prop_floor_stain_small_01.vnm
+
+
+#============================================================
+# STEP46-2 Annex B1 Experimental Props
+#
+# 床面Y=-4.50
+# 冷却装置・制御盤の操作空間を確保する。
+#============================================================
+
+# 小型金属ボンベ
+Art46B_AnnexB1Experimental_Canister_02,MansionArt,58.70,-4.50,12.00,0,40,0,0.75,0.90,0.75,data/model/mansion/props/prop_metal_canister_01.vnm
+
+# 横倒しの金属ボンベ
+Art46B_AnnexB1Experimental_FallenCanister,MansionArt,59.40,-4.28,12.60,90,25,0,1.00,1.00,1.00,data/model/mansion/props/prop_metal_canister_01.vnm
+
+# 実験室の床に落ちた金属バケツ
+Art46B_AnnexB1Experimental_Bucket,MansionArt,57.75,-4.50,15.20,0,-30,0,0.90,1.00,0.90,data/model/mansion/props/prop_bucket_metal_01.vnm

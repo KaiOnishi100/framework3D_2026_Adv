@@ -1,0 +1,59 @@
+//============================================================
+// SSGI Composite
+// t0: Original HDR Scene
+// t1: Full Resolution SSGI
+// 最終式: Scene + Indirect Diffuse
+// Tone Mappingより前なのでHDRのまま扱う
+//============================================================
+
+Texture2D<float4> txScene : register(t0);
+
+Texture2D<float4> txSSGI : register(t1);
+
+SamplerState samLinear : register(s0);
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // 元のHDR Scene
+    //========================================================
+    const float4 scene =
+        txScene.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Full Resolution Indirect Diffuse
+    // RGB: Indirect Diffuse
+    // A: Confidence
+    //========================================================
+    const float4 gi =
+        txSSGI.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // HDR Additive Composite
+    // HDR値が1を超えても正常
+    // 最後のTone MappingがDisplay Rangeへ変換する
+    //========================================================
+    const float3 result = scene.rgb + max(gi.rgb, 0.0f);
+
+    return float4(result, scene.a);
+}

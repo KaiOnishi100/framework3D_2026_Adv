@@ -1,0 +1,145 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Main1F West Corridor - Floor
+#============================================================
+Art_Main1F_WestCorridor_Floor,MansionArt,-12.5,0.01,16,0,0,0,1,1,1,data/model/mansion/architecture/floor/corridor_floor_7x16.vnm
+
+
+#============================================================
+# Main1F West Corridor - East Wall
+#============================================================
+
+# South Section: Z=8～11
+Art_Main1F_WestCorridor_EastWall_S01,MansionArt,-9.08,0,9.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_EastWall_S02,MansionArt,-9.08,0,10.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Middle Section: Z=13～19
+Art_Main1F_WestCorridor_EastWall_M01,MansionArt,-9.08,0,14.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_EastWall_M02,MansionArt,-9.08,0,16,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_EastWall_M03,MansionArt,-9.08,0,17.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# North Section: Z=21～24
+Art_Main1F_WestCorridor_EastWall_N01,MansionArt,-9.08,0,22.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_EastWall_N02,MansionArt,-9.08,0,23.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Main1F West Corridor - West Wall
+#============================================================
+
+# South Section: Z=8～11
+Art_Main1F_WestCorridor_WestWall_S01,MansionArt,-15.92,0,9.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_WestWall_S02,MansionArt,-15.92,0,10.4975,0,-90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Middle Section: Z=13～19
+Art_Main1F_WestCorridor_WestWall_M01,MansionArt,-15.92,0,14.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_WestWall_M02,MansionArt,-15.92,0,16,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_WestWall_M03,MansionArt,-15.92,0,17.9975,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# North Section: Z=21～24
+Art_Main1F_WestCorridor_WestWall_N01,MansionArt,-15.92,0,22.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_WestWall_N02,MansionArt,-15.92,0,23.4975,0,-90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# West Corridor - South Wall
+#
+# Graybox中心: Z=8
+# Art中心: Z=8.2305
+#
+# 廊下側（+Z）に装飾面を向ける。
+# RotY=180度
+#
+# X=-13.5～-11.5は地下入口なので空ける。
+#============================================================
+
+# 左壁: X=-16～-13.5
+# 2mモデルを2.5mに伸ばすためScaleX=1.25
+Art_Main1F_WestCorridor_SouthWall_L,MansionArt,-14.7525,0,8.2305,0,180,0,1.2525,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# 右壁: X=-11.5～-9
+Art_Main1F_WestCorridor_SouthWall_R,MansionArt,-10.2475,0,8.2305,0,180,0,1.2525,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# West Corridor - North Wall\
+#============================================================
+Art_Main1F_WestCorridor_NorthWall_01,MansionArt,-15,0,23.7695,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_NorthWall_02,MansionArt,-13,0,23.7695,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_NorthWall_03,MansionArt,-11,0,23.7695,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_WestCorridor_NorthWall_04,MansionArt,-9.5,0,23.7695,0,0,0,0.5050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# West Corridor - Door Frames
+#
+# 共通モデルを3か所に配置する。
+#
+# 既存MansionDoorを置き換えず、
+# 見た目の装飾のみを追加する。
+#
+# RotYは度数法。
+#============================================================
+
+#------------------------------------------------------------
+# Study Door Frame
+#------------------------------------------------------------
+Art_Main1F_WestCorridor_StudyDoorFrame,MansionArt,-15.92,0,12,0,-90,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+
+#------------------------------------------------------------
+# Library Door Frame
+#------------------------------------------------------------
+Art_Main1F_WestCorridor_LibraryDoorFrame,MansionArt,-15.92,0,20,0,-90,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+
+#------------------------------------------------------------
+# Basement Entrance Door Frame
+#------------------------------------------------------------
+Art_Main1F_WestCorridor_BasementDoorFrame,MansionArt,-12.5,0,8.2305,0,180,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+
+
+#============================================================
+# West Corridor - Door Upper Art
+#============================================================
+
+# 書斎入口
+Art_Main1F_StudyDoor_Upper,MansionArt,-15.92,3.5,12,0,-90,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+# 図書室入口
+Art_Main1F_LibraryDoor_Upper,MansionArt,-15.92,3.5,20,0,-90,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+# 地下入口
+Art_Main1F_BasementDoor_Upper,MansionArt,-12.5,3.5,8.2305,0,180,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+
+
+#============================================================
+# STEP29 - Main 1F West Corridor Ceiling
+#
+# Room:
+#   X=-16 ～ -9
+#   Z=8 ～ 24
+#============================================================
+
+Art_Main_Repair_WestCorridorCeiling,MansionArt,-12.5,4.41,16.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main1f_westcorridor_ceiling.vnm
+
+#============================================================
+# STEP31 - West Corridor Wall End Caps
+#============================================================
+
+# 西側ドア1
+Art31_WallCap_WestCorridor_WestDoor1,MansionArt,-16.000,0.000,11.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art31_WallCap_WestCorridor_WestDoor2,MansionArt,-16.000,0.000,13.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 西側ドア2
+Art31_WallCap_WestCorridor_WestDoor3,MansionArt,-16.000,0.000,19.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art31_WallCap_WestCorridor_WestDoor4,MansionArt,-16.000,0.000,21.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 地下階段入口の左端
+Art31_WallCap_WestCorridor_B1_L,MansionArt,-13.500,0.000,8.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 地下階段入口の右端
+Art31_WallCap_WestCorridor_B1_R,MansionArt,-11.500,0.000,8.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm

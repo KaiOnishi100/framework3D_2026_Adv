@@ -1,0 +1,437 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Main1F Grand Stair Hall - Floor
+#============================================================
+Art_Main1F_GrandStair_Floor,MansionArt,0,0.01,30,0,0,0,1.709402,1,1.558442,data/model/mansion/architecture/floor/entrance_floor.vnm
+
+
+#============================================================
+# Main1F Grand Stair Hall - West Wall
+#============================================================
+
+Art_Main1F_GrandStair_WestWall_01,MansionArt,-9.7695,0,25.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_WestWall_02,MansionArt,-9.7695,0,27,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_WestWall_03,MansionArt,-9.7695,0,29,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_WestWall_04,MansionArt,-9.7695,0,31,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_WestWall_05,MansionArt,-9.7695,0,33,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_WestWall_06,MansionArt,-9.7695,0,34.9975,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Main1F Grand Stair Hall - East Wall
+#============================================================
+
+Art_Main1F_GrandStair_EastWall_01,MansionArt,9.7695,0,25.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_EastWall_02,MansionArt,9.7695,0,27,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_EastWall_03,MansionArt,9.7695,0,29,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_EastWall_04,MansionArt,9.7695,0,31,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_EastWall_05,MansionArt,9.7695,0,33,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_GrandStair_EastWall_06,MansionArt,9.7695,0,34.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Grand Stair Hall - Stair Geometry
+#============================================================
+#============================================================
+# Lower Center Stair
+#============================================================
+Art_Main1F_GrandStair_Lower,MansionArt,0,0.01,29.60,0,180,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_lower.vnm
+
+
+#============================================================
+# Mid Landing
+#============================================================
+Art_Main1F_GrandStair_Landing,MansionArt,0,0.01,32.35,0,0,0,1,1,2.5,data/model/mansion/architecture/stair/grand_stair_landing.vnm
+
+
+#============================================================
+# Upper Right Stair
+#============================================================
+Art_Main1F_GrandStair_UpperRight,MansionArt,4.525,0.01,32.85,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_upper.vnm
+
+
+#============================================================
+# Upper Left Stair
+#============================================================
+Art_Main1F_GrandStair_UpperLeft,MansionArt,-4.525,0.01,32.85,0,180,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_upper.vnm
+
+
+#============================================================
+# Grand Stair - Wooden Railings
+#============================================================
+#============================================================
+# Lower Center Stair
+#============================================================
+
+# 左側
+Art_Main1F_GrandStair_LowerRail_L,MansionArt,-1.87,0,29.60,0,180,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_railing.vnm
+
+# 右側
+Art_Main1F_GrandStair_LowerRail_R,MansionArt,1.87,0,29.60,0,180,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_railing.vnm
+
+
+#============================================================
+# Upper Right Stair
+#============================================================
+
+# 南側
+Art_Main1F_GrandStair_UpperRightRail_S,MansionArt,4.525,2.25,31.72,0,-90,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_railing.vnm
+
+# 北側
+Art_Main1F_GrandStair_UpperRightRail_N,MansionArt,4.525,2.25,33.78,0,-90,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_railing.vnm
+
+
+#============================================================
+# Upper Left Stair
+#============================================================
+
+# 南側
+Art_Main1F_GrandStair_UpperLeftRail_S,MansionArt,-4.525,2.25,31.72,0,90,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_railing.vnm
+
+# 北側
+Art_Main1F_GrandStair_UpperLeftRail_N,MansionArt,-4.525,2.25,33.78,0,90,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_railing.vnm
+
+
+#============================================================
+# Grand Stair - Landing Decoration
+#============================================================
+#============================================================
+# Landing Back Railing
+#============================================================
+Art_Main1F_GrandStair_LandingBackRail,MansionArt,0,2.25,33.96,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+
+#============================================================
+# Landing Back Newel Posts
+#============================================================
+
+# 奥側の左親柱
+Art_Main1F_GrandStair_Newel_BackL,MansionArt,-2.28,2.25,33.96,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+# 奥側の右親柱
+Art_Main1F_GrandStair_Newel_BackR,MansionArt,2.28,2.25,33.96,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+
+#============================================================
+# Lower Stair - Top Newel Posts
+#============================================================
+
+# 中央階段・左
+Art_Main1F_GrandStair_Newel_FrontL,MansionArt,-1.87,2.25,31.60,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+# 中央階段・右
+Art_Main1F_GrandStair_Newel_FrontR,MansionArt,1.87,2.25,31.60,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+
+#============================================================
+# Main2F - Grand Gallery Floor
+#============================================================
+
+#============================================================
+# Grand Landing
+#============================================================
+Art_Main2F_GrandLanding_Floor,MansionArt,0,4.352,34.9,0,0,0,1,1,1,data/model/mansion/architecture/gallery/grand_gallery_floor_long.vnm
+
+
+#============================================================
+# West Gallery
+#============================================================
+Art_Main2F_WestGallery_Floor,MansionArt,-7.75,4.352,29.95,0,0,0,1,1,1,data/model/mansion/architecture/gallery/grand_gallery_floor_side.vnm
+
+
+#============================================================
+# East Gallery
+#============================================================
+Art_Main2F_EastGallery_Floor,MansionArt,7.75,4.352,29.95,0,0,0,1,1,1,data/model/mansion/architecture/gallery/grand_gallery_floor_side.vnm
+
+
+#============================================================
+# South Balcony
+#============================================================
+Art_Main2F_SouthBalcony_Floor,MansionArt,0,4.352,25.0,0,0,0,1,1,1,data/model/mansion/architecture/gallery/grand_gallery_floor_long.vnm
+
+
+#============================================================
+# Main2F - Hide Floor Graybox
+#============================================================
+
+Hide_Main2F_GrandLanding_Floor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Main2F_GrandLanding_Floor
+
+Hide_Main2F_WestGallery_Floor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Main2F_WestGallery_Floor
+
+Hide_Main2F_EastGallery_Floor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Main2F_EastGallery_Floor
+
+Hide_Main2F_SouthBalcony_Floor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Main2F_SouthBalcony_Floor
+
+
+#============================================================
+# Main2F - Gallery Railings
+#============================================================
+
+
+#============================================================
+# South Balcony - Inner Railing
+#============================================================
+
+Art_Main2F_SouthBalcony_Rail_L,MansionArt,-4.333333,4.50,25.93,0,0,0,0.9319,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+Art_Main2F_SouthBalcony_Rail_C,MansionArt,0,4.50,25.93,0,0,0,0.9319,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+Art_Main2F_SouthBalcony_Rail_R,MansionArt,4.333333,4.50,25.93,0,0,0,0.9319,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+
+#============================================================
+# West Gallery - Inner Railing
+#============================================================
+
+Art_Main2F_WestGallery_InnerRail,MansionArt,-6.58,4.50,28.75,0,90,0,1.16129,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+
+#============================================================
+# East Gallery - Inner Railing
+#============================================================
+
+Art_Main2F_EastGallery_InnerRail,MansionArt,6.58,4.50,28.75,0,90,0,1.16129,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+
+#============================================================
+# Grand Landing - Inner Railing
+#============================================================
+
+Art_Main2F_GrandLanding_Rail_L,MansionArt,-4.0,4.50,34.0,0,0,0,0.860215,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+Art_Main2F_GrandLanding_Rail_C,MansionArt,0,4.50,34.0,0,0,0,0.860215,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+Art_Main2F_GrandLanding_Rail_R,MansionArt,4.0,4.50,34.0,0,0,0,0.860215,1,1,data/model/mansion/architecture/stair/grand_stair_landing_railing.vnm
+
+
+#============================================================
+# Main2F - Gallery Newel Posts
+#============================================================
+
+
+#============================================================
+# South Balcony - Corner Posts
+#============================================================
+
+# 南西側
+Art_Main2F_Gallery_Newel_SW,MansionArt,-6.50,4.50,26.0,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+# 南東側
+Art_Main2F_Gallery_Newel_SE,MansionArt,6.50,4.50,26.0,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+
+#============================================================
+# Upper Stair Entrances
+#============================================================
+
+# 左階段側
+Art_Main2F_Gallery_Newel_StairL,MansionArt,-6.58,4.50,31.45,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+# 右階段側
+Art_Main2F_Gallery_Newel_StairR,MansionArt,6.58,4.50,31.45,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+
+#============================================================
+# Grand Landing - Inner Railing Ends
+#============================================================
+
+Art_Main2F_GrandLanding_Newel_L,MansionArt,-5.88,4.50,34.0,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+Art_Main2F_GrandLanding_Newel_R,MansionArt,5.88,4.50,34.0,0,0,0,1,1,1,data/model/mansion/architecture/stair/grand_stair_newel_post.vnm
+
+
+#============================================================
+# Main2F Gallery - Outer Wall Decoration
+#============================================================
+#============================================================
+# West Gallery - South Wall
+#============================================================
+
+# Z=25.90～27.90
+Art_Main2F_WestGallery_Wall_S01,MansionArt,-8.9195,4.50,26.9025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=27.90～28.70
+Art_Main2F_WestGallery_Wall_S02,MansionArt,-8.9195,4.50,28.2975,0,-90,0,0.4025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# West Gallery - North Wall
+#============================================================
+
+# Z=30.35～32.35
+Art_Main2F_WestGallery_Wall_N01,MansionArt,-8.9195,4.50,31.3525,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=32.35～33.85
+Art_Main2F_WestGallery_Wall_N02,MansionArt,-8.9195,4.50,33.0975,0,-90,0,0.7525,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# East Gallery - South Wall
+#============================================================
+
+# Z=25.90～27.90
+Art_Main2F_EastGallery_Wall_S01,MansionArt,8.9195,4.50,26.9025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=27.90～28.70
+Art_Main2F_EastGallery_Wall_S02,MansionArt,8.9195,4.50,28.2975,0,90,0,0.4025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# East Gallery - North Wall
+#============================================================
+
+# Z=30.35～32.35
+Art_Main2F_EastGallery_Wall_N01,MansionArt,8.9195,4.50,31.3525,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=32.35～33.85
+Art_Main2F_EastGallery_Wall_N02,MansionArt,8.9195,4.50,33.0975,0,90,0,0.7525,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Main2F - Bedroom Door Frames
+#============================================================
+#============================================================
+# West Bedroom Entrance
+#============================================================
+Art_Main2F_WestGallery_BedroomDoorFrame,MansionArt,-8.92,4.50,29.50,0,-90,0,0.8,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+
+
+#============================================================
+# East Bedroom Entrance
+#============================================================
+Art_Main2F_EastGallery_BedroomDoorFrame,MansionArt,8.92,4.50,29.50,0,90,0,0.8,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+
+
+#============================================================
+# Main2F - Bedroom Door Upper Wall
+#============================================================
+
+# West Bedroom
+Art_Main2F_WestGallery_BedroomDoorUpper,MansionArt,-8.9195,8.10,29.50,0,-90,0,0.808824,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+# East Bedroom
+Art_Main2F_EastGallery_BedroomDoorUpper,MansionArt,8.9195,8.10,29.50,0,90,0,0.808824,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+
+#============================================================
+# Main2F - Gallery and Grand Landing Decorations
+#============================================================
+#============================================================
+# West Gallery - Ceiling Chandelier
+#============================================================
+
+Art_Main2F_WestGallery_Chandelier,MansionArt,-7.75,8.95,29.50,0,0,0,0.45,0.45,0.45,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+
+#============================================================
+# East Gallery - Ceiling Chandelier
+#============================================================
+
+Art_Main2F_EastGallery_Chandelier,MansionArt,7.75,8.95,29.50,0,0,0,0.45,0.45,0.45,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+
+#============================================================
+# South Balcony - Ceiling Chandelier
+#============================================================
+
+Art_Main2F_SouthBalcony_Chandelier,MansionArt,0.0,8.95,25.0,0,0,0,0.55,0.55,0.55,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+
+#============================================================
+# Grand Landing - Ceiling Chandelier
+#============================================================
+
+Art_Main2F_GrandLanding_Chandelier,MansionArt,0.0,8.95,34.90,0,0,0,0.55,0.55,0.55,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+
+#============================================================
+# West Gallery - Antique Painting
+#============================================================
+
+Art_Main2F_WestGallery_Painting_01,MansionArt,-8.79,6.70,27.0,0,-90,0,1.0,1.0,1.0,data/model/mansion/props/wall_decor/fancy_picture_frame_01.vnm
+
+
+#============================================================
+# East Gallery - Antique Painting
+#============================================================
+
+Art_Main2F_EastGallery_Painting_01,MansionArt,8.79,6.70,27.0,0,90,0,1.0,1.0,1.0,data/model/mansion/props/wall_decor/fancy_picture_frame_01.vnm
+
+
+#============================================================
+# Main2F - Grand Landing Power Light
+#============================================================
+
+MansionPowerLight_10a_2F_GrandLanding,MansionPowerLight,0.0,8.10,34.90,0,0,0,0.35,0.15,0.35,Art_Main2F_GrandLanding_Chandelier
+
+
+Art_Main1F_GrandStair_NorthWallLamp,MansionArt,0,3.55,35.55,0,180,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+
+#============================================================
+# STEP29 - Main 2F Roof Underside Ceiling
+#
+# Mansion:
+#   X=-26 ～ 26
+#   Z=0 ～ 36
+#
+# Ceiling Y=9.0
+#
+# 天井を1枚にまとめて継ぎ目をなくす。
+#============================================================
+
+Art_Main_Repair_2FRoofCeiling,MansionArt,0.0,8.94,18.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main2f_roof_underside.vnm
+
+# STEP30 - 2F南側通路の外壁
+Art_Main2F_SouthPassage_OuterWall,MansionArt,0.0,4.50,23.95,0,180,0,1,1,1,data/model/mansion/repair/step30/main2f_south_passage_outer_wall.vnm
+
+#============================================================
+# STEP38 - Grand Stair Hall North Interior Wall
+#============================================================
+Art38_GrandStairHall_NorthInteriorWall,MansionArt,0.0,0.0,35.81,0,180,0,1,1.15,1,data/model/mansion/architecture/wall/grandstairhall_north_interior_wall_01.vnm
+
+# 西側の天井補修
+Art42_GrandStair_WestGallery_CeilingFill,MansionArt,-9.36,4.24,29.95,0,0,0,1,1,1,data/model/mansion/repair/step42/grandstair_gallery_side_ceiling_fill_01.vnm
+
+# 東側の天井補修
+Art42_GrandStair_EastGallery_CeilingFill,MansionArt,9.36,4.24,29.95,0,0,0,1,1,1,data/model/mansion/repair/step42/grandstair_gallery_side_ceiling_fill_01.vnm
+
+
+#============================================================
+# STEP46 - Grand Stair Hall Props
+#
+# 中央階段の幅X=-2～2付近は確保する。
+#============================================================
+
+Art46_GrandStair_Table_W,MansionArt,-7.50,0.00,27.0,0,90,0,1,1,1,data/model/mansion/props/prop_side_table_01.vnm
+Art46_GrandStair_Table_E,MansionArt,7.50,0.00,27.0,0,-90,0,1,1,1,data/model/mansion/props/prop_side_table_01.vnm
+
+Art46_GrandStair_Vase_W,MansionArt,-7.50,0.78,27.0,0,0,0,1,1,1,data/model/mansion/props/prop_vase_01.vnm
+Art46_GrandStair_Vase_E,MansionArt,7.50,0.78,27.0,0,0,0,1,1,1,data/model/mansion/props/prop_vase_01.vnm
+
+Art46_GrandStair_WallStain_W,MansionArt,-9.82,0.80,29.0,0,-90,0,1,1,1,data/model/mansion/props/prop_wall_stain_01.vnm
+
+
+#============================================================
+# STEP46-2 GrandStairHall Props
+#
+# 1F階段の左右端を中心に配置する。
+# 階段本体や踊り場の通行を妨げないこと。
+#============================================================
+
+# 西側に落ちている小さな本
+Art46B_GrandStair_Book_W,MansionArt,-7.80,0.02,29.80,0,35,0,0.85,1.00,0.90,data/model/mansion/props/prop_book_closed_01.vnm
+
+# 東側に散らばった書類
+Art46B_GrandStair_Papers_E,MansionArt,7.70,0.02,30.40,0,-45,0,1.10,1.00,0.95,data/model/mansion/props/prop_paper_stack_01.vnm
+
+# 東側の倒れた花瓶
+Art46B_GrandStair_FallenVase_E,MansionArt,7.05,0.15,30.20,90,55,0,1.00,1.00,1.00,data/model/mansion/props/prop_vase_01.vnm
+
+# 西壁の額縁
+Art46B_GrandStair_Frame_W,MansionArt,-9.82,1.80,30.80,0,-90,0,0.90,1.00,1.00,data/model/mansion/props/prop_frame_01.vnm
+
+Art_Main1F_GrandStair_Candle_W,MansionArt,-7.50,0.75,27.00,0,0,0,1,1,1,data/model/mansion/props/candle/mansion_candle_01.vnm
+Art_Main1F_GrandStair_Candle_E,MansionArt,7.50,0.75,27.00,0,0,0,1,1,1,data/model/mansion/props/candle/mansion_candle_01.vnm

@@ -1,0 +1,46 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex B1 - Control Room
+#
+# X=56～68
+# Z=30～38
+#
+# Center=(62,-4.50,34.0)
+#
+# Control Terminalがある最奥の部屋。
+#============================================================
+
+Art_AnnexB1_ControlRoom_Architecture,MansionArt,62.0,-4.50,34.0,0,180,0,1,1,1,data/model/mansion/architecture/annexb1/annexb1_control_room.vnm
+
+
+#============================================================
+# STEP 28 - Annex B1 Control Room
+#
+# X=56～68
+# Z=30～38
+#
+# 既存：
+#   ControlTerminal (62,37.1)
+#   DOC_010         (58.5,33.5)
+#============================================================
+
+# 西側サーバーラック
+Art_AnnexB1_Control_Server_01,MansionArt,57.5,-4.5,35.8,0,90,0,1,1,1,data/model/mansion/props/annexb1/annexb1_server_rack_01.vnm
+
+# 東側サーバーラック
+Art_AnnexB1_Control_Server_02,MansionArt,66.4,-4.5,35.8,0,-90,0,1,1,1,data/model/mansion/props/annexb1/annexb1_server_rack_01.vnm
+
+# 東寄りの研究用コンソール
+Art_AnnexB1_Control_Monitor,MansionArt,65.0,-4.5,32.5,0,90,0,1,1,1,data/model/mansion/props/annexb1/annexb1_monitor_console_01.vnm
+
+# 中央天井灯
+Art_AnnexB1_Control_Light,MansionArt,62.0,-0.48,34.0,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+
+
+# STEP40 - Control Room Door Frame
+# 中央研究室から制御室への入口
+# ResearchSealによる施錠処理は変更しない
+Art40_AnnexB1_ControlRoomDoorFrame,MansionArt,62.0,-4.50,30.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_b1_doorframe_200.vnm
+

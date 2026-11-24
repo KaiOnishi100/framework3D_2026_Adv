@@ -1,0 +1,66 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Office
+#
+# X=46～54
+# Z=22～31
+# Size=8x9m
+#
+# 床はWeathered Planksを使用。
+#============================================================
+
+Art_Annex1F_Office_Architecture,MansionArt,50.0,0.0,26.5,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_office.vnm
+
+
+#============================================================
+# STEP 26 - Annex Office Furniture
+#============================================================
+
+# 古い事務デスク
+Art_Annex1F_Office_Desk,MansionArt,48.2,0,24.5,0,90,0,1,1,1,data/model/mansion/props/desk/antique_desk_01.vnm
+
+# デスク前の椅子
+Art_Annex1F_Office_Chair,MansionArt,49.2,0,24.5,0,-90,0,1,1,1,data/model/mansion/props/chair/study_armchair_01.vnm
+
+# 奥側の書類キャビネット
+Art_Annex1F_Office_FileCabinet,MansionArt,52.7,0,29.8,0,180,0,1,1,1,data/model/mansion/props/annex/annex_file_cabinet_01.vnm
+
+# STEP31 - 別館1F 北西角
+
+#Art31_AnnexInnerCorner_NW,MansionArt,46.200,0.000,30.800,0,180,0,1,1,1,data/model/mansion/repair/step31/annex1f_inner_corner_trim.vnm
+
+
+# STEP40 - Office Door Frame
+# EntranceHall北側の事務室入口
+Art40_Annex1F_OfficeDoorFrame,MansionArt,51.0,0.0,22.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_interior_doorframe_200.vnm
+
+
+#============================================================
+# STEP46 - Annex Office Props
+#
+# 既存のDesk / Chair / FileCabinetは再利用する。
+#============================================================
+
+Art46_AnnexOffice_Papers_01,MansionArt,50.6,0.02,27.3,0,25,0,1,1,1,data/model/mansion/props/prop_paper_stack_01.vnm
+Art46_AnnexOffice_Book_01,MansionArt,51.1,0.02,27.7,0,-35,0,1,1,1,data/model/mansion/props/prop_book_closed_01.vnm
+
+
+#============================================================
+# STEP47 - Annex Office Bookshelves
+#
+# 部屋範囲:
+# X=46～54 / Z=22～31
+#
+# 既存設備:
+# Desk        (48.2, 24.5)
+# Chair       (49.2, 24.5)
+# FileCabinet (52.7, 29.8)
+#============================================================
+
+# 西壁：細身の本棚
+Art47_AnnexOffice_Bookshelf_Narrow,MansionArt,46.75,0,28.00,0,90,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_tall_narrow_01.vnm
+
+# 北壁：本の少ない横長本棚
+Art47_AnnexOffice_Bookshelf_Low,MansionArt,49.50,0,30.50,0,180,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_low_wide_01.vnm

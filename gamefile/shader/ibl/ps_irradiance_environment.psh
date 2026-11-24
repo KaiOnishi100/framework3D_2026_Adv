@@ -1,0 +1,226 @@
+#include "../common/environment_common.hlsli"
+
+//============================================================
+// Irradiance CubeMap生成用Pixel Shader
+// 元のEnvironment CubeMapを半球方向へ積分し
+// 拡散反射用の低周波CubeMapを生成する
+//============================================================
+
+static const float PI = 3.14159265359f;
+
+//============================================================
+// Vertex Shaderからの入力
+//============================================================
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float3 direction : TEXCOORD0;
+};
+
+//============================================================
+// 元のEnvironment CubeMap
+//============================================================
+TextureCube txEnvironment : register(t0);
+
+SamplerState samEnvironment : register(s0);
+
+//============================================================
+// Irradiance生成パラメータ
+// x : サンプル数
+// y : 元CubeMapの解像度
+// z : 元CubeMapの最大Mip Level
+// w : 未使用
+//============================================================
+cbuffer IrradianceBuffer : register(b1)
+{
+    float4 IrradianceParam;
+}
+
+//============================================================
+// Van der Corput Radical Inverse
+// Hammersley列生成用
+//============================================================
+float RadicalInverseVanDerCorput(uint bits)
+{
+    bits = reversebits(bits);
+
+    return (float) bits * 2.3283064365386963e-10f;
+}
+
+//============================================================
+// Hammersley Sequence
+// 0～1範囲へ均等にサンプルを配置する
+//============================================================
+float2 Hammersley(uint sampleIndex,uint sampleCount)
+{
+    return float2((float) sampleIndex / (float) sampleCount, RadicalInverseVanDerCorput(sampleIndex));
+}
+
+//============================================================
+// Cosine Weighted Hemisphere Sampling
+// Xi: Hammersley列から得た2次元値
+// 戻り値: Tangent空間における半球方向
+// Cosine Weighted Samplingを使うことで
+// Lambert拡散反射の積分を効率よく近似できる
+//============================================================
+float3 CosineSampleHemisphere(float2 Xi)
+{
+	//========================================================
+	// 単位円上の半径
+	//========================================================
+    const float radius =sqrt(Xi.x);
+
+	//========================================================
+	// 円周方向
+	//========================================================
+    const float phi = 2.0f * PI * Xi.y;
+    const float x = radius * cos(phi);
+    const float y = radius * sin(phi);
+
+	//========================================================
+	// 半球の高さ
+	//========================================================
+    const float z = sqrt(max(1.0f - Xi.x, 0.0f));
+
+    return float3(x, y, z);
+}
+
+//============================================================
+// Tangent空間の方向をWorld空間へ変換
+//============================================================
+float3 TangentToWorld(float3 tangentDirection,float3 normal)
+{
+    const float3 N =normalize(normal);
+
+	//========================================================
+	// Nと平行になりにくい補助軸を選択
+	//========================================================
+    const float3 helperAxis =
+		abs(N.z) < 0.999f ? float3(0.0f, 0.0f, 1.0f) : float3(1.0f, 0.0f, 0.0f);
+
+	//========================================================
+	// Tangent Basis
+	//========================================================
+    const float3 tangent =
+		normalize(cross(helperAxis, N));
+
+    const float3 bitangent =
+		cross(N, tangent);
+
+	//========================================================
+	// Tangent空間からWorld空間へ変換
+	//========================================================
+    return normalize(
+		tangent * tangentDirection.x +
+		bitangent * tangentDirection.y +
+		N * tangentDirection.z
+	);
+}
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput IN) : SV_TARGET
+{
+	//============================================================
+	// Irradianceを求める法線方向
+	// 出力CubeMapはエンジン座標系で生成する
+	//============================================================
+    const float3 N = normalize(IN.direction);
+
+	//============================================================
+	// C++側から渡されたサンプル数
+	// ※固定値ループにするとコンパイラが展開しようとするため
+	// ※Constant Bufferから取得して動的ループとして扱う
+	//============================================================
+    const uint sampleCount =
+		max((uint) IrradianceParam.x, 1u);
+
+    const float sourceResolution =
+		max(IrradianceParam.y, 1.0f);
+
+    const float sourceMaximumMip =
+		max(IrradianceParam.z, 0.0f);
+
+	//============================================================
+	// 元CubeMapの1テクセルが占める立体角
+	//============================================================
+    const float texelSolidAngle =
+		4.0f * PI / (6.0f * sourceResolution * sourceResolution);
+
+	//============================================================
+	// 半球全体の立体角をサンプル数で分割
+	//============================================================
+    const float sampleSolidAngle =
+		2.0f * PI / (float) sampleCount;
+
+	//============================================================
+	// 元CubeMapから参照するMip Level
+	// Irradianceは低周波成分なので
+	// 少し高いMipを参照してノイズを減らす
+	//============================================================
+    const float sourceMipLevel =
+		clamp(0.5f * log2(sampleSolidAngle / texelSolidAngle),
+			0.0f,
+			sourceMaximumMip
+		);
+
+    float3 accumulatedColor = float3(0.0f, 0.0f, 0.0f);
+
+	//============================================================
+	// 半球方向をImportance Sampling
+	//============================================================
+	[loop]
+    for (uint sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
+    {
+		//========================================================
+		// 均等な2次元サンプルを生成
+		//========================================================
+        const float2 Xi =
+			Hammersley(sampleIndex, sampleCount);
+
+		//========================================================
+		// Cosine Weighted Hemisphere方向
+		//========================================================
+        const float3 tangentDirection =
+			CosineSampleHemisphere(Xi);
+
+		//========================================================
+		// エンジンのWorld空間へ変換
+		//========================================================
+        const float3 worldDirection =
+			TangentToWorld(
+				tangentDirection,
+				N
+			);
+
+		//========================================================
+		// UE由来CubeMapの座標系へ変換
+		// Prefilter生成時と同じ方向変換を使用する
+		//========================================================
+        const float3 sourceDirection =
+			ConvertWorldDirectionToEnvironment(worldDirection);
+
+		//========================================================
+		// 元Environment CubeMapを参照
+		//========================================================
+        const float3 environmentColor =
+			txEnvironment.SampleLevel(
+				samEnvironment,
+				sourceDirection,
+				sourceMipLevel
+			).rgb;
+
+        accumulatedColor += environmentColor;
+    }
+
+	//============================================================
+	// Cosine Weighted Samplingの場合
+	// Irradiance ≒ PI × サンプル平均
+	// となる
+	//============================================================
+    const float3 irradiance =
+		PI * accumulatedColor / (float) sampleCount;
+
+    return float4(irradiance, 1.0f);
+}

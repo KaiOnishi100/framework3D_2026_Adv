@@ -1,0 +1,184 @@
+//============================================================
+// Resource・Constant Buffer
+//============================================================
+#include "ps3d/ps_3d_bindings.hlsli"
+
+//============================================================
+// 共通処理
+//============================================================
+#include "common/color_common.hlsli"
+#include "common/pbr_brdf.hlsli"
+#include "common/environment_common.hlsli"
+
+//============================================================
+// Material・Pixel情報
+//============================================================
+#include "ps3d/surface_data.hlsli"
+#include "ps3d/pixel_context.hlsli"
+
+//============================================================
+// Shadow・Lighting
+//============================================================
+#include "ps3d/cascade_shadow.hlsli"
+#include "ps3d/spot_shadow.hlsli"
+#include "ps3d/point_shadow.hlsli"
+#include "ps3d/directional_lighting.hlsli"
+#include "ps3d/local_lighting.hlsli"
+#include "ps3d/ibl_lighting.hlsli"
+#include "ps3d/pbr_lighting.hlsli"
+
+//============================================================
+// Subsurface Scattering
+//============================================================
+#include "ps3d/subsurface_lighting.hlsli"
+
+//============================================================
+// 最終処理
+//============================================================
+#include "ps3d/legacy_lighting.hlsli"
+#include "ps3d/pbr_debug.hlsli"
+#include "ps3d/fog_common.hlsli"
+
+
+float4 main(pixelIn IN) : SV_Target
+{
+	
+	//============================================================
+	// Material情報
+	//============================================================
+    const SurfaceData surface = BuildSurfaceData(IN);
+	
+    //SurfaceData surface = BuildSurfaceData(IN);
+    //surface.shadingNormal = surface.geometricNormal;
+	
+    if (surface.baseColor.a < 0.01f)
+    {
+        discard;
+    }
+	
+	//============================================================
+	// Pixel・Camera情報
+	//============================================================
+    const PixelContext context = BuildPixelContext(IN);
+
+	//============================================================
+	// Directional Cascade Shadow
+	//============================================================
+    const CascadeShadowResult cascadeShadow =
+		EvaluateCascadeShadow(
+			IN,
+			context.viewDepth,
+			surface.geometricNormal
+		);
+
+	//============================================================
+	// Legacy Lighting
+	//============================================================
+    const float3 legacyColor =
+		EvaluateLegacyLighting(
+			surface,
+			context,
+			cascadeShadow.visibility
+		);
+
+	//============================================================
+	// PBR Lighting
+	//============================================================
+    const PBRLightingResult pbrLighting =
+		EvaluatePBRLighting(
+			surface,
+			context,
+			cascadeShadow.visibility
+		);
+	
+	//============================================================
+	// Subsurface Scattering
+	// Directional + Point + Spot全てのTransmissionを評価する
+	//============================================================
+    const SubsurfaceLightingResult subsurfaceLighting =
+		EvaluateSubsurfaceLighting(
+		    surface,
+		    context,
+		    cascadeShadow.visibility
+		);
+
+
+	//============================================================
+	// PBR + SSS
+	//============================================================
+    const float3 pbrColorWithSubsurface = pbrLighting.finalColor + subsurfaceLighting.finalColor;
+
+	//============================================================
+	// Legacy / PBR切り替え
+	//============================================================
+    float3 resultColor =
+		lerp(
+		    legacyColor,
+		    pbrColorWithSubsurface,
+		    surface.usePBR
+		);
+
+    resultColor += surface.emissive;
+	
+	//============================================================
+	// PBRデバッグ表示
+	//============================================================
+    const int pbrDebugMode = (int) (PBRDebugParam.x + 0.5f);
+
+    if (pbrDebugMode != 0)
+    {
+        resultColor =
+			SelectPBRDebugColor(
+				pbrDebugMode,
+
+				surface.baseColor.rgb,
+				surface.shadingNormal,
+
+				surface.metallic,
+				surface.roughness,
+				surface.ambientOcclusion,
+
+				surface.emissive,
+
+				pbrLighting.directionalDiffuse,
+				pbrLighting.directionalSpecular,
+
+				pbrLighting.diffuseIBL,
+				pbrLighting.specularIBL,
+
+				cascadeShadow.visibility,
+				pbrLighting.NdotL,
+
+				surface.F0,
+				pbrLighting.integratedBRDF,
+
+				pbrLighting.pointLights,
+				pbrLighting.spotLights,
+				pbrLighting.localFinal,
+		
+				pbrLighting.finalColor
+			);
+
+		//========================================================
+		// デバッグ表示中はFogを適用しない
+		//========================================================
+        return float4(max(resultColor, 0.0f), surface.baseColor.a);
+    }
+
+	//============================================================
+	// Fog
+	//============================================================
+    resultColor =
+		ApplyFog(
+			resultColor,
+			context.viewDepth,
+			surface.usePBR
+		);
+
+	
+	//============================================================
+	// 最終出力
+	// HDR Linear ColorのままPostProcessへ渡す
+	//============================================================
+    return float4(max(resultColor, 0.0f), surface.baseColor.a);
+}

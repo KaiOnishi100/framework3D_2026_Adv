@@ -1,0 +1,65 @@
+//============================================================
+// Effect Half Resolution Depth Downsample
+// Full Resolution Main Depth
+//        ↓
+// 2x2 Minimum
+//        ↓
+// Half Resolution Depth
+// 最もCameraに近いDepthを採用することで
+// オブジェクト境界からParticleが漏れるのを抑える
+//============================================================
+
+Texture2D<float> txMainDepth : register(t0);
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+float main(PixelInput input) : SV_Depth
+{
+    //========================================================
+    // Full Resolution Depth Size
+    //========================================================
+    uint width;
+    uint height;
+
+    txMainDepth.GetDimensions(width, height);
+
+    //========================================================
+    // Half Resolution Pixel
+    //        ↓
+    // Full Resolution 2x2領域
+    //========================================================
+    const int2 halfPixel = int2(input.position.xy);
+    const int2 basePixel = halfPixel * 2;
+
+    const int2 maximumPixel = int2((int) width - 1, (int) height - 1);
+
+    //========================================================
+    // 2x2 Depth
+    //========================================================
+    const float depth00 =
+        txMainDepth.Load(int3(clamp(basePixel + int2(0, 0), int2(0, 0), maximumPixel), 0));
+
+    const float depth10 =
+        txMainDepth.Load(int3(clamp(basePixel + int2(1, 0), int2(0, 0), maximumPixel), 0));
+
+    const float depth01 =
+        txMainDepth.Load(int3(clamp(basePixel + int2(0, 1), int2(0, 0), maximumPixel), 0));
+
+    const float depth11 =
+        txMainDepth.Load(int3(clamp(basePixel + int2(1, 1), int2(0, 0), maximumPixel), 0));
+
+
+    //========================================================
+    // 通常Depth:
+    // Near → 小さい
+    // Far  → 大きい
+    // 最も近いGeometryを採用
+    //========================================================
+    return min(min(depth00, depth10), min(depth01, depth11));
+}

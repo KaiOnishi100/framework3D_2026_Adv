@@ -1,0 +1,371 @@
+//============================================================
+// Volumetric Fog Temporal Reprojection
+//
+// t0 : Current Volumetric Fog
+// t1 : Previous Temporal History
+// t2 : Current Main Depth
+//
+// Output: 今FrameのAccumulated Fog
+//============================================================
+
+Texture2D<float4> txCurrentFog : register(t0);
+
+Texture2D<float4> txHistoryFog : register(t1);
+
+Texture2D<float> txDepth : register(t2);
+
+
+//============================================================
+// Fog / History
+//============================================================
+SamplerState samLinear : register(s0);
+
+
+//============================================================
+// Depth
+//============================================================
+SamplerState samPoint : register(s1);
+
+
+cbuffer TemporalFogBuffer : register(b0)
+{
+    //========================================================
+    // Current Depth → World Position
+    //========================================================
+    float4x4 InverseCurrentViewProjection;
+
+
+    //========================================================
+    // World Position → Previous Clip Position
+    //========================================================
+    float4x4 PreviousViewProjection;
+
+
+    //========================================================
+    // xyz : Current Camera Position
+    // w   : Fog Max Distance
+    //========================================================
+    float4 CameraPositionMaxDistance;
+
+
+    //========================================================
+    // x : History Weight
+    // y : Response
+    // z : History Valid
+    // w : unused
+    //========================================================
+    float4 TemporalParameters;
+
+
+    //========================================================
+    // xy : Half Resolution
+    // zw : Inverse Half Resolution
+    //========================================================
+    float4 ScreenParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// Current Pixelの代表World Positionを取得
+// Geometry Pixel: Surface位置
+// Sky Pixel: CameraからFog MaxDistance進んだ位置
+// ※2D Volumetric Fogなので完全な3D Froxel Reprojectionではなく
+// ※このRayがどこへ向いているかの代表点を使う近似
+//============================================================
+bool ReconstructRepresentativeWorldPosition(float2 uv,out float3 worldPosition)
+{
+    const float depth =
+        txDepth.SampleLevel(
+            samPoint,
+            uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // UV → DirectX NDC
+    //========================================================
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+    float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    float4 reconstructed = mul(clipPosition, InverseCurrentViewProjection);
+
+    if (abs(reconstructed.w) <= 0.000001f)
+    {
+        worldPosition = 0.0f;
+        return false;
+    }
+
+
+    reconstructed /= reconstructed.w;
+
+
+    const float3 cameraPosition = CameraPositionMaxDistance.xyz;
+
+
+    //========================================================
+    // Sky / Far Plane
+    //========================================================
+    if (depth >= 0.999999f)
+    {
+        const float3 rayDirection =
+            normalize(reconstructed.xyz - cameraPosition);
+
+
+        worldPosition =
+            cameraPosition +
+            rayDirection *
+            max(CameraPositionMaxDistance.w, 0.01f );
+
+        return true;
+    }
+
+
+    //========================================================
+    // Geometry Pixel
+    //========================================================
+    worldPosition = reconstructed.xyz;
+
+
+    return true;
+}
+
+
+//============================================================
+// Current Fogの3x3 Neighborhood Min/Max
+// ※Previous Historyが大きく外れた値を持っている場合
+// ※Current周辺の範囲内へClampすることでGhostingを抑える
+//============================================================
+void GetNeighborhoodMinMax(
+    float2 uv,
+    out float4 minimumValue,
+    out float4 maximumValue
+)
+{
+    minimumValue =
+        float4(
+            1000000.0f,
+            1000000.0f,
+            1000000.0f,
+            1000000.0f
+        );
+
+
+    maximumValue =
+        float4(
+            -1000000.0f,
+            -1000000.0f,
+            -1000000.0f,
+            -1000000.0f
+        );
+
+
+    const float2 texelSize = ScreenParameters.zw;
+
+
+    //========================================================
+    // 3x3 Current Neighborhood
+    //========================================================
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            const float2 sampleUV = uv + float2((float) x, (float) y) * texelSize;
+
+            const float4 sampleValue =
+                txCurrentFog.SampleLevel(
+                    samLinear,
+                    sampleUV,
+                    0.0f
+                );
+
+            minimumValue = min(minimumValue, sampleValue);
+            maximumValue = max(maximumValue, sampleValue);
+        }
+    }
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // 今FrameのRay March結果
+    //========================================================
+    const float4 currentFog =
+        txCurrentFog.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Historyなし
+    // Scene開始直後 / Camera Cut直後
+    //========================================================
+    if (TemporalParameters.z < 0.5f)
+    {
+        return currentFog;
+    }
+
+    //========================================================
+    // Current Rayの代表World Position
+    //========================================================
+    float3 worldPosition;
+
+    if (!ReconstructRepresentativeWorldPosition(input.uv, worldPosition))
+    {
+        return currentFog;
+    }
+
+    //========================================================
+    // Current World → Previous Clip
+    //========================================================
+    const float4 previousClip = mul(float4(worldPosition, 1.0f), PreviousViewProjection);
+
+    //========================================================
+    // Previous Camera後方
+    //========================================================
+    if (previousClip.w <= 0.000001f)
+    {
+        return currentFog;
+    }
+
+    //========================================================
+    // Previous Clip → NDC
+    //========================================================
+    const float2 previousNDC = previousClip.xy / previousClip.w;
+
+
+    //========================================================
+    // Previous NDC → UV
+    //========================================================
+    const float2 previousUV =
+        float2(
+            previousNDC.x * 0.5f + 0.5f,
+            -previousNDC.y * 0.5f + 0.5f
+        );
+
+
+    //========================================================
+    // 前Frame画面外へ移動したPixel
+    // Historyを使用しない
+    //========================================================
+    if (previousUV.x < 0.0f ||
+        previousUV.x > 1.0f ||
+        previousUV.y < 0.0f ||
+        previousUV.y > 1.0f)
+    {
+        return currentFog;
+    }
+
+
+    //========================================================
+    // Previous History
+    //========================================================
+    float4 historyFog =
+        txHistoryFog.SampleLevel(
+            samLinear,
+            previousUV,
+            0.0f
+        );
+
+
+    //========================================================
+    // Neighborhood Clamp
+    // Historyに残った古いLightingやShadowが尾を引くのを防ぐ
+    //========================================================
+    float4 neighborhoodMin;
+    float4 neighborhoodMax;
+
+
+    GetNeighborhoodMinMax(
+        input.uv,
+        neighborhoodMin,
+        neighborhoodMax
+    );
+
+
+    //========================================================
+    // Clamp範囲を少しだけ広げる
+    // 完全にMin/Maxへ押し込むとTemporal効果が弱くなるので
+    // 小さな余裕を持たせる
+    //========================================================
+    const float4 clampPadding = float4(0.02f, 0.02f, 0.02f, 0.01f);
+
+
+    historyFog =
+        clamp(
+            historyFog,
+            neighborhoodMin - clampPadding,
+            neighborhoodMax + clampPadding
+        );
+
+
+    //========================================================
+    // Current / Historyの輝度差
+    // Spot / Point Lightが動いたときなど
+    // Historyをすぐ捨てられるようにする
+    //========================================================
+    const float3 luminanceWeight = float3(0.2126f, 0.7152f, 0.0722f);
+
+    const float currentLuminance = dot(currentFog.rgb, luminanceWeight);
+
+    const float historyLuminance = dot(historyFog.rgb, luminanceWeight);
+
+    const float luminanceDifference = abs(currentLuminance - historyLuminance);
+
+
+    //========================================================
+    // 相対差
+    // HDR値でも扱いやすいようNormalize
+    //========================================================
+    const float relativeDifference =
+        luminanceDifference / max(max(currentLuminance, historyLuminance), 0.05f);
+
+    //========================================================
+    // RGB差が大きいほどHistory Confidence低下
+    //========================================================
+    float historyConfidence =
+        saturate(1.0f - relativeDifference * TemporalParameters.y);
+
+    //========================================================
+    // Transmittance差もチェック
+    // Geometry境界やFog Density変化へのGhostingを抑える
+    //========================================================
+    const float transmittanceDifference = abs(currentFog.a - historyFog.a);
+
+    historyConfidence *= saturate(1.0f - transmittanceDifference * 4.0f);
+
+    //========================================================
+    // 最終History Weight
+    //========================================================
+    const float historyWeight = saturate(TemporalParameters.x * historyConfidence);
+
+    //========================================================
+    // Temporal Accumulation
+    //========================================================
+    return
+        lerp(
+            currentFog,
+            historyFog,
+            historyWeight
+        );
+}

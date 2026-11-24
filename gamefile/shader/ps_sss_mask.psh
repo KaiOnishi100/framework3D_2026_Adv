@@ -1,0 +1,155 @@
+#include "ps3d/ps_3d_bindings.hlsli"
+#include "ps3d/surface_data.hlsli"
+#include "ps3d/pixel_context.hlsli"
+#include "ps3d/cascade_shadow.hlsli"
+#include "ps3d/pbr_lighting.hlsli"
+#include "ps3d/subsurface_lighting.hlsli"
+
+//============================================================
+// SSS Profile Buffer Output
+// RT0: Screen-Space SSS Mask
+// RT1: Screen-Space Diffusion Source
+//============================================================
+struct SSSProfileOutput
+{
+    //========================================================
+    // R16_FLOAT
+    //========================================================
+    float mask : SV_Target0;
+
+    //========================================================
+    // SceneHDR
+    // RGB: PBR Diffuse + Transmission SSS
+    //========================================================
+    float4 diffusionSource : SV_Target1;
+    
+    //========================================================
+    // RT2 : RGBA16_FLOAT
+    // RGB: Material Scattering Profile
+    // A: Material World-Space Radius
+    //========================================================
+    float4 diffusionProfile : SV_Target2;
+};
+
+SSSProfileOutput main(pixelIn IN)
+{
+    SSSProfileOutput output = (SSSProfileOutput) 0;
+
+
+    //========================================================
+    // Surface情報
+    // Thickness Mapを含め、通常3D Shaderと同じMaterial情報を構築する
+    //========================================================
+    const SurfaceData surface = BuildSurfaceData(IN);
+
+    //========================================================
+    // SSS対象でないMaterialはProfile Bufferへ書かない
+    //========================================================
+    if (surface.useSubsurface < 0.5f ||
+        surface.subsurfaceStrength <= 0.0001f ||
+        surface.subsurfaceThickness <= 0.0001f)
+    {
+        discard;
+    }
+
+
+    //========================================================
+    // Alpha Cut
+    //========================================================
+    if (surface.baseColor.a < 0.01f)
+    {
+        discard;
+    }
+
+
+    //========================================================
+    // Pixel Context
+    //========================================================
+    const PixelContext context = BuildPixelContext(IN);
+
+
+    //========================================================
+    // Directional Shadow
+    //========================================================
+    const CascadeShadowResult cascadeShadow =
+        EvaluateCascadeShadow(
+            IN,
+            context.viewDepth,
+            surface.geometricNormal
+        );
+
+
+    //========================================================
+    // PBR Lighting
+    //========================================================
+    const PBRLightingResult pbrLighting =
+        EvaluatePBRLighting(
+            surface,
+            context,
+            cascadeShadow.visibility
+        );
+
+
+    //========================================================
+    // Transmission型SSS
+    //========================================================
+    const SubsurfaceLightingResult subsurface =
+        EvaluateSubsurfaceLighting(
+            surface,
+            context,
+            cascadeShadow.visibility
+        );
+
+
+    //========================================================
+    // SSS Mask
+    //========================================================
+    
+    //============================================================
+    // SSS対象判定
+    //============================================================
+    if (surface.useSubsurface < 0.5f ||
+	    surface.subsurfaceStrength <= 0.0001f ||
+	    surface.skinMask <= 0.0001f)
+    {
+        discard;
+    }
+    
+    const float mask = saturate(surface.subsurfaceStrength * surface.skinMask);
+
+    output.mask = mask;
+
+    //========================================================
+    // Diffusion対象Lighting
+    //
+    // Blurする:
+    //
+    //   Directional Diffuse
+    //   Point Diffuse
+    //   Spot Diffuse
+    //   Diffuse IBL
+    //   Transmission SSS
+    //
+    // Blurしない:
+    //
+    //   Directional Specular
+    //   Point Specular
+    //   Spot Specular
+    //   Specular IBL
+    //   Emissive
+    //========================================================
+    const float3 diffusionSource = pbrLighting.diffuseFinal + subsurface.finalColor;
+
+    output.diffusionSource = float4(max(diffusionSource, 0.0f), 1.0f);
+
+    //============================================================
+    // Material固有のDiffusion Profile
+    // SSSDiffusionParam:
+    // xyz: RGB Scattering Profile
+    // w: World Space Radius
+    //============================================================
+    output.diffusionProfile =
+        float4(max(SSSDiffusionParam.rgb, 0.0f), max(SSSDiffusionParam.w, 0.0f));
+
+    return output;
+}

@@ -1,0 +1,31 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex B1 - Entry
+#
+# X=60～70
+# Z=5～8
+#
+# Center=(65,-4.50,6.50)
+#
+# 地下階段から降りて最初の区画。
+#============================================================
+
+Art_AnnexB1_Entry_Architecture,MansionArt,65.0,-4.50,6.50,0,180,0,1,1,1,data/model/mansion/architecture/annexb1/annexb1_entry.vnm
+
+
+#============================================================
+# STEP 28 - Annex B1 Entry
+#
+# X=60～70
+# Z=5～8
+#
+# 階段出口X=68付近を塞がない。
+#============================================================
+
+# 南側の設備キャビネット
+Art_AnnexB1_Entry_Cabinet,MansionArt,63.8,-4.5,5.65,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_utility_cabinet_01.vnm
+
+# 天井灯
+Art_AnnexB1_Entry_Light,MansionArt,64.0,-0.48,6.5,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm

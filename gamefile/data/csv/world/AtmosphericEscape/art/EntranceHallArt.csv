@@ -1,0 +1,161 @@
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#============================================================
+# Main1F Entrance Hall - North Wall Art
+#============================================================
+Art_Main1F_Entrance_NorthWall_1,MansionArt,-4.7975,0,7.76,0,0,0,1.2025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_NorthWall_2,MansionArt,-2.6025,0,7.76,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_NorthWall_3,MansionArt,2.6025,0,7.76,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_NorthWall_4,MansionArt,4.7975,0,7.76,0,0,0,1.2025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#============================================================
+# Main1F Entrance Hall - Floor
+#
+# 玄関ホール床
+# Blenderで実寸制作しているためScale=1
+#============================================================
+Art_Main1F_Entrance_Floor,MansionArt,0,0.01,4,0,0,0,1,1,1,data/model/mansion/architecture/floor/entrance_floor.vnm
+
+
+#============================================================
+# Main1F Entrance Hall - East Wall
+#
+# 東側の壁4本
+# X=5.9305 : Graybox置換時のArt中心座標
+# RotY=90  : 壁をZ方向に向ける
+#============================================================
+Art_Main1F_Entrance_EastWall_1,MansionArt,5.9305,0,1.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_EastWall_2,MansionArt,5.9305,0,3,0,90,0,1.005,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_EastWall_3,MansionArt,5.9305,0,5,0,90,0,1.005,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_EastWall_4,MansionArt,5.9305,0,6.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Main1F Entrance Hall - West Wall
+#
+# 西側の壁4本
+# 東側と対称配置
+#============================================================
+Art_Main1F_Entrance_WestWall_1,MansionArt,-5.9305,0,1.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_WestWall_2,MansionArt,-5.9305,0,3,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_WestWall_3,MansionArt,-5.9305,0,5,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Entrance_WestWall_4,MansionArt,-5.9305,0,6.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Main1F Entrance Hall - Chandelier
+#
+# 玄関ホール中央
+# CPPの既存設定:
+#   ceilingY  = 4.45
+#   modelTopY = 0.0
+#   scale     = 1.5
+#
+# 既に実機で位置調整している場合は
+# 現在の実際の座標を優先する。
+#============================================================
+Art_Main1F_Entrance_Chandelier,MansionArt,0,4.45,4,0,0,0,1.5,1.5,1.5,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+
+#============================================================
+# Main1F Entrance Hall - North Arch
+#
+# 中央ホールへの入口にある装飾アーチ
+#============================================================
+#Art_Main1F_Entrance_NorthArch,MansionArt,0,0,7.75,0,0,0,1,1,1,data/model/mansion/architecture/arch/entrance_north_arch.vnm
+
+#============================================================
+# Entrance Hall - Antique Console Table
+#
+# 玄関ホール東壁付近の装飾家具
+# Colliderはまだ追加しない
+#============================================================
+Art_Main1F_Entrance_Console_01,MansionArt,5.4,0,3.8,0,90,0,1,1,1,data/model/mansion/props/console/entrance_console_01.vnm
+
+
+#============================================================
+# Central Hall - South Wall
+#
+# 既存のentrance_wall_straight_200.vnmを再利用
+#
+# Z=8.0のGraybox壁の中央ホール側に設置。
+# 厚み約0.161mのモデルに合わせてZ=8.2305。
+#
+# 中央のX=-1.6～+1.6は通路として空ける。
+#
+# 4本×1.85m=7.4m
+# 回転180度で中央ホール側を正面にする。
+#============================================================
+
+# South Left
+Art_Main1F_CentralHall_SouthWall_L01,MansionArt,-8.075,0,8.2305,0,180,0,0.9300,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_SouthWall_L02,MansionArt,-6.225,0,8.2305,0,180,0,0.9300,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_SouthWall_L03,MansionArt,-4.375,0,8.2305,0,180,0,0.9300,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_SouthWall_L04,MansionArt,-2.5275,0,8.2305,0,180,0,0.9275,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# South Right
+Art_Main1F_CentralHall_SouthWall_R01,MansionArt,2.5275,0,8.2305,0,180,0,0.9275,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_SouthWall_R02,MansionArt,4.375,0,8.2305,0,180,0,0.9300,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_SouthWall_R03,MansionArt,6.225,0,8.2305,0,180,0,0.9300,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_SouthWall_R04,MansionArt,8.075,0,8.2305,0,180,0,0.9300,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Central Hall - North Wall
+#============================================================
+
+# North Left
+Art_Main1F_CentralHall_NorthWall_L01,MansionArt,-8.0625,0,23.7695,0,0,0,0.9425,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_NorthWall_L02,MansionArt,-6.1875,0,23.7695,0,0,0,0.9425,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_NorthWall_L03,MansionArt,-4.3125,0,23.7695,0,0,0,0.9425,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_NorthWall_L04,MansionArt,-2.4400,0,23.7695,0,0,0,0.9400,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# North Right
+Art_Main1F_CentralHall_NorthWall_R01,MansionArt,2.4400,0,23.7695,0,0,0,0.9400,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_NorthWall_R02,MansionArt,4.3125,0,23.7695,0,0,0,0.9425,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_NorthWall_R03,MansionArt,6.1875,0,23.7695,0,0,0,0.9425,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_NorthWall_R04,MansionArt,8.0625,0,23.7695,0,0,0,0.9425,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#============================================================
+# STEP31 - Entrance Hall Repair
+#============================================================
+
+# 玄関入口の床の隙間
+Art31_MainEntrance_Threshold_Front,MansionArt,0.000,0.020,-0.150,0,180,0,2.45,1,3.00,data/model/mansion/repair/step31/main_entrance_floor_threshold.vnm
+
+# 玄関ホールから中央ホールへの敷居
+Art31_MainEntrance_Threshold_CentralDoorway,MansionArt,0.000,0.016,8.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_entrance_floor_threshold.vnm
+
+# 西壁・南端
+Art31_WallCap_Entrance_W_S,MansionArt,-6.000,0.000,0.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 西壁・北端
+Art31_WallCap_Entrance_W_N,MansionArt,-6.000,0.000,8.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 東壁・南端
+Art31_WallCap_Entrance_E_S,MansionArt,6.000,0.000,0.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 東壁・北端
+Art31_WallCap_Entrance_E_N,MansionArt,6.000,0.000,8.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+#============================================================
+# STEP29 - Main 1F Entrance Hall Repair
+#
+# Room:
+#   X=-6 ～ 6
+#   Z=0 ～ 8
+#
+# Ceiling Y=4.41
+#============================================================
+
+# 玄関ドアの両側と上部を補修
+Art_Main_Repair_EntranceGap,MansionArt,0.0,0.0,0.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main_entrance_gapfill.vnm
+
+# 玄関ホールの天井
+Art_Main_Repair_EntranceCeiling,MansionArt,0.0,4.41,4.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main1f_entrancehall_ceiling.vnm
+
+Art38_MainEntrance_UpperFill,MansionArt,0.0,0.0,0.3,0,180,0,1,1,1,data/model/mansion/repair/step38/main_entrance_upper_fill.vnm
+
+# STEP37 - Entrance South Wall, Integrated
+Art37_Entrance_SouthWall_Integrated,MansionArt,0,0,0.2305,0,180,0,1,1,1,data/model/mansion/architecture/wall/entrance_south_interior_wall_01.vnm
+
+Art_Main1F_Entrance_Candle_01,MansionArt,5.40,0.82,3.80,0,0,0,1,1,1,data/model/mansion/props/candle/mansion_candle_01.vnm

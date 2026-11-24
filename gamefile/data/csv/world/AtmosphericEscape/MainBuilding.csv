@@ -1,0 +1,796 @@
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#MainBuilding.csv
+
+
+#============================================================
+# Front Grounds Decorations - Graybox
+#============================================================
+# Scale 1.00
+FrontTree_L01,MansionBlock,-16.0,1.00,-17.0,0,0,0,0.60,2.00,0.60
+# Scale 1.20
+FrontTree_L02,MansionBlock,-21.0,1.20,-8.0,0,0,0,0.72,2.40,0.72
+# Scale 1.00
+FrontTree_R01,MansionBlock,16.0,1.00,-17.0,0,0,0,0.60,2.00,0.60
+# Scale 1.20
+FrontTree_R02,MansionBlock,21.0,1.20,-8.0,0,0,0,0.72,2.40,0.72
+
+#============================================================
+# West / 西側
+#============================================================
+
+# L03 - Scale 1.15
+Col48_Front_Tree_L03,MansionBlock,-25.0,1.15,-26.0,0,0,0,0.69,2.30,0.69
+
+# L04 - Scale 0.90
+Col48_Front_Tree_L04,MansionBlock,-18.0,0.90,-27.0,0,0,0,0.54,1.80,0.54
+
+# L05 - Scale 1.25
+Col48_Front_Tree_L05,MansionBlock,-11.0,1.25,-23.0,0,0,0,0.75,2.50,0.75
+
+# L06 - Scale 1.30
+Col48_Front_Tree_L06,MansionBlock,-26.0,1.30,-15.0,0,0,0,0.78,2.60,0.78
+
+# L07 - Scale 0.85
+Col48_Front_Tree_L07,MansionBlock,-12.0,0.85,-10.0,0,0,0,0.51,1.70,0.51
+
+#============================================================
+# East / 東側
+#============================================================
+
+# R03 - Scale 1.20
+Col48_Front_Tree_R03,MansionBlock,25.0,1.20,-26.0,0,0,0,0.72,2.40,0.72
+
+# R04 - Scale 0.95
+Col48_Front_Tree_R04,MansionBlock,18.0,0.95,-27.0,0,0,0,0.57,1.90,0.57
+
+# R05 - Scale 1.15
+Col48_Front_Tree_R05,MansionBlock,11.0,1.15,-23.0,0,0,0,0.69,2.30,0.69
+
+# R06 - Scale 1.30
+Col48_Front_Tree_R06,MansionBlock,26.0,1.30,-15.0,0,0,0,0.78,2.60,0.78
+
+# R07 - Scale 0.90
+Col48_Front_Tree_R07,MansionBlock,12.0,0.90,-10.0,0,0,0,0.54,1.80,0.54
+
+FrontStatue_L,MansionBlock,-6,1.0,-8,0,0,0,1.0,2.0,1.0
+FrontStatue_R,MansionBlock,6,1.0,-8,0,0,0,1.0,2.0,1.0
+
+#============================================================
+# Front Grounds Boundary
+#============================================================
+
+FrontBoundary_West,MansionBlock,-30,1.5,-16,0,0,0,0.5,3.0,32
+FrontBoundary_East,MansionBlock,30,1.5,-16,0,0,0,0.5,3.0,32
+
+FrontBoundary_SouthLeft,MansionBlock,-17,1.5,-32,0,0,0,26,3.0,0.5
+FrontBoundary_SouthRight,MansionBlock,17,1.5,-32,0,0,0,26,3.0,0.5
+
+#============================================================
+# Front Grounds South Center Boundary
+#============================================================
+
+FrontBoundary_SouthCenter,MansionBlock,0.0,1.5,-32.0,0,0,0,8.0,3.0,0.5,
+
+#============================================================
+# Mansion Front Grounds
+# 屋敷正面の前庭
+#============================================================
+
+# 前庭全体の地面
+FrontGround,MansionBlock,0,-0.15,-16,0,0,0,60,0.3,32
+
+#============================================================
+# Main Approach
+# 正門 → 玄関へ続く石畳
+# 今はGrayboxとして少し高くする
+#============================================================
+FrontPath,MansionBlock,0,0.02,-15,0,0,0,5.0,0.08,30
+
+#============================================================
+# Front Facade Side Wings
+#
+# 正面Facadeを完全な1枚壁に見せないため、
+# 左右部分だけ少し手前へ張り出させる。
+#============================================================
+
+FrontWing_L,MansionBlock,-17.0,4.5,-0.45,0,0,0,11.0,9.0,0.6
+FrontWing_R,MansionBlock,17.0,4.5,-0.45,0,0,0,11.0,9.0,0.6
+
+#============================================================
+# Entrance Porch
+# 玄関前の少し広いスペース
+#============================================================
+FrontPorch,MansionBlock,0,0.08,-1.8,0,0,0,8.0,0.16,3.6
+
+# 西側
+Col48_Front_SideClosure_L,MansionBlock,-28.0,1.50,-0.25,0,0,0,4.10,3.00,0.40
+
+# 東側
+Col48_Front_SideClosure_R,MansionBlock,28.0,1.50,-0.25,0,0,0,4.10,3.00,0.40
+
+#============================================================
+# Main Building 1F
+# Size : 52m x 36m
+# Floor Height : 4.5m
+#============================================================
+
+#============================================================
+# North側
+#
+# Z = 8 ～ 36
+#
+# 地下入口より北側は通常の1F Floor。
+#============================================================
+
+Main1F_Floor_North,MansionBlock,0.0,-0.1,22.0,0,0,0,52.0,0.2,28.0
+
+#============================================================
+# South-West側
+#
+# X = -26 ～ -14
+# Z =   0 ～   8
+#============================================================
+
+Main1F_Floor_SouthWest,MansionBlock,-20.0,-0.1,4.0,0,0,0,12.0,0.2,8.0
+
+#============================================================
+# South-East側
+#
+# X = -11 ～ 26
+# Z =   0 ～  8
+#============================================================
+
+Main1F_Floor_SouthEast,MansionBlock,7.5,-0.1,4.0,0,0,0,37.0,0.2,8.0
+
+Main1F_WestWall,MansionBlock,-26,2.25,18,0,0,0,0.3,4.5,36
+
+#============================================================
+# South Side
+#
+# Z = 0 ～ 17
+#
+# CenterZ = 8.5
+# ScaleZ  = 17
+#============================================================
+
+Main1F_EastWall_South,MansionBlock,26.0,2.25,8.5,0,0,0,0.30,4.50,17.0
+
+
+#============================================================
+# North Side
+#
+# Z = 19 ～ 36
+#
+# CenterZ = 27.5
+# ScaleZ  = 17
+#============================================================
+
+Main1F_EastWall_North,MansionBlock,26.0,2.25,27.5,0,0,0,0.30,4.50,17.0
+
+Main1F_NorthWall,MansionBlock,0,2.25,36,0,0,0,52,4.5,0.3
+
+#============================================================
+# South Wall
+# 中央4mを玄関として空ける
+#============================================================
+
+Main1F_SouthWallLeft,MansionBlock,-14.0,2.25,0,0,0,0,24.0,4.5,0.3
+Main1F_SouthWallRight,MansionBlock,14.0,2.25,0,0,0,0,24.0,4.5,0.3
+
+# Door上部
+Main1F_EntranceUpper,MansionBlock,0,3.35,0,0,0,0,4.0,2.3,0.3
+
+#============================================================
+# Mansion Front Center Mass
+# 正面玄関を強調する中央棟
+#============================================================
+
+FrontCenterLeft,MansionBlock,-4.25,5.0,-0.6,0,0,0,4.5,10.0,0.8
+FrontCenterRight,MansionBlock,4.25,5.0,-0.6,0,0,0,4.5,10.0,0.8
+
+FrontCenterTop,MansionBlock,0,9.5,-0.6,0,0,0,13.0,1.0,0.8
+
+#============================================================
+# Main Building 1F - Interior Graybox
+#============================================================
+
+
+#============================================================
+# Entrance Hall
+#
+# X : -6 ～ +6
+# Z : 0 ～ 8
+#
+# South側は正面玄関。
+# North側中央にCentral Hallへの開口を作る。
+#============================================================
+
+# West Wall
+Main1F_EntranceHall_WestWall,MansionBlock,-6.0,2.25,4.0,0,0,0,0.3,4.5,8.0
+
+# East Wall
+Main1F_EntranceHall_EastWall,MansionBlock,6.0,2.25,4.0,0,0,0,0.3,4.5,8.0
+
+
+#============================================================
+# Central Hall South Wall
+#
+# Central Hall:
+#
+# X = -9 ～ +9
+#
+# 中央3.2mをEntrance Hallからの入口として空ける。
+#
+# Opening:
+#
+# -1.6 ～ +1.6
+#============================================================
+
+Main1F_CentralHall_SouthWall_L,MansionBlock,-5.3,2.25,8.0,0,0,0,7.4,4.5,0.3
+
+Main1F_CentralHall_SouthWall_R,MansionBlock,5.3,2.25,8.0,0,0,0,7.4,4.5,0.3
+
+
+#============================================================
+# Central Hall West Wall
+#
+# West Corridorへの入口を2所作る。
+#
+# South Opening:
+# Z = 11 ～ 13
+#
+# North Opening:
+# Z = 19 ～ 21
+#============================================================
+
+Main1F_CentralHall_WestWall_01,MansionBlock,-9.0,2.25,9.5,0,0,0,0.3,4.5,3.0
+
+Main1F_CentralHall_WestWall_02,MansionBlock,-9.0,2.25,16.0,0,0,0,0.3,4.5,6.0
+
+Main1F_CentralHall_WestWall_03,MansionBlock,-9.0,2.25,22.5,0,0,0,0.3,4.5,3.0
+
+#============================================================
+# West Corridor
+#
+# X = -16 ～ -9
+# Z = 8 ～ 24
+#============================================================
+#============================================================
+# West Corridor South Wall
+# 元:
+# X = -16 ～ -9
+# 中央 X=-13.5 ～ -11.5 を
+# Basement Door用の2m Openingにする
+#============================================================
+
+Main1F_WestCorridor_SouthWall_L,MansionBlock,-14.75,2.25,8.0,0,0,0,2.5,4.5,0.3
+
+Main1F_WestCorridor_SouthWall_R,MansionBlock,-10.25,2.25,8.0,0,0,0,2.5,4.5,0.3
+
+Main1F_WestCorridor_NorthWall,MansionBlock,-12.5,2.25,24.0,0,0,0,7.0,4.5,0.3
+
+Main1F_NorthAccessDoor_Upper,MansionBlock,0.0,3.56,24.0,0,0,0,3.0,1.88,0.30
+#============================================================
+# Main Building Basement Entrance
+# BasementKeyが必要
+# DataId:BasementKey
+#============================================================
+
+Main1F_BasementDoor,MansionDoor,-12.5,1.1,8.0,0,0,0,2.0,2.2,0.25,BasementKey
+
+Main1F_LibraryDoor,MansionDoor,-16.0,1.1,20.0,0,0,0,0.25,2.2,2.0
+
+#============================================================
+# West Corridor West Wall
+#
+# Study Door   Z 11 ～ 13
+# Library Door Z 19 ～ 21
+#============================================================
+
+Main1F_WestCorridor_WestWall_01,MansionBlock,-16.0,2.25,9.5,0,0,0,0.3,4.5,3.0
+
+Main1F_WestCorridor_WestWall_02,MansionBlock,-16.0,2.25,16.0,0,0,0,0.3,4.5,6.0
+
+Main1F_WestCorridor_WestWall_03,MansionBlock,-16.0,2.25,22.5,0,0,0,0.3,4.5,3.0
+
+#============================================================
+# Study
+#
+# X = -26 ～ -16
+# Z = 8 ～ 16
+#============================================================
+
+Main1F_Study_SouthWall,MansionBlock,-21.0,2.25,8.0,0,0,0,10.0,4.5,0.3
+
+#============================================================
+# Study <-> Library Internal Wall
+#
+# 中央2mをDoorとして空ける。
+#============================================================
+
+Main1F_StudyLibraryWall_L,MansionBlock,-24.0,2.25,16.0,0,0,0,4.0,4.5,0.3
+
+Main1F_StudyLibraryWall_R,MansionBlock,-18.0,2.25,16.0,0,0,0,4.0,4.5,0.3
+
+
+Main1F_StudyLibraryDoor,MansionDoor,-21.0,1.1,16.0,0,0,0,2.0,2.2,0.25
+
+#============================================================
+# Library
+#============================================================
+
+Main1F_Library_NorthWall,MansionBlock,-21.0,2.25,24.0,0,0,0,10.0,4.5,0.3
+
+#============================================================
+# Central Hall East Wall
+# East Corridorとの間に2つの開口を作る
+# Doorway A: Z = 11 ～ 13
+# Doorway B: Z = 19 ～ 21
+#============================================================
+
+# Z 8 ～ 11
+Main1F_CentralHall_EastWall_01,MansionBlock,9.0,2.25,9.5,0,0,0,0.3,4.5,3.0
+
+# Z 13 ～ 19
+Main1F_CentralHall_EastWall_02,MansionBlock,9.0,2.25,16.0,0,0,0,0.3,4.5,6.0
+
+# Z 21 ～ 24
+Main1F_CentralHall_EastWall_03,MansionBlock,9.0,2.25,22.5,0,0,0,0.3,4.5,3.0
+
+
+#============================================================
+# Central Hall North Wall
+#
+# 中央3mを今後の北側エリアへの通路として残す
+# Grand Staircase
+# Courtyard Route
+# North Wing
+#============================================================
+
+Main1F_CentralHall_NorthWall_L,MansionBlock,-5.25,2.25,24.0,0,0,0,7.5,4.5,0.3
+
+Main1F_CentralHall_NorthWall_R,MansionBlock,5.25,2.25,24.0,0,0,0,7.5,4.5,0.3
+
+
+#============================================================
+# East Corridor
+# X = 9 ～ 16
+# Z = 8 ～ 24
+# Central Hall側に2つの出入口
+#============================================================
+
+
+#============================================================
+# East Corridor South Wall
+# 後でDining Room方面へ接続する予定
+# 現在は閉鎖
+#============================================================
+
+Main1F_EastCorridor_SouthWall,MansionBlock,12.5,2.25,8.0,0,0,0,7.0,4.5,0.3
+
+
+#============================================================
+# East Corridor North Wall
+# 後でServant Wing / North Wingへ接続可能
+#============================================================
+
+Main1F_EastCorridor_NorthWall,MansionBlock,12.5,2.25,24.0,0,0,0,7.0,4.5,0.3
+
+
+#============================================================
+# East Corridor East Wall
+# Power Room入口だけ空ける
+# Power Room Door:
+# Z = 15 ～ 17
+#============================================================
+
+# Z = 8 ～ 12
+Main1F_EastCorridor_EastWall_01,MansionBlock,16.0,2.25,10.0,0,0,0,0.3,4.5,4.0
+
+# Z = 12 ～ 15
+Main1F_EastCorridor_EastWall_02,MansionBlock,16.0,2.25,13.5,0,0,0,0.3,4.5,3.0
+
+# Z = 17 ～ 20
+Main1F_EastCorridor_EastWall_03,MansionBlock,16.0,2.25,18.5,0,0,0,0.3,4.5,3.0
+
+# Z = 20 ～ 24
+Main1F_EastCorridor_EastWall_04,MansionBlock,16.0,2.25,22.0,0,0,0,0.3,4.5,4.0
+
+
+#============================================================
+# Power Room
+#============================================================
+
+# South Wall
+Main1F_PowerRoom_SouthWall,MansionBlock,21.0,2.25,12.0,0,0,0,10.0,4.5,0.3
+
+# North Wall
+Main1F_PowerRoom_NorthWall,MansionBlock,21.0,2.25,20.0,0,0,0,10.0,4.5,0.3
+
+#============================================================
+# Power Terminal
+#============================================================
+
+Main1F_PowerTerminal,MansionPowerTerminal,24.8,1.2,16.0,0,270,0,1.0,2.0,0.5
+
+#============================================================
+# Mansion Entrance Door
+#============================================================
+
+Main1F_EntranceDoor,MansionEntranceDoor,0,1.1,0.0,0,0,0,3.0,2.2,0.25
+
+#============================================================
+# Door Opening
+#
+# Z = 17 ～ 19
+#============================================================
+
+Main1F_CourtyardDoor,MansionDoor,26.0,1.10,18.0,0,0,0,0.25,2.20,2.0
+
+#============================================================
+# Entrance Columns
+#============================================================
+
+EntranceColumn_L01,MansionBlock,-5.0,3.0,-1.2,0,0,0,0.7,6.0,0.7
+EntranceColumn_L02,MansionBlock,-2.8,3.0,-1.2,0,0,0,0.7,6.0,0.7
+
+EntranceColumn_R01,MansionBlock,2.8,3.0,-1.2,0,0,0,0.7,6.0,0.7
+EntranceColumn_R02,MansionBlock,5.0,3.0,-1.2,0,0,0,0.7,6.0,0.7
+
+#============================================================
+# Main Building Power Lights
+#
+# ID順に点灯する。
+#
+# Power Room
+#   ↓
+# East Corridor
+#   ↓
+# Central Hall
+#   ↓
+# Entrance Hall
+#============================================================
+
+MansionPowerLight_00_PowerRoom,MansionPowerLight,21.0,3.8,16.0,0,0,0,0.35,0.15,0.35,Art32_Main1F_PowerRoom_CeilingLight
+MansionPowerLight_01_EastSouth,MansionPowerLight,12.5,3.8,12,0,0,0,0.35,0.15,0.35,Art_Main1F_EastCorridor_CeilingLight_S
+MansionPowerLight_02_EastNorth,MansionPowerLight,12.5,3.8,20,0,0,0,0.35,0.15,0.35,Art_Main1F_EastCorridor_CeilingLight_N
+#MansionPowerLight_03_CentralNorth,MansionPowerLight,0.0,3.8,20.0,0,0,0,0.35,0.15,0.35,Art_Main1F_CentralHall_Chandelier_North
+MansionPowerLight_04_CentralSouth,MansionPowerLight,0.0,3.8,12.0,0,0,0,0.35,0.15,0.35,Art_Main1F_CentralHall_Chandelier_South
+MansionPowerLight_05_Entrance,MansionPowerLight,0.0,3.1,4.0,0,0,0,0.35,0.15,0.35,Art_Main1F_Entrance_Chandelier
+#MansionPowerLight_06_GrandStairSouth,MansionPowerLight,0.0,3.8,27.0,0,0,0,0.35,0.15,0.35
+MansionPowerLight_07_GrandStairNorth,MansionPowerLight,0,3.45,35.25,0,0,0,0.35,0.15,0.35,Art_Main1F_GrandStair_NorthWallLamp
+
+# candle
+Main1F_GrandStair_CandleFlame_W,MansionCandle,-7.50,0.98,27.0,0,0,0,1,1,1,
+Main1F_GrandStair_CandleFlame_E,MansionCandle,7.50,0.98,27.0,0,0,0,1,1,1,
+Main1F_Study_CandleFlame_Desk,MansionCandle,-21.0,1.01,9.70,0,0,0,1,1,1,
+
+#============================================================
+# First Puzzle Reward Door
+# Central Hall North側
+# 最初のPuzzleを解くまでLocked
+# この先は次工程でNorth Wingへ拡張する
+#============================================================
+
+Main1F_NorthAccessDoor,MansionDoor,0.0,1.1,24.0,0,0,0,2.8,2.2,0.25
+
+#============================================================
+# West Wall
+#============================================================
+
+Main1F_GrandStairHall_WestWall,MansionBlock,-10.0,2.25,30.0,0,0,0,0.3,4.5,12.0
+
+
+#============================================================
+# East Wall
+#============================================================
+
+Main1F_GrandStairHall_EastWall,MansionBlock,10.0,2.25,30.0,0,0,0,0.3,4.5,12.0
+
+#============================================================
+# Grand Stair - Lower Center Flight
+#
+# 1F Floor:
+#     Y = 0.00
+#
+# Mid Landing:
+#     Y = 2.25
+#
+# 9 steps
+# Rise = 0.25m
+# Tread = 0.45m
+#============================================================
+
+Main1F_GrandStair_Lower01,MansionBlock,0.0,0.125,27.80,0,0,0,4.0,0.25,0.45
+Main1F_GrandStair_Lower02,MansionBlock,0.0,0.250,28.25,0,0,0,4.0,0.50,0.45
+Main1F_GrandStair_Lower03,MansionBlock,0.0,0.375,28.70,0,0,0,4.0,0.75,0.45
+Main1F_GrandStair_Lower04,MansionBlock,0.0,0.500,29.15,0,0,0,4.0,1.00,0.45
+Main1F_GrandStair_Lower05,MansionBlock,0.0,0.625,29.60,0,0,0,4.0,1.25,0.45
+Main1F_GrandStair_Lower06,MansionBlock,0.0,0.750,30.05,0,0,0,4.0,1.50,0.45
+Main1F_GrandStair_Lower07,MansionBlock,0.0,0.875,30.50,0,0,0,4.0,1.75,0.45
+Main1F_GrandStair_Lower08,MansionBlock,0.0,1.000,30.95,0,0,0,4.0,2.00,0.45
+Main1F_GrandStair_Lower09,MansionBlock,0.0,1.125,31.40,0,0,0,4.0,2.25,0.45
+
+Col48_Stair_MidLanding_BackRail,MansionBlock,0.0,2.80,33.96,0,0,0,4.56,1.10,0.18
+
+#============================================================
+# Grand Stair - Mid Landing
+#
+# Top Surface = Y 2.25
+#============================================================
+
+Main1F_GrandStair_MidLanding,MansionBlock,0.0,1.125,32.35,0,0,0,5.0,2.25,3.0
+
+#============================================================
+# Grand Stair - Upper Left
+#
+# Mid Landing:
+#     Y = 2.25
+#
+# 2F:
+#     Y = 4.50
+#============================================================
+
+Main1F_GrandStair_Left01,MansionBlock,-2.725,1.250,32.85,0,0,0,0.45,2.50,2.60
+Main1F_GrandStair_Left02,MansionBlock,-3.175,1.375,32.85,0,0,0,0.45,2.75,2.60
+Main1F_GrandStair_Left03,MansionBlock,-3.625,1.500,32.85,0,0,0,0.45,3.00,2.60
+Main1F_GrandStair_Left04,MansionBlock,-4.075,1.625,32.85,0,0,0,0.45,3.25,2.60
+Main1F_GrandStair_Left05,MansionBlock,-4.525,1.750,32.85,0,0,0,0.45,3.50,2.60
+Main1F_GrandStair_Left06,MansionBlock,-4.975,1.875,32.85,0,0,0,0.45,3.75,2.60
+Main1F_GrandStair_Left07,MansionBlock,-5.425,2.000,32.85,0,0,0,0.45,4.00,2.60
+Main1F_GrandStair_Left08,MansionBlock,-5.875,2.125,32.85,0,0,0,0.45,4.25,2.60
+Main1F_GrandStair_Left09,MansionBlock,-6.325,2.250,32.85,0,0,0,0.45,4.50,2.60
+
+#============================================================
+# Grand Stair - Upper Right
+#============================================================
+
+Main1F_GrandStair_Right01,MansionBlock,2.725,1.250,32.85,0,0,0,0.45,2.50,2.60
+Main1F_GrandStair_Right02,MansionBlock,3.175,1.375,32.85,0,0,0,0.45,2.75,2.60
+Main1F_GrandStair_Right03,MansionBlock,3.625,1.500,32.85,0,0,0,0.45,3.00,2.60
+Main1F_GrandStair_Right04,MansionBlock,4.075,1.625,32.85,0,0,0,0.45,3.25,2.60
+Main1F_GrandStair_Right05,MansionBlock,4.525,1.750,32.85,0,0,0,0.45,3.50,2.60
+Main1F_GrandStair_Right06,MansionBlock,4.975,1.875,32.85,0,0,0,0.45,3.75,2.60
+Main1F_GrandStair_Right07,MansionBlock,5.425,2.000,32.85,0,0,0,0.45,4.00,2.60
+Main1F_GrandStair_Right08,MansionBlock,5.875,2.125,32.85,0,0,0,0.45,4.25,2.60
+Main1F_GrandStair_Right09,MansionBlock,6.325,2.250,32.85,0,0,0,0.45,4.50,2.60
+
+#============================================================
+# 1F -> Mid Landing
+# 下段階段 左右
+#============================================================
+
+Col48_Stair_Lower_W_01,MansionBlock,-1.87,1.05,28.25,0,0,0,0.22,1.70,1.35
+Col48_Stair_Lower_W_02,MansionBlock,-1.87,1.80,29.60,0,0,0,0.22,1.70,1.35
+Col48_Stair_Lower_W_03,MansionBlock,-1.87,2.55,30.95,0,0,0,0.22,1.70,1.35
+
+Col48_Stair_Lower_E_01,MansionBlock,1.87,1.05,28.25,0,0,0,0.22,1.70,1.35
+Col48_Stair_Lower_E_02,MansionBlock,1.87,1.80,29.60,0,0,0,0.22,1.70,1.35
+Col48_Stair_Lower_E_03,MansionBlock,1.87,2.55,30.95,0,0,0,0.22,1.70,1.35
+
+#============================================================
+# Mid Landing -> 2F Upper Left
+#
+# 南側の手すりは3区間
+# 北側は階段出口を残して2区間
+#============================================================
+
+Col48_Stair_UpperL_S_01,MansionBlock,-3.175,3.30,31.72,0,0,0,1.35,1.70,0.18
+Col48_Stair_UpperL_S_02,MansionBlock,-4.525,4.05,31.72,0,0,0,1.35,1.70,0.18
+Col48_Stair_UpperL_S_03,MansionBlock,-5.875,4.80,31.72,0,0,0,1.35,1.70,0.18
+
+Col48_Stair_UpperL_N_01,MansionBlock,-3.175,3.30,33.78,0,0,0,1.35,1.70,0.18
+Col48_Stair_UpperL_N_02,MansionBlock,-4.525,4.05,33.78,0,0,0,1.35,1.70,0.18
+
+#============================================================
+# Mid Landing -> 2F Upper Right
+#============================================================
+
+Col48_Stair_UpperR_S_01,MansionBlock,3.175,3.30,31.72,0,0,0,1.35,1.70,0.18
+Col48_Stair_UpperR_S_02,MansionBlock,4.525,4.05,31.72,0,0,0,1.35,1.70,0.18
+Col48_Stair_UpperR_S_03,MansionBlock,5.875,4.80,31.72,0,0,0,1.35,1.70,0.18
+
+Col48_Stair_UpperR_N_01,MansionBlock,3.175,3.30,33.78,0,0,0,1.35,1.70,0.18
+Col48_Stair_UpperR_N_02,MansionBlock,4.525,4.05,33.78,0,0,0,1.35,1.70,0.18
+
+#============================================================
+# 2F Grand Landing Inner Railing
+#
+# 2F床面Y=4.50
+# 柵の高さ1.10m
+#
+# 幅11.30mにして、左右の上段階段から
+# 2Fへ出る通路を残す
+#============================================================
+
+Col48_GrandLanding_InnerRail,MansionBlock,0.0,5.05,34.00,0,0,0,11.30,1.10,0.18
+
+#============================================================
+# Main1F Study - Power Lights
+#============================================================
+
+MansionPowerLight_05c_StudyLampLeft,MansionPowerLight,-24.0,2.75,8.65,0,0,0,0.35,0.15,0.35,Art_Main1F_Study_WallLamp_L
+MansionPowerLight_05d_StudyLampRight,MansionPowerLight,-18.0,2.75,8.65,0,0,0,0.35,0.15,0.35,Art_Main1F_Study_WallLamp_R
+MansionPowerLight_05e_LibraryPuzzleLeft,MansionPowerLight,-25,2.75,23.30,0,0,0,0.35,0.15,0.35,Art_Main1F_Library_PuzzleLamp_L
+MansionPowerLight_05f_LibraryPuzzleRight,MansionPowerLight,-17,2.75,23.30,0,0,0,0.35,0.15,0.35,Art_Main1F_Library_PuzzleLamp_R
+
+#============================================================
+# Main1F - Door Upper Wall Graybox
+#============================================================
+
+# 書斎入口
+Main1F_StudyDoor,MansionDoor,-16.0,1.1,12.0,180,0,0,0.25,2.2,2.0
+
+# 図書室入口
+Main1F_LibraryDoor_Upper,MansionBlock,-16.0,3.575,20.0,0,0,0,0.3,1.85,2.0
+
+# 地下入口
+Main1F_BasementDoor_Upper,MansionBlock,-12.5,3.575,8.0,0,0,0,2.0,1.85,0.3
+
+#============================================================
+# Library / 図書室
+#============================================================
+
+# Tall Narrow
+Col48_Art_Main1F_Library_Bookshelf_02,MansionBlock,-25.6000,1.3750,21.1500,0,0,0,0.4000,2.6900,0.9100
+
+# Full
+Col48_Art_Main1F_Library_Bookshelf_03,MansionBlock,-25.6000,1.2500,19.7500,0,0,0,0.4400,2.4400,1.7600
+
+# Sparse
+Col48_Art_Main1F_Library_Bookshelf_04,MansionBlock,-25.6000,1.2000,22.9000,0,0,0,0.4200,2.3400,1.6100
+
+# Low Wide
+Col48_Art47_Library_Bookshelf_East,MansionBlock,-16.7500,0.6250,17.2500,0,0,0,0.3800,1.1900,2.0600
+
+#============================================================
+# Study / 書斎
+#============================================================
+
+# Damaged
+Col48_Art_Main1F_Study_Bookshelf_02,MansionBlock,-25.6000,1.1750,14.0000,0,0,0,0.4200,2.2900,1.7100
+
+# Low Wide
+Col48_Art47_Study_Bookshelf_Low,MansionBlock,-23.6000,0.6250,8.8500,0,0,0,2.0600,1.1900,0.3800
+
+#============================================================
+# Central Hall
+#============================================================
+
+Col48_Art46_Central_Table_W,MansionBlock,-6.5000,0.3900,16.0000,0,0,0,0.7800,0.7200,0.4400
+
+Col48_Art46_Central_Table_E,MansionBlock,6.5000,0.3900,16.0000,0,0,0,0.7800,0.7200,0.4400
+
+# 南西側：RotY=20度の外接寸法
+Col48_Art46B_Central_Table_SW,MansionBlock,-7.2500,0.3900,9.5000,0,0,0,0.8249,0.7200,0.6465
+
+# 北東側：RotY=-15度の外接寸法
+Col48_Art46B_Central_Table_NE,MansionBlock,7.2500,0.3900,22.3000,0,0,0,0.9060,0.7200,0.6094
+
+#============================================================
+# Grand Stair Hall
+#============================================================
+
+Col48_Art46_GrandStair_Table_W,MansionBlock,-7.5000,0.3900,27.0000,0,0,0,0.4400,0.7200,0.7800
+
+Col48_Art46_GrandStair_Table_E,MansionBlock,7.5000,0.3900,27.0000,0,0,0,0.4400,0.7200,0.7800
+
+
+#============================================================
+# STEP48-4 - Main Building 1F Furniture
+#
+# Collider Only
+#
+# 対象:
+# EntranceHall / CentralHall
+# Library / Study / PowerRoom
+#
+# すべて概算サイズ。
+#============================================================
+
+#============================================================
+# Entrance Hall
+#
+# 玄関コンソール
+#============================================================
+Col48F_Main1F_Entrance_Console_01,MansionBlock,5.400,0.410,3.800,0,0,0,0.380,0.820,1.550
+Main1F_Entrance_CandleFlame_Test,MansionCandle,5.40,1.05,3.80,0,0,0,1.5,1,1,
+
+#============================================================
+# Central Hall
+#
+# 壁際のコンソール2台と大時計
+#
+# STEP48-3のサイドテーブルは重複追加しない。
+#============================================================
+Col48F_Main1F_CentralHall_Console_East,MansionBlock,8.450,0.410,16.000,0,0,0,0.380,0.820,1.550
+Col48F_Main1F_CentralHall_Console_West,MansionBlock,-8.450,0.410,16.000,0,0,0,0.380,0.820,1.550
+Col48F_Main1F_CentralHall_GrandfatherClock,MansionBlock,-8.250,1.100,22.500,0,0,0,0.420,2.200,0.660
+
+#============================================================
+# Library
+#
+# 旧型本棚1台と読書机
+# 新型本棚4台のColliderはSTEP48-3で追加済み。
+#============================================================
+Col48F_Main1F_Library_Bookshelf_01,MansionBlock,-25.600,1.150,17.000,0,0,0,0.420,2.300,1.950
+Col48F_Main1F_Library_ReadingDesk,MansionBlock,-19.000,0.390,18.500,0,0,0,1.550,0.780,0.720
+
+#============================================================
+# Study
+#
+# 書斎の机・旧型本棚・肘掛け椅子
+#============================================================
+Col48F_Main1F_Study_Desk,MansionBlock,-21.000,0.390,9.700,0,0,0,1.550,0.780,0.720
+Col48F_Main1F_Study_Bookshelf_01,MansionBlock,-25.600,1.150,9.000,0,0,0,0.420,2.300,1.950
+Col48F_Main1F_Study_Armchair,MansionBlock,-21.000,0.525,11.100,0,0,0,0.820,1.050,0.820
+
+#============================================================
+# Power Room
+#============================================================
+Col48F_Main1F_PowerRoom_Generator_01,MansionBlock,19.000,0.475,13.800,0,0,0,1.200,0.950,0.800
+
+
+#============================================================
+# First Mansion Puzzle
+#
+# Library North Wall
+#
+# Correct Order:
+# Moon -> Sun -> Bird
+#============================================================
+
+MansionPuzzle_Moon,MansionPuzzleSwitch,-23.0,1.4,23.65,0,180,0,0.45,0.45,0.20
+
+MansionPuzzle_Sun,MansionPuzzleSwitch,-21.0,1.4,23.65,0,180,0,0.45,0.45,0.20
+
+MansionPuzzle_Bird,MansionPuzzleSwitch,-19.0,1.4,23.65,0,180,0,0.45,0.45,0.20
+
+#============================================================
+# Study Clue
+#
+# First Puzzle Hint
+#
+# Persistent ID:
+#     StudyClueNote
+#
+# Inventory Item:
+#     MansionNote01
+#============================================================
+
+StudyClueNote,WorldItemPickup,-22.5,0.08,12.0,0,0,0,0.45,0.06,0.30,MansionNote01
+
+#============================================================
+# Documents
+#============================================================
+
+# DOC_001
+# 使用人への通達
+# East Corridor南側の行き止まり
+Main1F_Document_001,DocumentPickup,12.5,0.08,9.2,0,0,0,0.45,0.06,0.30,DOC_001
+
+#============================================================
+# Documents
+#============================================================
+
+#------------------------------------------------------------
+# DOC_002
+# リリアンへの手紙
+# Study
+# 既存StudyClueNoteとは離して配置する
+#------------------------------------------------------------
+Main1F_Document_002,DocumentPickup,-18.5,0.08,10.5,0,0,0,0.45,0.06,0.30,DOC_002
+
+#------------------------------------------------------------
+# DOC_003
+# リリアンのノート
+# Library
+# Moon / Sun / Bird Puzzleそのものの前ではなく少し離れた場所に置く
+#------------------------------------------------------------
+Main1F_Document_003,DocumentPickup,-24.0,0.08,19.0,0,0,0,0.45,0.06,0.30,DOC_003
+
+MansionPuzzle2F_Rose,MansionPuzzleSwitch,-9.60,1.40,26.0,0,90,0,0.45,0.45,0.20
+
+# STEP37 - Entrance door side jamb collision only
+Main1F_EntranceJambCollider_L,MansionBlock,-1.75,1.1,0,0,0,0,0.5,2.2,0.3
+Main1F_EntranceJambCollider_R,MansionBlock,1.75,1.1,0,0,0,0,0.5,2.2,0.3

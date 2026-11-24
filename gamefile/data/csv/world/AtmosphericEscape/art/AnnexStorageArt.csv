@@ -1,0 +1,51 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Storage
+#
+# X=46～54
+# Z=5～14
+# Size=8x9m
+#
+# 床と壁は古いコンクリート。
+#============================================================
+
+Art_Annex1F_Storage_Architecture,MansionArt,50.0,0.0,9.5,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_storage.vnm
+
+
+#============================================================
+# STEP 26 - Annex Storage Furniture
+#============================================================
+
+# 西側の金属棚
+Art_Annex1F_Storage_Shelf_01,MansionArt,47.3,0,8.2,0,90,0,1,1,1,data/model/mansion/props/annex/annex_steel_shelf_01.vnm
+
+Art_Annex1F_Storage_Shelf_02,MansionArt,47.3,0,11.8,0,90,0,1,1,1,data/model/mansion/props/annex/annex_steel_shelf_01.vnm
+
+# 東側の金属棚
+Art_Annex1F_Storage_Shelf_03,MansionArt,52.7,0,8.2,0,-90,0,1,1,1,data/model/mansion/props/annex/annex_steel_shelf_01.vnm
+
+# 木箱の山
+Art_Annex1F_Storage_Crate_01,MansionArt,49.0,0,6.6,0,180,0,1,1,1,data/model/mansion/props/annex/annex_crate_stack_01.vnm
+
+# STEP31 - 別館1F 南西角
+
+#Art31_AnnexInnerCorner_SW,MansionArt,46.200,0.000,5.200,0,180,0,1,1,1,data/model/mansion/repair/step31/annex1f_inner_corner_trim.vnm
+
+
+# STEP40 - Storage Door Frame
+# EntranceHallとStorageを接続する開口
+Art40_Annex1F_StorageDoorFrame,MansionArt,50.0,0.0,14.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_interior_doorframe_200.vnm
+
+
+#============================================================
+# STEP46 - Annex Storage Props
+#
+# 既存の棚と木箱を残して小物を追加する。
+#============================================================
+
+Art46_AnnexStorage_Crate_01,MansionArt,51.5,0.00,7.5,0,20,0,1,1,1,data/model/mansion/props/prop_crate_wood_01.vnm
+Art46_AnnexStorage_Bucket_01,MansionArt,50.5,0.00,9.5,0,0,0,1,1,1,data/model/mansion/props/prop_bucket_metal_01.vnm
+Art46_AnnexStorage_Stain_01,MansionArt,50.0,0.022,11.5,0,25,0,1,1,1,data/model/mansion/props/prop_floor_stain_small_01.vnm
+

@@ -1,0 +1,50 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Service Area
+#
+# X=54～74
+# Z=5～16
+# Size=20x11m
+#
+# 地下階段の開口を塞がないこと。
+#
+# 既存GrayboxのColliderは維持。
+#============================================================
+
+Art_Annex1F_ServiceArea_Architecture,MansionArt,64.0,0.0,10.5,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_service_area.vnm
+
+
+#============================================================
+# STEP 26 - Annex Service Area Furniture
+#============================================================
+
+# 西側の金属棚
+Art_Annex1F_Service_Shelf_01,MansionArt,55.5,0,8.0,0,90,0,1,1,1,data/model/mansion/props/annex/annex_steel_shelf_01.vnm
+
+Art_Annex1F_Service_Shelf_02,MansionArt,55.5,0,12.0,0,90,0,1,1,1,data/model/mansion/props/annex/annex_steel_shelf_01.vnm
+
+# 東側の金属棚
+Art_Annex1F_Service_Shelf_03,MansionArt,72.5,0,8.0,0,-90,0,1,1,1,data/model/mansion/props/annex/annex_steel_shelf_01.vnm
+
+# 発電機
+Art_Annex1F_Service_Generator,MansionArt,59.0,0,8.0,0,0,0,1,1,1,data/model/mansion/props/power_room/portable_generator_01.vnm
+
+# 木箱の山
+Art_Annex1F_Service_Crates,MansionArt,59.0,0,12.0,0,180,0,1,1,1,data/model/mansion/props/annex/annex_crate_stack_01.vnm
+
+# 東側の配電箱
+Art_Annex1F_Service_ElectricalBox,MansionArt,72.0,0.8,14.0,0,90,0,1,1,1,data/model/mansion/props/power_room/electrical_box_01.vnm
+
+# STEP31 - 別館1F 南東角
+
+#Art31_AnnexInnerCorner_SE,MansionArt,73.800,0.000,5.200,0,180,0,1,1,1,data/model/mansion/repair/step31/annex1f_inner_corner_trim.vnm
+
+
+# STEP40 - Service Area Door Frame
+# MainCorridor南側の入口
+Art40_Annex1F_ServiceDoorFrame,MansionArt,64.0,0.0,16.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_interior_doorframe_200.vnm
+
+#light
+Art_Annex1F_Service_CeilingLight,MansionArt,64,4.26,13,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm

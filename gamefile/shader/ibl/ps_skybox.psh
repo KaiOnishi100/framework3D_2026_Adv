@@ -1,0 +1,75 @@
+#include "../common/environment_common.hlsli"
+
+//============================================================
+// Skybox Pixel Shader
+// TextureCubeから環境色を取得し
+// Linear HDR RenderTargetへ出力する
+//============================================================
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float3 direction : TEXCOORD0;
+};
+
+cbuffer SkyboxBuffer : register(b0)
+{
+    float4x4 ViewProjection;
+    float4 EnvironmentSceneParam;
+}
+//============================================================
+// Environment CubeMap
+//============================================================
+TextureCube txEnvironment : register(t0);
+
+//============================================================
+// Linear Clamp Sampler
+//============================================================
+SamplerState samEnvironment : register(s0);
+
+float4 main(PixelInput IN) : SV_TARGET
+{
+    //============================================================
+    // Cameraから見たWorld方向
+    //============================================================
+    const float3 worldDirection = normalize(IN.direction);
+
+
+    //============================================================
+    // Runtime Environment Rotation
+    //============================================================
+    const float3 rotatedWorldDirection =
+        normalize(
+            RotateEnvironmentDirectionY(
+                worldDirection,
+                EnvironmentSceneParam.x
+            )
+        );
+
+
+    //============================================================
+    // Engine World
+    //      ↓
+    // Environment Cube座標
+    //============================================================
+    const float3 sampleDirection =
+        ConvertWorldDirectionToEnvironment(rotatedWorldDirection);
+
+
+    //============================================================
+    // 元HDR Radiance
+    //============================================================
+    const float3 environmentColor =
+        txEnvironment.Sample(
+            samEnvironment,
+            sampleDirection
+        ).rgb;
+
+    //============================================================
+    // Runtime Exposure
+    // CubeMap再生成なし
+    //============================================================
+    const float exposureScale = max(EnvironmentSceneParam.y, 0.0f);
+
+    return float4(environmentColor * exposureScale, 1.0f);
+}

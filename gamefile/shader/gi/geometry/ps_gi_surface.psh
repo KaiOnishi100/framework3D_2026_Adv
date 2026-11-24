@@ -1,0 +1,69 @@
+#include "../../ps3d/ps_3d_bindings.hlsli"
+#include "../../ps3d/surface_data.hlsli"
+
+//============================================================
+// GI Surface Output
+// RT0:
+//   RGB = World Normal
+//   A   = Roughness
+// RT1:
+//   RGB = BaseColor
+//   A   = Metallic
+//============================================================
+struct GISurfaceOutput
+{
+    float4 normalRoughness : SV_Target0;
+    float4 material : SV_Target1;
+};
+
+
+//============================================================
+// GI Surface Pass
+//============================================================
+GISurfaceOutput main(pixelIn IN)
+{
+    GISurfaceOutput output = (GISurfaceOutput) 0;
+
+
+    //========================================================
+    // 通常PBR描画と同じMaterial評価
+    // ・Diffuse Texture
+    // ・Normal Map
+    // ・ORM
+    //========================================================
+    const SurfaceData surface = BuildSurfaceData(IN);
+
+
+    //========================================================
+    // Main SceneとAlpha Cutを一致させる
+    //========================================================
+    if (surface.baseColor.a <0.01f)
+    {
+        discard;
+    }
+
+
+    //========================================================
+    // Normal
+    // Normal Map込みのShading Normal
+    //========================================================
+    const float3 normal = normalize(surface.shadingNormal);
+
+    //========================================================
+    // RT0
+    // RGB: World Normal
+    // A: Roughness
+    //========================================================
+    output.normalRoughness = float4(normal, saturate(surface.roughness));
+
+    //========================================================
+    // RT1
+    // Metallic:
+    //   0 = Dielectric
+    //   1 = Metal
+    //========================================================
+    output.material = float4(max(surface.baseColor.rgb, 0.0f), saturate(surface.metallic));
+
+
+    return output;
+}

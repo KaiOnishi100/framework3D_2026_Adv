@@ -1,0 +1,58 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Archive Room
+#
+# X=54～64
+# Z=20～31
+# Size=10x11m
+#
+# 床はWeathered Planks。
+# 壁はDamaged Plaster。
+#============================================================
+
+Art_Annex1F_Archive_Architecture,MansionArt,59.0,0.0,25.5,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_archive.vnm
+
+
+#============================================================
+# STEP 26 - Annex Archive Furniture
+#============================================================
+
+# 西側の大型書棚
+Art_Annex1F_Archive_Bookshelf_01,MansionArt,55.0,0,23.0,0,90,0,1,1,1,data/model/mansion/props/bookshelf/library_bookshelf_tall.vnm
+
+# 西側中央：本が詰まった大型本棚
+Art_Annex1F_Archive_Bookshelf_02,MansionArt,55.0,0,25.7,0,90,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_full_01.vnm
+
+# 西側北：ほぼ空の本棚
+Art_Annex1F_Archive_Bookshelf_03,MansionArt,55.0,0,29.0,0,90,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_sparse_01.vnm
+
+# 東側南：棚板が壊れている本棚
+Art_Annex1F_Archive_Bookshelf_04,MansionArt,62.6,0,23.0,0,-90,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_damaged_01.vnm
+
+# 東側中央：少し傾いた本棚
+Art_Annex1F_Archive_Bookshelf_05,MansionArt,62.6,0,25.7,0,-90,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_lean_01.vnm
+
+# 奥の書類キャビネット
+Art_Annex1F_Archive_FileCabinet,MansionArt,62.7,0,29.5,0,-90,0,1,1,1,data/model/mansion/props/annex/annex_file_cabinet_01.vnm
+
+#============================================================
+# STEP31 - Annex Exterior Eave Fascia
+#
+# 別館外形：
+#   X=46～74
+#   Z=5～31
+#
+# 中庭から見える天井と屋根の接合部を隠す。
+# 4辺を1モデルにまとめている。
+#============================================================
+
+Art31_Annex_ExteriorEaveFascia,MansionArt,60.000,0.000,18.000,0,180,0,1,1,1,data/model/mansion/repair/step31/annex_exterior_eave_fascia.vnm
+
+
+# STEP40 - Archive Door Frame
+# MainCorridor北側の資料室入口
+Art40_Annex1F_ArchiveDoorFrame,MansionArt,59.0,0.0,20.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_interior_doorframe_200.vnm
+
+Art_Annex1F_Archive_Candle,MansionArt,60.80,0.0,28.00,0,0,0,1,1,1,data/model/mansion/props/candle/mansion_candle_01.vnm

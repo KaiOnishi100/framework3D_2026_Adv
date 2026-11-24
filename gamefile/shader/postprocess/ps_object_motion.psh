@@ -1,0 +1,82 @@
+//============================================================
+// Rigid Object Motion Vector Pixel Shader
+// 出力:
+//   R = Velocity X
+//   G = Velocity Y
+// MotionVectorPassのCamera Motionと同じ:
+//   CurrentUV - PreviousUV
+// を使用する
+//============================================================
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+
+    float4 currentClip : TEXCOORD0;
+
+    float4 previousClip : TEXCOORD1;
+};
+
+
+float2 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Current Clip PositionのW
+    //========================================================
+    if (abs(input.currentClip.w) < 0.000001f)
+    {
+        return float2(0.0f, 0.0f);
+    }
+
+    if (input.previousClip.w <= 0.000001f)
+    {
+        return float2(0.0f, 0.0f);
+    }
+
+
+    //========================================================
+    // Current Clip → NDC
+    //========================================================
+    const float2 currentNDC =
+        input.currentClip.xy / input.currentClip.w;
+
+
+    //========================================================
+    // Previous Clip → NDC
+    //========================================================
+    const float2 previousNDC =
+        input.previousClip.xy / input.previousClip.w;
+
+
+    //========================================================
+    // DirectX NDC → UV
+    // NDC Y: 上が+
+    // Texture UV Y: 下が+
+    //========================================================
+    const float2 currentUV =
+        float2(
+            currentNDC.x * 0.5f + 0.5f,
+            -currentNDC.y * 0.5f + 0.5f
+        );
+
+
+    const float2 previousUV =
+        float2(
+            previousNDC.x * 0.5f + 0.5f,
+            -previousNDC.y * 0.5f + 0.5f
+        );
+
+
+    //========================================================
+    // Motion Vector
+    //========================================================
+    float2 velocity = currentUV - previousUV;
+
+    //========================================================
+    // Teleportなどによる異常値を最低限Clamp
+    //========================================================
+    velocity = clamp(velocity, float2(-1.0f, -1.0f), float2(1.0f, 1.0f));
+
+    return velocity;
+}

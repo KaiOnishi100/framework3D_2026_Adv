@@ -1,0 +1,533 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#BasementArt.csv
+#============================================================
+# Main Building B1 - Architecture Art
+#============================================================
+#============================================================
+# Storage Room - Metal Door Frame
+#============================================================
+Art_MainB1_StorageRoom_DoorFrame,MansionArt,-10.0,-4.50,-11.00,0,90,0,1.2,0.87,1,data/model/mansion/architecture/doorframe/power_room_doorframe_metal_200.vnm
+
+#============================================================
+# Boiler Room - Interior Door Frame
+#============================================================
+Art_MainB1_BoilerRoom_InnerDoorFrame,MansionArt,-15.0,-4.50,-11.00,0,90,0,1.2,0.87,1,data/model/mansion/architecture/doorframe/power_room_doorframe_metal_200.vnm
+
+#============================================================
+# B1 Service Corridor - Hide Graybox
+# Artで置き換えた通路の壁だけ
+# Graybox表示を無効化する
+# Colliderは維持する
+# 床のGrayboxは今回非表示にしない
+# 地下階段のGrayboxも非表示にしない
+#============================================================
+
+Hide_MainB1_ServiceCorridor_WestWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_ServiceCorridor_WestWall
+
+Hide_MainB1_ServiceCorridor_EastWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_ServiceCorridor_EastWall
+
+#============================================================
+# Boiler Room Side
+#============================================================
+
+# 北側の短い壁
+Hide_MainB1_BoilerCorridorWall_01,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_BoilerCorridorWall_01
+
+# 南側の壁
+Hide_MainB1_BoilerCorridorWall_02,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_BoilerCorridorWall_02
+
+
+#============================================================
+# Storage Room Side
+#============================================================
+
+# 北側の短い壁
+Hide_MainB1_StorageCorridorWall_01,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StorageCorridorWall_01
+
+# 南側の壁
+Hide_MainB1_StorageCorridorWall_02,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StorageCorridorWall_02
+
+Hide_MainB1_BoilerRoom_WestWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_BoilerRoom_WestWall
+
+Hide_MainB1_BoilerRoom_FrontWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_BoilerRoom_FrontWall
+
+Hide_MainB1_BoilerRoom_BackWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_BoilerRoom_BackWall
+
+
+#============================================================
+# Main B1 - Boiler Room Art
+#============================================================
+
+# Floor
+Art_MainB1_Boiler_Floor,MansionArt,-20.0,-4.49,-11.125,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_floor_10x575.vnm
+
+# Front / Back Walls
+Art_MainB1_Boiler_FrontWall,MansionArt,-20.0,-4.50,-8.25,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_10m.vnm
+Art_MainB1_Boiler_BackWall,MansionArt,-20.0,-4.50,-14.0,0,180,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_10m.vnm
+
+# West Wall
+Art_MainB1_Boiler_WestWall,MansionArt,-25.0,-4.50,-11.125,0,90,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+# Door Side Wall
+Art_MainB1_Boiler_DoorWall,MansionArt,-15.0,-4.50,-11.125,0,90,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_door_575.vnm
+
+#============================================================
+# Boiler Room - Steam Boiler
+#============================================================
+
+Art_MainB1_SteamBoiler_01,MansionArt,-20.0,-4.49,-9.20,0,0,0,1,1,1,data/model/mansion/props/boiler/boiler_steam_horizontal.vnm
+
+
+#============================================================
+# MainB1 Boiler Room - Wall Pipes
+#============================================================
+
+# 南壁・西側：直管
+Art_MainB1_Boiler_PipeStraight_01,MansionArt,-22.0,-4.50,-14.0,0,0,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_straight_2m.vnm
+
+# 南壁・中央：バルブ付き
+Art_MainB1_Boiler_PipeValve_01,MansionArt,-20.0,-4.50,-14.0,0,0,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_valve_2m.vnm
+
+# 南壁・東側：上下接続管
+Art_MainB1_Boiler_PipeConnector_01,MansionArt,-18.0,-4.50,-14.0,0,0,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_connector_2m.vnm
+
+
+#============================================================
+# Main B1 - Boiler Room Workshop Props
+#============================================================
+
+# 金属製工具棚
+Art_MainB1_Boiler_ToolShelf,MansionArt,-23.45,-4.49,-12.80,0,0,0,1,1,1,data/model/mansion/props/workshop/utility_shelf_160.vnm
+
+# 古い作業台
+Art_MainB1_Boiler_WorkBench,MansionArt,-20.00,-4.49,-12.65,0,0,0,1,1,1,data/model/mansion/props/workshop/workbench_175.vnm
+
+# 作業台の上に工具箱を置く
+Art_MainB1_Boiler_ToolBox,MansionArt,-20.45,-3.61,-12.70,0,0,0,1,1,1,data/model/mansion/props/workshop/metal_toolbox.vnm
+
+# 作業台の上にオイル缶を置く
+Art_MainB1_Boiler_OilCan,MansionArt,-19.55,-3.61,-12.70,0,0,0,1,1,1,data/model/mansion/props/workshop/industrial_oilcan.vnm
+
+
+#============================================================
+# Main B1 - Boiler Room Ventilation
+#============================================================
+
+# 南壁の天井付近・西側
+Art_MainB1_Boiler_VentStraight_01,MansionArt,-22.0,-4.50,-13.50,0,0,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_straight_2m.vnm
+
+# 南壁の天井付近・中央
+Art_MainB1_Boiler_VentStraight_02,MansionArt,-20.0,-4.50,-13.50,0,0,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_straight_2m.vnm
+
+# 南壁の天井付近・東側
+Art_MainB1_Boiler_VentStraight_03,MansionArt,-18.0,-4.50,-13.50,0,0,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_straight_2m.vnm
+
+# 中央の直線ダクトに重ねて設置する排気グリル
+Art_MainB1_Boiler_VentGrille_01,MansionArt,-20.0,-4.50,-13.50,0,0,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_grille.vnm
+
+
+#============================================================
+# Main B1 - Boiler Room Control Panel
+#============================================================
+
+# 北東側の壁際に設置
+# RotY=180 : 正面を室内側へ向ける初期設定
+Art_MainB1_Boiler_ControlPanel,MansionArt,-16.20,-4.49,-8.70,0,180,0,1,1,1,data/model/mansion/props/control/boiler_control_panel.vnm
+
+
+#============================================================
+# Main B1 - Boiler Room Wall Details
+#============================================================
+
+# 作業台の背後に壁掛け工具セット
+# 床面基準のためPosY=-4.50
+Art_MainB1_Boiler_WallToolRack,MansionArt,-20.00,-4.50,-13.95,0,0,0,1,1,1,data/model/mansion/props/workshop/wall_tool_board_140.vnm
+
+# 南東側の壁に高温注意看板
+Art_MainB1_Boiler_WarningSign,MansionArt,-17.00,-4.50,-13.95,0,0,0,1,1,1,data/model/mansion/props/workshop/warning_sign_074.vnm
+
+
+#============================================================
+# Main B1 - Boiler Room Floor Details
+#============================================================
+
+# 中央付近に排水グレーチング
+# 床面より約5mm上
+Art_MainB1_Boiler_FloorDrain_01,MansionArt,-21.00,-4.485,-11.15,0,0,0,1,1,1,data/model/mansion/props/floor_details/floor_drain_grate_120.vnm
+
+# 南壁の作業台付近に配管廃材
+Art_MainB1_Boiler_PipeScrap_01,MansionArt,-21.80,-4.49,-13.55,0,20,0,1,1,1,data/model/mansion/props/floor_details/pipe_scrap_cluster_130.vnm
+
+# 大型ボイラーの手前に油染み
+Art_MainB1_Boiler_OilStain_01,MansionArt,-19.00,-4.485,-10.50,0,0,0,1,1,1,data/model/mansion/props/floor_details/floor_oil_stain.vnm
+
+# 西側の床に小さな油染みを再利用
+Art_MainB1_Boiler_OilStain_02,MansionArt,-23.30,-4.485,-11.15,0,140,0,0.65,1,0.75,data/model/mansion/props/floor_details/floor_oil_stain.vnm
+
+
+#============================================================
+# Main B1 - Boiler Room Ceiling Lighting
+#============================================================
+
+# 天井から吊り下げる保護格子付き照明
+# 既存のMansionPowerLightと位置を合わせる
+Art_MainB1_Boiler_CeilingLamp,MansionArt,-20.00,0.00,-11.00,0,0,0,1,1,1,data/model/mansion/props/lighting/industrial_caged_ceiling_lamp.vnm
+
+
+#============================================================
+# Main B1 - Storage Room Architecture
+#============================================================
+#============================================================
+# Floor
+#============================================================
+Art_MainB1_Storage_NewFloor,MansionArt,-5.0,-4.49,-11.125,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_floor_10x575.vnm
+
+#============================================================
+# North Wall
+#============================================================
+Art_MainB1_Storage_NorthWall,MansionArt,-5.0,-4.50,-8.25,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_10m.vnm
+
+
+#============================================================
+# South Wall
+#============================================================
+Art_MainB1_Storage_SouthWall,MansionArt,-5.0,-4.50,-14.0,0,180,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_10m.vnm
+
+
+#============================================================
+# East Wall
+#============================================================
+Art_MainB1_Storage_EastWall,MansionArt,0.0,-4.50,-11.125,0,-90,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+
+#============================================================
+# West Wall - Door Opening
+#============================================================
+Art_MainB1_Storage_DoorWall,MansionArt,-10.0,-4.50,-11.125,0,90,0,1,1,1,data/model/mansion/architecture/basement/basement_wall_door_575.vnm
+
+
+#============================================================
+# Main B1 - Storage Room Furniture
+#============================================================
+
+# 北西側：大型木製保管棚
+Art_MainB1_Storage_WoodShelf_01,MansionArt,-7.20,-4.49,-8.80,0,0,0,1,1,1,data/model/mansion/props/storage/storage_wood_shelf_180.vnm
+
+# 南西側：大型木箱
+Art_MainB1_Storage_LargeCrate_01,MansionArt,-7.30,-4.31,-13.20,0,0,0,1,1,1,data/model/mansion/props/storage/storage_large_crate.vnm
+
+# 南側：小型木箱
+Art_MainB1_Storage_SmallCrate_01,MansionArt,-5.90,-4.49,-13.18,0,20,0,1,1,1,data/model/mansion/props/storage/storage_small_crate.vnm
+
+# 南東側：金属保管ケース
+Art_MainB1_Storage_MetalCase_01,MansionArt,-1.50,-4.49,-12.95,0,0,0,1,1,1,data/model/mansion/props/storage/storage_metal_case.vnm
+
+# 北東側：布を被せた荷物
+Art_MainB1_Storage_CoveredCargo_01,MansionArt,-1.50,-4.49,-9.75,0,15,0,1,1,1,data/model/mansion/props/storage/storage_covered_cargo.vnm
+
+# 北東側の金属棚
+Art_MainB1_Storage_MetalShelf_01,MansionArt,-3.20,-4.49,-8.82,0,0,0,1,1,1,data/model/mansion/props/workshop/utility_shelf_160.vnm
+
+# 大型木箱の下に木製パレットを配置
+Art_MainB1_Storage_WoodPallet_01,MansionArt,-7.30,-4.49,-13.20,0,0,0,1,1,1,data/model/mansion/props/storage/storage_wood_pallet.vnm
+
+#============================================================
+# Main B1 - Storage Room Small Props
+#============================================================
+
+# 2段目：古い書類保管箱
+Art_MainB1_Storage_ArchiveBox_01,MansionArt,-7.74,-3.7425,-8.80,0,0,0,1,1,1,data/model/mansion/props/storage/storage_archive_box.vnm
+
+# 2段目：金属缶を2個
+Art_MainB1_Storage_MetalTin_01,MansionArt,-7.20,-3.7425,-8.80,0,0,0,1,1,1,data/model/mansion/props/storage/storage_metal_tin.vnm
+Art_MainB1_Storage_MetalTin_02,MansionArt,-6.78,-3.7425,-8.80,0,30,0,1,1,1,data/model/mansion/props/storage/storage_metal_tin.vnm
+
+# 3段目：古いガラス瓶
+Art_MainB1_Storage_Bottle_01,MansionArt,-7.74,-3.2225,-8.80,0,0,0,1,1,1,data/model/mansion/props/storage/storage_old_glass_bottle.vnm
+Art_MainB1_Storage_Bottle_02,MansionArt,-7.42,-3.2225,-8.80,0,0,0,1,1,1,data/model/mansion/props/storage/storage_old_glass_bottle.vnm
+
+# 4段目：巻かれた布
+Art_MainB1_Storage_ClothRoll_01,MansionArt,-7.20,-2.7025,-8.80,0,20,0,1,1,1,data/model/mansion/props/storage/storage_cloth_roll.vnm
+
+
+#============================================================
+# Main B1 - Storage Room Lighting
+#============================================================
+Art_MainB1_Storage_HangingBulb,MansionArt,-5.00,0.00,-11.00,0,0,0,1,1,1,data/model/mansion/props/lighting/storage_hanging_bulb.vnm
+
+
+#============================================================
+# Main B1 - Service Corridor Architecture
+#============================================================
+
+
+#============================================================
+# North Service Corridor - Floor
+#============================================================
+
+Art_MainB1_Service_NewFloor_North,MansionArt,-12.50,-4.49,-5.00,0,0,0,0.5,1,1.130435,data/model/mansion/architecture/basement/basement_floor_10x575.vnm
+
+
+#============================================================
+# South Service Corridor - Floor
+#============================================================
+
+Art_MainB1_Service_NewFloor_South,MansionArt,-12.50,-4.49,-11.125,0,0,0,0.5,1,1,data/model/mansion/architecture/basement/basement_floor_10x575.vnm
+
+
+#============================================================
+# North Service Corridor - West Wall
+#============================================================
+
+Art_MainB1_Service_NewWestWall,MansionArt,-14.7695,-4.50,-5.00,0,-90,0,1.130435,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+
+#============================================================
+# North Service Corridor - East Wall
+#============================================================
+
+Art_MainB1_Service_NewEastWall,MansionArt,-10.2305,-4.50,-5.00,0,90,0,1.130435,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+
+#============================================================
+# South Service Corridor - Boiler Side
+#============================================================
+
+# ドアより北側：長さ1.75m
+# Z=-10.0～-8.25
+# ScaleX=1.75/5.75=0.304348
+
+Art_MainB1_Service_BoilerSide_North,MansionArt,-14.7695,-4.50,-9.125,0,-90,0,0.304348,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+# ドアより南側：長さ2.0m
+# Z=-14.0～-12.0
+# ScaleX=2.0/5.75=0.347826
+
+Art_MainB1_Service_BoilerSide_South,MansionArt,-14.7695,-4.50,-13.00,0,-90,0,0.347826,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+
+#============================================================
+# South Service Corridor - Storage Side
+#============================================================
+
+# ドアより北側：1.75m
+Art_MainB1_Service_StorageSide_North,MansionArt,-10.2305,-4.50,-9.125,0,90,0,0.304348,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+# ドアより南側：2.0m
+Art_MainB1_Service_StorageSide_South,MansionArt,-10.2305,-4.50,-13.00,0,90,0,0.347826,1,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+
+#============================================================
+# Door Upper Wall
+#============================================================
+
+# ボイラー室側のドア上部
+Art_MainB1_Service_BoilerDoorUpper,MansionArt,-14.7695,-2.3,-11.00,0,-90,0,0.347826,0.45,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+# 地下倉庫側のドア上部
+Art_MainB1_Service_StorageDoorUpper,MansionArt,-10.2305,-2.3,-11.00,0,90,0,0.347826,0.45,1,data/model/mansion/architecture/basement/basement_wall_575.vnm
+
+
+#============================================================
+# Service Corridor - South End Wall
+#============================================================
+
+Art_MainB1_Service_SouthEndWall,MansionArt,-12.50,-4.50,-14.00,0,180,0,0.5,1,1,data/model/mansion/architecture/basement/basement_wall_10m.vnm
+
+
+#============================================================
+# STEP 16 - Service Corridor Wall Pipes
+#============================================================
+
+# 北側廊下・直管
+Art_MainB1_Service_PipeStraight_01,MansionArt,-14.52,-4.50,-2.75,0,90,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_straight_2m.vnm
+
+# 北側廊下・バルブ付き配管
+Art_MainB1_Service_PipeValve_01,MansionArt,-14.52,-4.50,-4.75,0,90,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_valve_2m.vnm
+
+# 北側廊下・接続配管
+Art_MainB1_Service_PipeConnector_01,MansionArt,-14.52,-4.50,-6.75,0,90,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_connector_2m.vnm
+
+# 南側廊下の行き止まり寄り
+# ドア開口Z=-12～-10には入れない
+Art_MainB1_Service_PipeStraight_02,MansionArt,-14.52,-4.50,-13.00,0,-90,0,1,1,1,data/model/mansion/props/pipes/pipe_wall_straight_2m.vnm
+
+
+#============================================================
+# Service Corridor Ventilation
+#============================================================
+
+# 北側廊下・ダクト1
+Art_MainB1_Service_VentStraight_01,MansionArt,-10.62,-4.50,-2.75,0,90,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_straight_2m.vnm
+
+# 北側廊下・ダクト2
+Art_MainB1_Service_VentStraight_02,MansionArt,-10.62,-4.50,-4.75,0,90,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_straight_2m.vnm
+
+# 北側廊下・ダクト3
+Art_MainB1_Service_VentStraight_03,MansionArt,-10.62,-4.50,-6.75,0,0,90,1,1,1,data/model/mansion/props/ventilation/vent_duct_straight_2m.vnm
+
+# 中央ダクトの排気グリル
+Art_MainB1_Service_VentGrille_01,MansionArt,-10.62,-4.50,-4.75,0,90,0,1,1,1,data/model/mansion/props/ventilation/vent_duct_grille.vnm
+
+
+#============================================================
+# Service Corridor Fluorescent Lamps
+#============================================================
+
+# 北側の蛍光灯
+Art_MainB1_Service_Fluorescent_North,MansionArt,-12.50,0.00,-5.00,0,90,0,1,1,1,data/model/mansion/props/lighting/service_corridor_fluorescent.vnm
+
+# 南側の蛍光灯
+# 既存のMansionPowerLight_20_B1_Corridorと位置合わせ
+Art_MainB1_Service_Fluorescent_South,MansionArt,-12.50,0.00,-10.50,0,90,0,1,1,1,data/model/mansion/props/lighting/service_corridor_fluorescent.vnm
+
+
+#============================================================
+# Main Building B1 - Staircase
+#============================================================
+
+
+#============================================================
+# Staircase
+#============================================================
+
+Art_MainB1_Stairs_18Step,MansionArt,-12.50,-4.50,3.625,0,180,0,1,1,1,data/model/mansion/architecture/stairs/basement_stairs_18step.vnm
+
+
+#============================================================
+# Top Landing
+#============================================================
+
+Art_MainB1_Stairs_TopLanding,MansionArt,-12.50,0.00,7.80,0,0,0,1,1,1,data/model/mansion/architecture/stairs/basement_stair_top_landing.vnm
+
+
+#============================================================
+# Bottom Landing
+#============================================================
+
+Art_MainB1_Stairs_BottomLanding,MansionArt,-12.50,-4.50,-1.10,0,0,0,1,1,1,data/model/mansion/architecture/stairs/basement_stair_bottom_landing.vnm
+
+
+#============================================================
+# STEP 18 - Basement Stairwell
+#
+# Side Walls & Sloped Ceiling
+#============================================================
+
+
+#============================================================
+# Side Walls
+#============================================================
+
+Art_MainB1_Stair_SideWalls,MansionArt,-12.50,-4.50,3.10,0,180,0,1,1.35,1,data/model/mansion/architecture/stairs/basement_stair_sidewalls.vnm
+
+
+#============================================================
+# Sloped Ceiling
+#============================================================
+
+Art_MainB1_Stair_Ceiling,MansionArt,-12.50,-4.50,3.10,0,180,0,1,1.35,1,data/model/mansion/architecture/stairs/basement_stair_sloped_ceiling.vnm
+
+
+#============================================================
+# Main B1 Common Ceilings
+#============================================================
+
+#============================================================
+# Boiler Room
+#============================================================
+Art_MainB1_Boiler_Ceiling,MansionArt,-20.00,0.00,-11.125,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_ceiling_10x575.vnm
+
+
+#============================================================
+# Storage Room
+#============================================================
+Art_MainB1_Storage_Ceiling,MansionArt,-5.00,0.00,-11.125,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_ceiling_10x575.vnm
+
+
+#============================================================
+# North Service Corridor
+#============================================================
+Art_MainB1_Service_Ceiling_North,MansionArt,-12.50,0.00,-5.00,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_ceiling_5x650.vnm
+
+
+#============================================================
+# South Service Corridor
+#============================================================
+Art_MainB1_Service_Ceiling_South,MansionArt,-12.50,0.00,-11.125,0,0,0,0.5,1,1,data/model/mansion/architecture/basement/basement_ceiling_10x575.vnm
+
+
+#============================================================
+# Stair Entrance Walls
+#============================================================
+
+Art_MainB1_Stair_EntranceWalls,MansionArt,-12.50,-4.50,-1.65,0,0,0,1,1,1,data/model/mansion/architecture/basement/basement_stair_entrance_walls.vnm
+
+
+#============================================================
+# Hide Stair Entrance Graybox
+#============================================================
+
+Hide_MainB1_StairEntrance_WestClosure,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StairEntrance_WestClosure
+
+Hide_MainB1_StairEntrance_EastClosure,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StairEntrance_EastClosure
+
+
+#============================================================
+# Main B1 - Storage Room Hide Graybox
+#============================================================
+
+# Floor
+Hide_MainB1_Storage_Floor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StorageRoom_Floor
+
+# East Wall
+Hide_MainB1_Storage_EastWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StorageRoom_EastWall
+
+# North Wall
+Hide_MainB1_Storage_FrontWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StorageRoom_FrontWall
+
+# South Wall
+Hide_MainB1_Storage_BackWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StorageRoom_BackWall
+
+# 北側サービス廊下の床
+Hide_MainB1_Service_NorthFloor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_ServiceCorridor_Floor
+
+# 南側サービス廊下の床
+Hide_MainB1_Service_SouthFloor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_ServiceCorridor_ExtFloor
+
+# 南端の行き止まり壁
+Hide_MainB1_Service_SouthEndWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_Junction_EndWall
+
+# 1F側の踊り場
+Hide_MainB1_StairTopLanding,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StairTopLanding
+
+# B1側の踊り場
+Hide_MainB1_StairLanding_Floor,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StairLanding_Floor
+
+
+#============================================================
+# STEP30 - 本館地下天井
+#
+# ボイラー室・倉庫・サービス通路を覆う。
+# 天井はY=-0.26。
+#
+# 既存の階段天井とColliderは変更しない。
+#============================================================
+
+Art_MainB1_Step30_Ceiling,MansionArt,-12.50,-0.26,-8.00,0,180,0,1,1,1,data/model/mansion/repair/step30/mainb1_ceiling_closure.vnm
+
+# STEP31 - 本館B1階段の天井裏補修
+# 上部の昇降空間は塞がない
+
+Art31_MainB1_StairOverhead,MansionArt,-12.500,-0.190,0.600,0,180,0,1,1,1,data/model/mansion/repair/step31/main_b1_stair_overhead_soffit.vnm
+
+#============================================================
+# Hide Stairwell Graybox Walls
+#============================================================
+
+# 西側の側壁
+Hide_MainB1_StairWall_West,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StairWall_West
+
+# 東側の側壁
+Hide_MainB1_StairWall_East,MansionHideGraybox,0,0,0,0,0,0,1,1,1,MainB1_StairWall_East

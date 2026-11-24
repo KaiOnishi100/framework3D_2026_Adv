@@ -1,0 +1,51 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Laboratory
+#
+# X=64～74
+# Z=20～31
+# Size=10x11m
+#
+# 実験設備用の部屋。
+# 床と壁は傷んだコンクリート。
+#============================================================
+
+Art_Annex1F_Laboratory_Architecture,MansionArt,69.0,0.0,25.5,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_laboratory.vnm
+
+
+#============================================================
+# STEP 26 - Annex Laboratory Furniture
+#============================================================
+
+# 西側の研究作業台
+Art_Annex1F_Lab_Bench_01,MansionArt,66.0,0,24.0,0,90,0,1,1,1,data/model/mansion/props/annex/annex_lab_bench_01.vnm
+
+# 東側の研究作業台
+Art_Annex1F_Lab_Bench_02,MansionArt,72.0,0,24.0,0,-90,0,1,1,1,data/model/mansion/props/annex/annex_lab_bench_01.vnm
+
+# 奥側の研究機器
+Art_Annex1F_Lab_Console_01,MansionArt,66.0,0,29.2,0,180,0,1,1,1,data/model/mansion/props/annex/annex_research_console_01.vnm
+
+Art_Annex1F_Lab_Console_02,MansionArt,72.0,0,29.2,0,180,0,1,1,1,data/model/mansion/props/annex/annex_research_console_01.vnm
+
+# STEP31 - 別館1F 北東角
+
+#Art31_AnnexInnerCorner_NE,MansionArt,73.800,0.000,30.800,0,180,0,1,1,1,data/model/mansion/repair/step31/annex1f_inner_corner_trim.vnm
+
+
+# STEP40 - Laboratory Door Frame
+# MainCorridor北側の研究室入口
+Art40_Annex1F_LaboratoryDoorFrame,MansionArt,69.0,0.0,20.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/annex_interior_doorframe_200.vnm
+
+# light
+Art_Annex1F_Lab_CeilingLight,MansionArt,69,4.26,26,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+
+#============================================================
+# STEP47 - Annex Laboratory Bookshelf
+#
+# 研究資料の保管棚
+# 南壁寄りに設置する
+#============================================================
+Art47_AnnexLaboratory_Bookshelf_Damaged,MansionArt,69.0,0,30.60,0,180,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_damaged_01.vnm
