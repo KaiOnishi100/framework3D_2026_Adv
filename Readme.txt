@@ -80,7 +80,7 @@ Atmospheric Escape
 
 以下のパスは、ソリューションがあるフォルダーを基準にしています。
 
-作品ポートフォリオ　docs/AtmosphericEscape_Portfolio_ver_1.02.pdf
+作品ポートフォリオ　docs/AtmosphericEscape_Portfolio.pdf
 探索とパズル　　　　vn_framework3D_2026_Adv/public/world/AtmosphericEscapeWorld/
 目標・文書・部屋　　vn_framework3D_2026_Adv/data/csv/world/gameplay/
 追跡者の行動と知覚　vn_framework3D_2026_Adv/public/object/AtmosphericEscape_Object/Enemy/pursuerMonster.cpp
