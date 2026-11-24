@@ -1,0 +1,111 @@
+Texture2D sceneTex : register(t0);
+SamplerState smp : register(s0);
+
+//============================================================
+// register(b0)
+//   RootSignature の rp[1]
+//   SetGraphicsRootConstantBufferView(1, address)
+//   で渡している定数バッファ
+//============================================================
+cbuffer PostEffectParam : register(b0)
+{
+	//============================================================
+	// ColorGrading
+	//============================================================
+    float brightness;
+    float contrast;
+    float saturation;
+    float colorGradingPadding;
+
+	//============================================================
+	// Vignette
+	//============================================================
+    float vignetteStart;
+    float vignetteEnd;
+    float vignetteStrength;
+    float vignettePadding;
+
+	//============================================================
+	// Chromatic Aberration
+	//============================================================
+    float chromaticStrength;
+    float3 chromaticPadding;
+};
+
+struct PSInput
+{
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+float3 ApplySaturation(float3 color, float saturation)
+{
+	//============================================================
+	// 人間の目が感じる明るさに近い比率でグレースケール化
+	//============================================================
+    float gray =
+		color.r * 0.299f +
+		color.g * 0.587f +
+		color.b * 0.114f;
+
+	//============================================================
+	// saturation = 0.0 なら完全グレー
+	// saturation = 1.0 なら元の色
+	// saturation > 1.0 なら色が濃くなる
+	//============================================================
+    return lerp(float3(gray, gray, gray), color, saturation);
+}
+
+float3 ApplyContrast(float3 color, float contrast)
+{
+	//============================================================
+	// 0.5 を中心にしてコントラスト調整
+	// contrast = 1.0 なら変化なし
+	// contrast > 1.0 なら明暗差が強くなる
+	// contrast < 1.0 なら眠い絵になる
+	//============================================================
+    return (color - 0.5f) * contrast + 0.5f;
+}
+
+float4 main(PSInput input) : SV_TARGET
+{
+    float3 color = sceneTex.Sample(smp, input.uv).rgb;
+
+	#if 0
+	//============================================================
+    // 効果確認用
+    //============================================================
+    float brightness = 1.10f;              // 明るさ。1.0より大きいほど明るい
+    float contrast   = 1.45f;              // コントラスト。1.0より大きいほど明暗差が強い
+    float saturation = 1.60f;              // 彩度。1.0より大きいほど色が濃い
+	// 少し青紫寄りにする
+    float3 tint = float3(0.90f, 0.95f, 1.20f);
+    #endif
+	
+	#if 0
+	//============================================================
+    // 効果確認用：モノクロ寄り確認
+    //============================================================
+    float brightness = 1.00f;
+    float contrast   = 1.00f;
+    float saturation = 0.20f;
+    float3 tint = float3(1.0f, 1.0f, 1.0f);
+    #endif
+
+	
+	#if 1
+	//============================================================
+	// 調整値
+	//============================================================
+    color *= brightness;
+    color = ApplyContrast(color, contrast);
+    color = ApplySaturation(color, saturation);
+    #endif
+
+	//============================================================
+	// LDRなので 0.0 ～ 1.0 に収める
+	//============================================================
+    color = saturate(color);
+
+    return float4(color, 1.0f);
+}

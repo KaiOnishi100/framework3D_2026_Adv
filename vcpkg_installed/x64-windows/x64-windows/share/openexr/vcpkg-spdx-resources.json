@@ -1,0 +1,19 @@
+{
+  "packages": [
+{
+  "SPDXID" : "SPDXRef-resource-0",
+  "checksums" : 
+  [
+    {
+      "algorithm" : "SHA512",
+      "checksumValue" : "dd7919417713c5407d41740dd219d6ba49c5defe234d332f83a914ce507d72ff9a656885149d94ee8f76c8bbbd710c7232e3a402bd3c49fd8df9943ef941aed3"
+    }
+  ],
+  "copyrightText" : "NOASSERTION",
+  "downloadLocation" : "git+https://github.com/AcademySoftwareFoundation/openexr@v3.4.14",
+  "licenseConcluded" : "NOASSERTION",
+  "licenseDeclared" : "NOASSERTION",
+  "name" : "AcademySoftwareFoundation/openexr"
+}
+  ]
+}

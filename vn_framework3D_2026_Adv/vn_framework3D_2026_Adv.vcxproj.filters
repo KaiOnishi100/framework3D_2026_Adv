@@ -1,0 +1,1587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{c60caa93-cb71-4fdb-94a3-e0fcb19a22ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\directX">
+      <UniqueIdentifier>{13af105e-a42d-483b-ba90-4314ae563a04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{b1bb8c43-8b2c-4cd0-87b8-b5d4620095f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\postprocess">
+      <UniqueIdentifier>{fe2a48c0-2daa-47d3-bdc6-523b44e02172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\postProcess">
+      <UniqueIdentifier>{e5da70d7-bf26-46ed-bd40-6d23f7b90de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\debug">
+      <UniqueIdentifier>{a96d249b-e690-41d4-a0e8-206372c879ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\common">
+      <UniqueIdentifier>{b1c5ab5c-e763-400f-a8fe-3ab2242c7a72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\ibl">
+      <UniqueIdentifier>{a9fce625-ffb2-47c5-89ca-561931757d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\light">
+      <UniqueIdentifier>{2ca59439-4c72-4e5e-a7e2-9e52a38ead33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\shadow">
+      <UniqueIdentifier>{0272a42e-61c3-4161-b533-ad561eba2d6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\ps3d">
+      <UniqueIdentifier>{41726cad-b62b-4695-ada3-ab93124f293d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\gi">
+      <UniqueIdentifier>{f5db4433-0522-41ef-9bdf-8e8cc04c1ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\gi\postprosess">
+      <UniqueIdentifier>{a3946a12-4e50-4975-9d39-79484105f7aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader\gi\geometry">
+      <UniqueIdentifier>{4f524974-a32e-4cb5-a018-c3b10eedada8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\postProcess\SSGIPass">
+      <UniqueIdentifier>{9c457c10-fac2-4437-b8db-1a5a6c97f211}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public">
+      <UniqueIdentifier>{2b18dcf1-7c09-43e6-96f8-eeb58a752689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\scene">
+      <UniqueIdentifier>{032a8b9d-5824-421e-9a5a-471b13e8fa3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\effect">
+      <UniqueIdentifier>{3c67ddbc-ad4d-4db9-8b0f-9b4fca5a064d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\input">
+      <UniqueIdentifier>{cf8cc016-efd4-4c17-9e02-a92643fc6d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\input\AtmosphericEscape_InputConfig">
+      <UniqueIdentifier>{7f63686a-39cb-45a9-be7a-7aada5d88c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\UI">
+      <UniqueIdentifier>{c845a345-4916-414d-9174-e873281a936e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\collide">
+      <UniqueIdentifier>{282f1dad-aab3-45ef-9c96-7316e77d794c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object">
+      <UniqueIdentifier>{fbe5126e-d1f2-48b8-baf4-435a47a17ca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object\AtmosphericEscape_Object">
+      <UniqueIdentifier>{bca85fc8-7d10-414b-9c4d-1ee917bdadc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object\AtmosphericEscape_Object\Player">
+      <UniqueIdentifier>{aa43b2e2-c549-4f04-8ce6-526be485e641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object\AtmosphericEscape_Object\interaction_Object">
+      <UniqueIdentifier>{38e002f6-a4a2-4005-a231-87c381c2d60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object\AtmosphericEscape_Object\Enemy">
+      <UniqueIdentifier>{25cf8b93-9a09-4baf-9c7a-cb7b2b36b6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object\EyeKillYou_Object">
+      <UniqueIdentifier>{243f466f-6065-4228-8913-bba460c276af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\object\EyeKillYou_Object\playerAction">
+      <UniqueIdentifier>{e99ef66d-5afc-4c16-8cc6-3390476508ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\tutorial">
+      <UniqueIdentifier>{1bfc05e1-2496-4fb3-863f-bb14513a0acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\interaction">
+      <UniqueIdentifier>{08f6bbe2-5c68-4638-90f2-217297b28384}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world">
+      <UniqueIdentifier>{8cd76746-8e84-483e-b45b-31c6468c48b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld">
+      <UniqueIdentifier>{9f0540ff-ec9d-48bb-9952-b05056bb3c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\forest">
+      <UniqueIdentifier>{4dd067ad-2974-4755-810f-6dbe64b7b7b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\facility">
+      <UniqueIdentifier>{0d796465-fb00-404f-85aa-4ac90e1d6b15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\debug">
+      <UniqueIdentifier>{4de33c5e-0874-45c8-a70f-9453984dfe81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\debug\runtimeLookDev">
+      <UniqueIdentifier>{15402913-5883-4280-953e-031d1d143fe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\noise">
+      <UniqueIdentifier>{b47079d8-2d35-48c6-8476-e658285d4342}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\interface">
+      <UniqueIdentifier>{77a1b784-29c2-4ebf-922c-f797b3e93b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\save">
+      <UniqueIdentifier>{20111426-4664-44a8-9b2f-69a8392d3ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\puzzle">
+      <UniqueIdentifier>{f4ecc82f-0ee1-496b-bfd3-04b5e8b1a855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\exploration">
+      <UniqueIdentifier>{c11067a4-b89a-461f-aec0-9046404b4603}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\UI\AtmosphericEscapeWorld">
+      <UniqueIdentifier>{aca256ec-78f7-4b3b-9787-b374dd1610d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\inventory">
+      <UniqueIdentifier>{09bc9208-9ae0-497c-9547-b0b7037152af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\mansion">
+      <UniqueIdentifier>{b823104e-21b0-4899-862c-17ac190305d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\content">
+      <UniqueIdentifier>{79b1fb46-2340-49b9-a176-40aca0f3a443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\item">
+      <UniqueIdentifier>{43331c88-ef2c-4c9c-98ed-9ed3a2e35cfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\light\AtmosphericEscape">
+      <UniqueIdentifier>{98be4be6-db96-453f-a21e-53103bfcd393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\world\AtmosphericEscapeWorld\document">
+      <UniqueIdentifier>{30d5b9ad-9585-492d-9e70-62beecc6c359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\effect\AtomosphericEscape">
+      <UniqueIdentifier>{4ce3d9c2-63f7-4c4a-ad20-57d629509e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\integration">
+      <UniqueIdentifier>{9c49a477-74ac-4ef4-a712-011807ee5b3c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="vn_framework3D_2026_Adv.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_camera.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_debugDraw.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_environment.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_font.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_joystick.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_keyboard.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_mainframe.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_modelData.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_mouse.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_sound.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\directX\Direct2D.h">
+      <Filter>framework\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\directX\Direct3D.h">
+      <Filter>framework\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\directX\DirectInput.h">
+      <Filter>framework\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\directX\shader.h">
+      <Filter>framework\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\directX\vn_XAudio2.h">
+      <Filter>framework\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\directX\vn_XInput.h">
+      <Filter>framework\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vn_billboard.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vn_character.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vn_collide.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\modelBase.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\objectBase.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\vn_sprite.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\scene\scene_table.h">
+      <Filter>public\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="public\scene\vn_scene.h">
+      <Filter>public\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_motionData.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="public\scene\scene_field_test.h">
+      <Filter>public\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="public\emitter.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\sphereCollider.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\meshCollider.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\collisionManager.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\collider.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\boxCollider.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\allCollider.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\slowSystem.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\calculate.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\cinematicCamera.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\pad.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\SoundBank.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\SoundPool.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\allEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\breathEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\chargeCompleteEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\chargeEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\explosionEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\hitImpactEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\invincibleAuraEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\laserEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\laserQuad.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\moveDustEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\pressImpactEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\rollingDustEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\shockwaveEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\shockwaveRingEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\smokeEffect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\effect.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\effectManager.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\IControllable.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\inputCommand.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\inputConfig.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\inputDeviceTracker.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\inputDeviceDetect.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\inputRouter.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\inputUIConfig.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\IUIControllable.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\allInput.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\direction.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\UIInputCommand.h">
+      <Filter>public\input</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\allUI.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\FadeManager.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\MainGameUI.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\TitleUI.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIActionHints.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UICommon.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIHealthBar.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIHintItem.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIPadSubmitHint.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIPauseOverlay.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIResultOverlay.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIRipple.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIStickRepeater.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="public\tutorial\allTutorial.h">
+      <Filter>public\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="public\tutorial\tutorialManager.h">
+      <Filter>public\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="public\tutorial\tutorialSettings.h">
+      <Filter>public\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\vn_fog.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcessManager.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\PostProcess\bloomPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\vignettePass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\colorGradingPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\pingPongPostRT.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\fxaaPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\chromaticAberrationPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="public\postEffectController.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\shadowMapManager.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\render_format.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\toneMappingPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\environmentMapManager.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\PBRDebug.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\light\light.h">
+      <Filter>framework\light</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\light\localLightManager.h">
+      <Filter>framework\light</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\shadow\shadowMap.h">
+      <Filter>framework\shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\shadow\spotLightShadowManager.h">
+      <Filter>framework\shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\shadow\pointLightShadowManager.h">
+      <Filter>framework\shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\lensFlarePass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\halfResolutionEffectPass.h">
+      <Filter>public\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\motionVectorPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\motionBlurPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\volumetricFogPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\subsurfaceScatteringPass.h">
+      <Filter>framework\postProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\SSGIPass\giSurfacePass.h">
+      <Filter>framework\postProcess\SSGIPass</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\postProcess\SSGIPass\ssgiPass.h">
+      <Filter>framework\postProcess\SSGIPass</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\DDS_Loader.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="public\skeletalModel.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\motionData.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\skeletalAnimationController.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="public\scene\scene_Character_Rendering_Test.h">
+      <Filter>public\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="public\scene\scene_AtmosphericEscape.h">
+      <Filter>public\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\AtmosphericEscape_InputConfig\IExplorationControllable.h">
+      <Filter>public\input\AtmosphericEscape_InputConfig</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\AtmosphericEscape_InputConfig\explorationInputHandler.h">
+      <Filter>public\input\AtmosphericEscape_InputConfig</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Player\explorationPlayer.h">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Player\explorationPlayerMovement.h">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Player\playerAnimationController.h">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\IPhysicsCharacter.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\allObject.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\boss.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\bossStage.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\bossStateBase.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\character.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\floor.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\player.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\shadow.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\EyeKillYou_Object\stage.h">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Player\playerInteraction.h">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="public\interaction\IInteractable.h">
+      <Filter>public\interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="public\interaction\interactionSystem.h">
+      <Filter>public\interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\interaction_Object\debugInteractObject.h">
+      <Filter>public\object\AtmosphericEscape_Object\interaction_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Player\playerFlashlight.h">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\atmosphericEscapeWorld.h">
+      <Filter>public\world\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\forest\forestGuidanceLight.h">
+      <Filter>public\world\AtmosphericEscapeWorld\forest</Filter>
+    </ClInclude>
+    <ClInclude Include="public\debug\runtimeLookDev\runtimeLookDevController.h">
+      <Filter>public\debug\runtimeLookDev</Filter>
+    </ClInclude>
+    <ClInclude Include="public\debug\runtimeLookDev\debugFreeCamera.h">
+      <Filter>public\debug\runtimeLookDev</Filter>
+    </ClInclude>
+    <ClInclude Include="public\debug\runtimeLookDev\postProcessDebugInspector.h">
+      <Filter>public\debug\runtimeLookDev</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\facility\facilityGraybox.h">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\facility\facilityDoor.h">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\worldPlacement.h">
+      <Filter>public\world\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\facility\facilityTerminal.h">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\facility\facilityPowerLight.h">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\facility\facilityAccessKey.h">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Enemy\pursuerMonster.h">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Enemy\pursuerSystem.h">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\noise\noiseSystem.h">
+      <Filter>public\noise</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Player\playerNoiseEmitter.h">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Enemy\pursuerNavigation.h">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\interface\IDamageable.h">
+      <Filter>public\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public\collide\capsuleCollider.h">
+      <Filter>public\collide</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\save\atmosphericEscapeSaveData.h">
+      <Filter>public\world\AtmosphericEscapeWorld\save</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\save\atmosphericEscapeSaveManager.h">
+      <Filter>public\world\AtmosphericEscapeWorld\save</Filter>
+    </ClInclude>
+    <ClInclude Include="public\input\AtmosphericEscape_InputConfig\AtmosphericEscapeSceneInputHandler.h">
+      <Filter>public\input\AtmosphericEscape_InputConfig</Filter>
+    </ClInclude>
+    <ClInclude Include="public\interface\IPersistentWorldObject.h">
+      <Filter>public\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\puzzle\puzzleBase.h">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\puzzle\puzzleManager.h">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\puzzle\puzzleSwitch.h">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\puzzle\sequencePuzzle.h">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\exploration\explorationLocation.h">
+      <Filter>public\world\AtmosphericEscapeWorld\exploration</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\exploration\explorationLocationSystem.h">
+      <Filter>public\world\AtmosphericEscapeWorld\exploration</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\exploration\explorationObjective.h">
+      <Filter>public\world\AtmosphericEscapeWorld\exploration</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\exploration\objectiveManager.h">
+      <Filter>public\world\AtmosphericEscapeWorld\exploration</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIExplorationMapOverlay.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\inventory\inventoryItem.h">
+      <Filter>public\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="public\inventory\inventoryManager.h">
+      <Filter>public\inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIInventoryOverlay.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIObjectiveOverlay.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIExplorationMenu.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionGraybox.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\content\atmosphericEscapeContentLoader.h">
+      <Filter>public\world\AtmosphericEscapeWorld\content</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionEntranceDoor.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionPowerTerminal.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionPowerLight.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\interface\INavigationDoor.h">
+      <Filter>public\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionDoor.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\item\worldItemPickup.h">
+      <Filter>public\world\AtmosphericEscapeWorld\item</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionFuseBox.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionResearchSeal.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionControlTerminal.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\light\AtmosphericEscape\AtmosphericEscapeLightBudget.h">
+      <Filter>framework\light\AtmosphericEscape</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\document\documentManager.h">
+      <Filter>public\world\AtmosphericEscapeWorld\document</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\content\documentContentLoader.h">
+      <Filter>public\world\AtmosphericEscapeWorld\content</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\document\documentPickup.h">
+      <Filter>public\world\AtmosphericEscapeWorld\document</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIDocumentOverlay.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIDocumentViewer.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\puzzle\annexSafetyPuzzle.h">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionArt.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\object\AtmosphericEscape_Object\Enemy\pursuerAnimationController.h">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\AtomosphericEscape\ambientDustEffect.h">
+      <Filter>public\effect\AtomosphericEscape</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\AtomosphericEscape\doorDustEffect.h">
+      <Filter>public\effect\AtomosphericEscape</Filter>
+    </ClInclude>
+    <ClInclude Include="public\world\AtmosphericEscapeWorld\mansion\mansionCandle.h">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClInclude>
+    <ClInclude Include="public\effect\AtomosphericEscape\candleFlameEffect.h">
+      <Filter>public\effect\AtomosphericEscape</Filter>
+    </ClInclude>
+    <ClInclude Include="public\integration\AtmosphericHeartbeat.h">
+      <Filter>public\integration</Filter>
+    </ClInclude>
+    <ClInclude Include="public\scene\scene_AtmosphericEscape_Title.h">
+      <Filter>public\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\AtmosphericEscapeWorld\UIExplorationControls.h">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\AtmosphericEscapeOptions.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UI\UIAtmosphericEscapeOptions.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\AEUIFont.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="public\integration\AtmosphericChaseVignette.h">
+      <Filter>public\integration</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="vn_framework3D_2026_Adv.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_camera.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_debugDraw.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_font.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_joystick.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_keyboard.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_mainframe.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_mouse.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_sound.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\directX\Direct2D.cpp">
+      <Filter>framework\directX</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\directX\Direct3D.cpp">
+      <Filter>framework\directX</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\directX\DirectInput.cpp">
+      <Filter>framework\directX</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\directX\shader.cpp">
+      <Filter>framework\directX</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\directX\vn_XAudio2.cpp">
+      <Filter>framework\directX</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\directX\vn_XInput.cpp">
+      <Filter>framework\directX</Filter>
+    </ClCompile>
+    <ClCompile Include="public\vn_billboard.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\vn_character.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\vn_collide.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\modelBase.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\objectBase.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\vn_sprite.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\scene\scene_table.cpp">
+      <Filter>public\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="public\scene\vn_scene.cpp">
+      <Filter>public\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="public\scene\scene_field_test.cpp">
+      <Filter>public\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="public\emitter.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\collide\sphereCollider.cpp">
+      <Filter>public\collide</Filter>
+    </ClCompile>
+    <ClCompile Include="public\collide\meshCollider.cpp">
+      <Filter>public\collide</Filter>
+    </ClCompile>
+    <ClCompile Include="public\collide\collisionManager.cpp">
+      <Filter>public\collide</Filter>
+    </ClCompile>
+    <ClCompile Include="public\collide\collider.cpp">
+      <Filter>public\collide</Filter>
+    </ClCompile>
+    <ClCompile Include="public\collide\boxCollider.cpp">
+      <Filter>public\collide</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\slowSystem.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\calculate.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\cameraCollision.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\cinematicCamera.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\pad.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\SoundBank.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\SoundPool.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\breathEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\chargeCompleteEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\chargeEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\explosionEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\hitImpactEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\invincibleAuraEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\laserEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\laserQuad.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\moveDustEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\pressImpactEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\rollingDustEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\shockwaveEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\shockwaveRingEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\smokeEffect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\effect.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\effectManager.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\inputCommand.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\inputConfig.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\inputDeviceDetect.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\inputDeviceTracker.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\inputRouter.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\inputUIConfig.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\UIInputCommand.cpp">
+      <Filter>public\input</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\FadeManager.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\MainGameUI.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\TitleUI.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIActionHints.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UICommon.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIHealthBar.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIHintItem.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIPadSubmitHint.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIPauseOverlay.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIResultOverlay.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIRipple.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIStickRepeater.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="public\tutorial\tutorialManager.cpp">
+      <Filter>public\tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="public\tutorial\tutorialSettings.cpp">
+      <Filter>public\tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\vn_fog.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcessManager.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\PostProcess\bloomPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\vignettePass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\colorGradingPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\pingPongPostRT.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\fxaaPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\chromaticAberrationPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="public\postEffectController.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\shadowMapManager.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\toneMappingPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\environmentMapManager.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\light\light.cpp">
+      <Filter>framework\light</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\light\localLightManager.cpp">
+      <Filter>framework\light</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\shadow\shadowMap.cpp">
+      <Filter>framework\shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\shadow\spotLightShadowManager.cpp">
+      <Filter>framework\shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\shadow\pointLightShadowManager.cpp">
+      <Filter>framework\shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\lensFlarePass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\halfResolutionEffectPass.cpp">
+      <Filter>public\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\motionVectorPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\motionBlurPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\volumetricFogPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\subsurfaceScatteringPass.cpp">
+      <Filter>framework\postProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\SSGIPass\giSurfacePass.cpp">
+      <Filter>framework\postProcess\SSGIPass</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\postProcess\SSGIPass\ssgiPass.cpp">
+      <Filter>framework\postProcess\SSGIPass</Filter>
+    </ClCompile>
+    <ClCompile Include="public\skeletalModel.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\skeletalAnimationController.cpp">
+      <Filter>public</Filter>
+    </ClCompile>
+    <ClCompile Include="public\scene\scene_Character_Rendering_Test.cpp">
+      <Filter>public\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="public\scene\scene_AtmosphericEscape.cpp">
+      <Filter>public\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\AtmosphericEscape_InputConfig\explorationInputHandler.cpp">
+      <Filter>public\input\AtmosphericEscape_InputConfig</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Player\explorationPlayer.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Player\explorationPlayerMovement.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Player\playerAnimationController.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\boss.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\bossStage.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\bossStateBase.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\character.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\floor.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\player.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\shadow.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\stage.cpp">
+      <Filter>public\object\EyeKillYou_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\playerAction\playerMovement.cpp">
+      <Filter>public\object\EyeKillYou_Object\playerAction</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\playerAction\playerAvoid.cpp">
+      <Filter>public\object\EyeKillYou_Object\playerAction</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\EyeKillYou_Object\playerAction\playerAttack.cpp">
+      <Filter>public\object\EyeKillYou_Object\playerAction</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Player\playerInteraction.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="public\interaction\interactionSystem.cpp">
+      <Filter>public\interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\interaction_Object\debugInteractObject.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\interaction_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Player\playerFlashlight.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\atmosphericEscapeWorld.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\forest\forestGuidanceLight.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\forest</Filter>
+    </ClCompile>
+    <ClCompile Include="public\debug\runtimeLookDev\runtimeLookDevController.cpp">
+      <Filter>public\debug\runtimeLookDev</Filter>
+    </ClCompile>
+    <ClCompile Include="public\debug\runtimeLookDev\debugFreeCamera.cpp">
+      <Filter>public\debug\runtimeLookDev</Filter>
+    </ClCompile>
+    <ClCompile Include="public\debug\runtimeLookDev\postProcessDebugInspector.cpp">
+      <Filter>public\debug\runtimeLookDev</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\facility\facilityGraybox.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\facility\facilityDoor.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\worldPlacement.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\facility\facilityTerminal.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\facility\facilityPowerLight.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\facility\facilityAccessKey.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\facility</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Enemy\pursuerMonster.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Enemy\pursuerSystem.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Player\playerNoiseEmitter.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Enemy\pursuerNavigation.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="public\collide\capsuleCollider.cpp">
+      <Filter>public\collide</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\save\atmosphericEscapeSaveManager.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\save</Filter>
+    </ClCompile>
+    <ClCompile Include="public\input\AtmosphericEscape_InputConfig\AtmosphericEscapeSceneInputHandler.cpp">
+      <Filter>public\input\AtmosphericEscape_InputConfig</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\puzzle\puzzleBase.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\puzzle\puzzleManager.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\puzzle\puzzleSwitch.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\puzzle\sequencePuzzle.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\exploration\explorationLocationSystem.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\exploration</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\exploration\objectiveManager.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\exploration</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIExplorationMapOverlay.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\inventory\inventoryManager.cpp">
+      <Filter>public\inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIInventoryOverlay.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIObjectiveOverlay.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIExplorationMenu.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionGraybox.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\content\atmosphericEscapeContentLoader.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\content</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionEntranceDoor.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionPowerTerminal.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionPowerLight.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionDoor.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\item\worldItemPickup.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\item</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionFuseBox.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionResearchSeal.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionControlTerminal.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\light\AtmosphericEscape\AtmosphericEscapeLightBudget.cpp">
+      <Filter>framework\light\AtmosphericEscape</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\document\documentManager.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\document</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\content\documentContentLoader.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\content</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\document\documentPickup.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\document</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIDocumentOverlay.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIDocumentViewer.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\puzzle\annexSafetyPuzzle.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\puzzle</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionArt.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\object\AtmosphericEscape_Object\Enemy\pursuerAnimationController.cpp">
+      <Filter>public\object\AtmosphericEscape_Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\AtomosphericEscape\ambientDustEffect.cpp">
+      <Filter>public\effect\AtomosphericEscape</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\AtomosphericEscape\doorDustEffect.cpp">
+      <Filter>public\effect\AtomosphericEscape</Filter>
+    </ClCompile>
+    <ClCompile Include="public\world\AtmosphericEscapeWorld\mansion\mansionCandle.cpp">
+      <Filter>public\world\AtmosphericEscapeWorld\mansion</Filter>
+    </ClCompile>
+    <ClCompile Include="public\effect\AtomosphericEscape\candleFlameEffect.cpp">
+      <Filter>public\effect\AtomosphericEscape</Filter>
+    </ClCompile>
+    <ClCompile Include="public\scene\scene_AtmosphericEscape_Title.cpp">
+      <Filter>public\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\AtmosphericEscapeWorld\UIExplorationControls.cpp">
+      <Filter>public\UI\AtmosphericEscapeWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\AtmosphericEscapeOptions.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="public\UI\UIAtmosphericEscapeOptions.cpp">
+      <Filter>public\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\AEUIFont.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="public\integration\AtmosphericChaseVignette.cpp">
+      <Filter>public\integration</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="vn_framework3D_2026_Adv.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="vn_framework3D_2026_Adv.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\ps_2d.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_3d.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_3d_line.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_3d_no_light.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vs_2d.vsh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vs_3d_line.vsh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vs_3d_skin.vsh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_copy.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_gray.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\vs_copy.vsh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\vs_gray.vsh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vs_3d.vsh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_bloom_blur_v.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_bloom_blur_h.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_bloom_bright.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_bloom_composite.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_vignette.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_color_grading.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_fxaa.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_chromatic_aberration.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vs_shadow.vsh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\debug\ps_shadowDebug.psh">
+      <Filter>shader\debug</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\vs_shadow_skin.vsh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_toneMapping.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_2d_hdr.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\vs_skybox.vsh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\ps_skybox.psh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\vs_prefilter_environment.vsh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\ps_prefilter_environment.psh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\ps_irradiance_environment.psh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\vs_brdf_lut.vsh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\ps_brdf_lut.psh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_lens_flare.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_lens_flare_occlusion.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_effect_depth_downsample.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_effect_half_composite.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_motion_vector.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_motion_vector_debug.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_motion_blur.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\vs_object_motion.vsh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_object_motion.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\vs_object_motion_skin.vsh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_volumetric_fog.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_volumetric_fog_composite.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_volumetric_fog_shadowed.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_volumetric_fog_temporal.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_volumetric_fog_upsample.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ps_sss_mask.psh">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_sss_diffusion_blur.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_sss_diffusion_composite.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\postprocess\ps_sss_temporal.psh">
+      <Filter>shader\postprocess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gi\geometry\ps_gi_surface.psh">
+      <Filter>shader\gi\geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gi\postprocess\ps_ssgi_raymarch.psh">
+      <Filter>shader\gi\postprosess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gi\postprocess\ps_ssgi_filter.psh">
+      <Filter>shader\gi\postprosess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gi\postprocess\ps_ssgi_temporal.psh">
+      <Filter>shader\gi\postprosess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gi\postprocess\ps_ssgi_upsample.psh">
+      <Filter>shader\gi\postprosess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\gi\postprocess\ps_ssgi_composite.psh">
+      <Filter>shader\gi\postprosess</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ibl\ps_hdr_to_cube.psh">
+      <Filter>shader\ibl</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="shader\common\environment_common.hlsli">
+      <Filter>shader\common</Filter>
+    </None>
+    <None Include="shader\ps3d\ps_3d_bindings.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\legacy_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\local_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\pbr_debug.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\cascade_shadow.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\common\color_common.hlsli">
+      <Filter>shader\common</Filter>
+    </None>
+    <None Include="shader\common\pbr_brdf.hlsli">
+      <Filter>shader\common</Filter>
+    </None>
+    <None Include="shader\ps3d\surface_data.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\pixel_context.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\directional_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\ibl_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\pbr_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\spot_shadow.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\fog_common.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\point_shadow.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\effect_local_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+    <None Include="shader\ps3d\subsurface_lighting.hlsli">
+      <Filter>shader\ps3d</Filter>
+    </None>
+  </ItemGroup>
+</Project>

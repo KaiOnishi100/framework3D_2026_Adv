@@ -1,0 +1,61 @@
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#CourtyardArt.csv
+
+#============================================================
+# STEP 23 - Courtyard Art
+#
+# 中庭範囲：
+#   X = 26 ～ 46
+#   Z = 10 ～ 26
+#   Center = (36, 18)
+#
+# Colliderは既存Grayboxを使う
+#============================================================
+
+#============================================================
+# Ground
+#============================================================
+Art_Courtyard_Ground,MansionArt,36.0,0.0,18.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_ground_20x16.vnm
+
+#============================================================
+# Paths
+#============================================================
+Art_Courtyard_Paths,MansionArt,36.0,0.01,18.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_paths_cross.vnm
+
+#============================================================
+# Boundary Walls
+#============================================================
+Art_Courtyard_SouthWall,MansionArt,36.0,0.0,10.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_boundary_wall_20m.vnm
+
+Art_Courtyard_NorthWall,MansionArt,36.0,0.0,26.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_boundary_wall_20m.vnm
+
+#============================================================
+# Key Pedestal
+#============================================================
+Art_Courtyard_KeyPedestal,MansionArt,40.0,0.0,23.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_key_pedestal.vnm
+
+#============================================================
+# Hedges
+#
+# 通路を塞がないように、四隅と北側寄りに配置
+#============================================================
+Art_Courtyard_Hedge_01,MansionArt,30.5,0.0,13.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_hedge_3m.vnm
+Art_Courtyard_Hedge_02,MansionArt,41.5,0.0,13.0,0,180,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_hedge_3m.vnm
+
+Art_Courtyard_Hedge_03,MansionArt,30.5,0.0,23.0,0,165,0,1,1,1,data/model/mansion/exterior/courtyard/courtyard_hedge_3m.vnm
+Art_Courtyard_Hedge_04,MansionArt,44.0,0.0,23.0,0,195,0,0.90,1,1,data/model/mansion/exterior/courtyard/courtyard_hedge_3m.vnm
+
+Art_Courtyard_Hedge_05,MansionArt,32.5,0.0,18.0,0,90,0,0.85,1,1,data/model/mansion/exterior/courtyard/courtyard_hedge_3m.vnm
+Art_Courtyard_Hedge_06,MansionArt,43.5,0.0,18.0,0,90,0,0.85,1,1,data/model/mansion/exterior/courtyard/courtyard_hedge_3m.vnm
+
+#============================================================
+# STEP 23 - Hide Courtyard Graybox
+#
+# 表示だけ消す
+# Colliderは残す
+#============================================================
+
+Hide_Courtyard_Ground,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Courtyard_Ground
+Hide_Courtyard_SouthWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Courtyard_SouthWall
+Hide_Courtyard_NorthWall,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Courtyard_NorthWall
+Hide_Courtyard_AnnexKeyPedestal,MansionHideGraybox,0,0,0,0,0,0,1,1,1,Courtyard_AnnexKeyPedestal

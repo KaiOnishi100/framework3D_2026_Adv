@@ -1,0 +1,115 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Main1F East Corridor - Floor
+#============================================================
+Art_Main1F_EastCorridor_Floor,MansionArt,12.5,0.01,16,0,0,0,1,1,1,data/model/mansion/architecture/floor/corridor_floor_7x16.vnm
+
+
+#============================================================
+# Main1F East Corridor - West Wall
+#============================================================
+
+#------------------------------------------------------------
+# South Section : Z=8～11
+# 2m + 1m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_WestWall_S01,MansionArt,9.08,0,9.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_WestWall_S02,MansionArt,9.08,0,10.4975,0,-90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#------------------------------------------------------------
+# Middle Section : Z=13～19
+# 2m + 2m + 2m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_WestWall_M01,MansionArt,9.08,0,14.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_WestWall_M02,MansionArt,9.08,0,16,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_WestWall_M03,MansionArt,9.08,0,17.9975,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#------------------------------------------------------------
+# North Section : Z=21～24
+# 2m + 1m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_WestWall_N01,MansionArt,9.08,0,22.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_WestWall_N02,MansionArt,9.08,0,23.4975,0,-90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Main1F East Corridor - East Wall
+#============================================================
+
+#------------------------------------------------------------
+# Section 01 : Z=8～12
+# 2m + 2m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_EastWall_01A,MansionArt,15.92,0,9.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_EastWall_01B,MansionArt,15.92,0,11,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#------------------------------------------------------------
+# Section 02 : Z=12～15
+# 2m + 1m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_EastWall_02A,MansionArt,15.92,0,13,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_EastWall_02B,MansionArt,15.92,0,14.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#------------------------------------------------------------
+# Z=15～17 : Power Room Opening
+# ここには壁を配置しない。
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# Section 03 : Z=17～20
+# 2m + 1m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_EastWall_03A,MansionArt,15.92,0,18.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_EastWall_03B,MansionArt,15.92,0,19.5,0,90,0,0.5050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#------------------------------------------------------------
+# Section 04 : Z=20～24
+# 2m + 2m
+#------------------------------------------------------------
+Art_Main1F_EastCorridor_EastWall_04A,MansionArt,15.92,0,21,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_EastWall_04B,MansionArt,15.92,0,22.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# East Corridor - South Wall
+#============================================================
+
+Art_Main1F_EastCorridor_SouthWall_01,MansionArt,10,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_SouthWall_02,MansionArt,12,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_SouthWall_03,MansionArt,14,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_SouthWall_04,MansionArt,15.4975,0,8.2305,0,180,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# East Corridor - North Wall
+#============================================================
+
+Art_Main1F_EastCorridor_NorthWall_01,MansionArt,10,0,23.7695,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_NorthWall_02,MansionArt,12,0,23.7695,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_NorthWall_03,MansionArt,14,0,23.7695,0,0,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_EastCorridor_NorthWall_04,MansionArt,15.4975,0,23.7695,0,0,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+Art_Main1F_EastCorridor_CeilingLight_S,MansionArt,12.5,4.26,12,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+Art_Main1F_EastCorridor_CeilingLight_N,MansionArt,12.5,4.26,20,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+
+#============================================================
+# STEP29 - Main 1F East Corridor Ceiling
+#
+# Room:
+#   X=9 ～ 16
+#   Z=8 ～ 24
+#============================================================
+
+Art_Main_Repair_EastCorridorCeiling,MansionArt,12.5,4.41,16.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main1f_eastcorridor_ceiling.vnm
+
+#============================================================
+# STEP31 - East Corridor Wall End Caps
+#============================================================
+
+# 電源室入口の南側
+Art31_WallCap_EastCorridor_PowerDoor1,MansionArt,16.000,0.000,15.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 電源室入口の北側
+Art31_WallCap_EastCorridor_PowerDoor2,MansionArt,16.000,0.000,17.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm

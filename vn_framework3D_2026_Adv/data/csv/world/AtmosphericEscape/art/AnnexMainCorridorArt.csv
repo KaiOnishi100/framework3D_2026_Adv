@@ -1,0 +1,32 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Main Corridor
+#
+# X=54～74
+# Z=16～20
+# Size=20x4m
+#
+# 各部屋をつなぐ通路。
+# 既存のドア開口とColliderを維持。
+#============================================================
+
+Art_Annex1F_MainCorridor_Architecture,MansionArt,64.0,0.0,18.0,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_main_corridor.vnm
+
+
+#============================================================
+# STEP 26 - Annex Main Corridor Furniture
+#============================================================
+
+# 北側の壁ランプ
+# 資料室と実験室のドアを避けて配置
+
+Art_Annex1F_Corridor_Lamp_01,MansionArt,55.5,2.85,19.7,0,180,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+
+Art_Annex1F_Corridor_Lamp_02,MansionArt,63.5,2.85,19.7,0,180,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+
+Art_Annex1F_Corridor_Lamp_03,MansionArt,72.5,2.85,19.7,0,180,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+
+# 西寄りの配電箱
+Art_Annex1F_Corridor_ElectricalBox,MansionArt,56.0,0.8,16.4,0,0,0,1,1,1,data/model/mansion/props/power_room/electrical_box_01.vnm

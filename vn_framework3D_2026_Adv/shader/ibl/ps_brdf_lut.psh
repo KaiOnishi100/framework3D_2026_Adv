@@ -1,0 +1,288 @@
+//============================================================
+// BRDF LUT生成用Pixel Shader
+//
+// LUTの入力:
+//
+//   X = NdotV
+//   Y = Roughness
+//
+// LUTの出力:
+//
+//   R = FresnelのF0側係数
+//   G = Fresnel補正係数
+//
+// Split-Sum Approximationで使用する
+//============================================================
+
+static const float PI = 3.14159265359f;
+
+//============================================================
+// Vertex Shaderからの入力
+//============================================================
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+//============================================================
+// BRDF生成パラメータ
+// x : サンプル数
+// y : 未使用
+// z : 未使用
+// w : 未使用
+// ※固定回数ループにするとコンパイラが展開する可能性があるため、
+// ※C++側から動的な値として渡す
+//============================================================
+cbuffer BRDFBuffer : register(b0)
+{
+    float4 BRDFParam;
+}
+
+//============================================================
+// Van der Corput Radical Inverse
+//============================================================
+float RadicalInverseVanDerCorput(uint bits)
+{
+    bits = reversebits(bits);
+
+    return (float) bits * 2.3283064365386963e-10f;
+}
+
+//============================================================
+// Hammersley Sequence
+//============================================================
+float2 Hammersley(uint sampleIndex,uint sampleCount)
+{
+    return float2((float) sampleIndex / (float) sampleCount, RadicalInverseVanDerCorput(sampleIndex));
+}
+
+//============================================================
+// GGX Importance Sampling
+//============================================================
+float3 ImportanceSampleGGX(
+	float2 Xi,
+	float3 normal,
+	float roughness
+)
+{
+	//========================================================
+	// GGX alpha
+	//========================================================
+    const float alpha = roughness * roughness;
+
+    const float alphaSquared = alpha * alpha;
+
+	//========================================================
+	// 方位角
+	//========================================================
+    const float phi = 2.0f * PI * Xi.x;
+
+	//========================================================
+	// GGX分布に従った角度
+	//========================================================
+    const float cosTheta =
+		sqrt((1.0f - Xi.y) / (1.0f + (alphaSquared - 1.0f) * Xi.y));
+
+    const float sinTheta =
+		sqrt(max(1.0f - cosTheta * cosTheta, 0.0f));
+
+	//========================================================
+	// Tangent空間のHalf Vector
+	//========================================================
+    const float3 tangentHalfVector =
+		float3(
+			cos(phi) * sinTheta,
+			sin(phi) * sinTheta,
+			cosTheta
+		);
+
+    const float3 N = normalize(normal);
+
+	//========================================================
+	// Tangent Basis
+	//========================================================
+    const float3 helperAxis =
+		abs(N.z) < 0.999f ? float3(0.0f, 0.0f, 1.0f) : float3(1.0f, 0.0f, 0.0f);
+
+    const float3 tangent =
+		normalize(cross(helperAxis, N));
+
+    const float3 bitangent =
+		cross(N, tangent);
+
+	//========================================================
+	// Tangent空間からWorld空間へ変換
+	//========================================================
+    const float3 worldHalfVector =
+		tangent * tangentHalfVector.x +
+		bitangent * tangentHalfVector.y +
+		N * tangentHalfVector.z;
+
+    return normalize(worldHalfVector);
+}
+
+//============================================================
+// Geometry Schlick GGX
+// IBL用のGeometry項
+//============================================================
+float GeometrySchlickGGXIBL(float NdotDirection,float roughness)
+{
+    const float alpha = roughness * roughness;
+
+    const float k = alpha / 2.0f;
+
+    const float denominator = NdotDirection * (1.0f - k) + k;
+
+    return NdotDirection / max(denominator, 0.0001f);
+}
+
+//============================================================
+// Geometry Smith
+//============================================================
+float GeometrySmithIBL(
+	float3 normal,
+	float3 viewDirection,
+	float3 lightDirection,
+	float roughness
+)
+{
+    const float NdotV =
+		saturate(dot(normal, viewDirection));
+
+    const float NdotL =
+		saturate(dot(normal, lightDirection));
+
+    const float geometryView =
+		GeometrySchlickGGXIBL(NdotV, roughness);
+
+    const float geometryLight =
+		GeometrySchlickGGXIBL(NdotL, roughness);
+
+    return geometryView * geometryLight;
+}
+
+//============================================================
+// BRDF積分
+//============================================================
+float2 IntegrateBRDF(
+	float NdotV,
+	float roughness,
+	uint sampleCount
+)
+{
+	//========================================================
+	// 法線は常に+Z方向として計算する
+	//========================================================
+    const float3 N = float3(0.0f, 0.0f, 1.0f);
+
+	//========================================================
+	// NdotVから視線ベクトルを復元
+	// XZ平面上に配置する
+	//========================================================
+    const float3 V = float3(sqrt(max(1.0f - NdotV * NdotV, 0.0f)), 0.0f, NdotV);
+
+    float scale = 0.0f;
+    float bias = 0.0f;
+
+	//========================================================
+	// GGX Importance Sampling
+	//========================================================
+	[loop]
+    for (uint sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
+    {
+        const float2 Xi =
+			Hammersley(sampleIndex, sampleCount);
+
+        const float3 H =
+			ImportanceSampleGGX(Xi, N, roughness);
+
+		//====================================================
+		// Half Vectorからライト方向を復元
+		//====================================================
+        const float3 L =
+			normalize(2.0f * dot(V, H) * H - V);
+
+        const float NdotL = saturate(L.z);
+        const float NdotH = saturate(H.z);
+        const float VdotH = saturate(dot(V, H));
+
+        if (NdotL > 0.0f)
+        {
+			//================================================
+			// Geometry項
+			//================================================
+            const float geometry =
+				GeometrySmithIBL(
+					N,
+					V,
+					L,
+					roughness
+				);
+
+			//================================================
+			// 可視性項
+			// G * VdotH / (NdotH * NdotV)
+			//================================================
+            const float geometryVisibility =
+				geometry * VdotH / max(NdotH * NdotV, 0.0001f);
+
+			//================================================
+			// Schlick Fresnelの補間係数
+			//================================================
+            const float fresnelCoefficient =
+				pow(1.0f - VdotH, 5.0f);
+
+			//================================================
+			// F0側の係数
+			//================================================
+            scale +=
+				(1.0f - fresnelCoefficient) * geometryVisibility;
+
+			//================================================
+			// Fresnel補正側の係数
+			//================================================
+            bias +=
+				fresnelCoefficient * geometryVisibility;
+        }
+    }
+
+    return float2(scale, bias) / (float) sampleCount;
+}
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput IN) : SV_TARGET
+{
+	//============================================================
+	// LUTの横軸
+	// ※0に近すぎると除算が不安定になるため最低値を設ける
+	//============================================================
+    const float NdotV =
+		max(saturate(IN.uv.x), 0.001f);
+
+	//============================================================
+	// LUTの縦軸
+	//============================================================
+    const float roughness =
+		saturate(IN.uv.y);
+
+	//============================================================
+	// C++側からサンプル数を取得
+	//============================================================
+    const uint sampleCount =
+		max((uint) BRDFParam.x, 1u);
+
+    const float2 integratedBRDF =
+		IntegrateBRDF(
+			NdotV,
+			roughness,
+			sampleCount
+		);
+
+	//============================================================
+	// R16G16_FLOATへRGのみ出力
+	//============================================================
+    return float4(integratedBRDF, 0.0f, 1.0f);
+}

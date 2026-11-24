@@ -1,0 +1,77 @@
+//============================================================
+// HDR Sceneへ描画するSprite用Pixel Shader
+// Sprite Texture:
+//   通常はsRGBの画像
+// 出力先:
+//   R16G16B16A16_FLOAT
+//   Linear HDR空間
+// そのため、TextureのRGBをLinearへ変換してから出力する
+//============================================================
+
+Texture2D txDiffuse : register(t0);
+
+SamplerState samLinear : register(s0);
+
+//============================================================
+// Vertex Shaderから受け取る値
+//============================================================
+struct pixelIn
+{
+    float4 pos : SV_POSITION;
+    float4 col : COLOR0;
+    float2 uv : TEXCOORD0;
+};
+
+//============================================================
+// sRGBからLinearへの変換
+// 簡易的なpow(2.2)よりもsRGB規格に近い変換を行う
+//============================================================
+float3 SRGBToLinear(float3 color)
+{
+    float3 lower = color / 12.92f;
+
+    float3 upper = pow((color + 0.055f) / 1.055f, 2.4f);
+
+    return lerp(upper, lower, step(color, 0.04045f));
+}
+
+//============================================================
+// Main
+//============================================================
+float4 main(pixelIn IN) : SV_TARGET
+{
+	//========================================================
+	// Sprite Texture取得
+	//========================================================
+    const float4 sampledColor =
+		txDiffuse.Sample(
+			samLinear,
+			IN.uv
+		);
+
+	//========================================================
+	// 完全透明部分を破棄
+	//========================================================
+    if (sampledColor.a * IN.col.a < 0.001f)
+    {
+        discard;
+    }
+
+	//========================================================
+	// TextureのRGBをLinearへ変換
+	// Alphaは透過率なのでGamma変換しない
+	//========================================================
+    const float3 linearTextureColor = SRGBToLinear(saturate(sampledColor.rgb));
+
+	//========================================================
+	// 頂点カラーはLinear値として扱う
+	//========================================================
+    const float3 resultColor = linearTextureColor * IN.col.rgb;
+
+    const float resultAlpha = sampledColor.a * IN.col.a;
+
+	//========================================================
+	// HDR RenderTargetへLinearカラーを出力
+	//========================================================
+    return float4(resultColor, resultAlpha);
+}

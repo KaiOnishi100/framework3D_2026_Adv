@@ -1,0 +1,1690 @@
+//============================================================
+// Main Depth
+//============================================================
+Texture2D<float> txDepth : register(t0);
+
+
+//============================================================
+// Static CSM
+//============================================================
+Texture2D<float> txStaticShadow0 : register(t1);
+
+Texture2D<float> txStaticShadow1 : register(t2);
+
+Texture2D<float> txStaticShadow2 : register(t3);
+
+
+//============================================================
+// Dynamic CSM
+//============================================================
+Texture2D<float> txDynamicShadow0 : register(t4);
+
+Texture2D<float> txDynamicShadow1 : register(t5);
+
+Texture2D<float> txDynamicShadow2 : register(t6);
+
+//============================================================
+// Blue Noise
+// 64x64 / 128x128程度の小さいNoise Texture
+// Ray March開始位置のJitterとして使用する
+//============================================================
+Texture2D<float4> txBlueNoise : register(t10);
+
+//============================================================
+// Depth
+//============================================================
+SamplerState samLinear : register(s0);
+
+
+//============================================================
+// Shadow Comparison
+//============================================================
+SamplerComparisonState samShadow : register(s1);
+
+cbuffer VolumetricFogBuffer : register(b0)
+{
+    //========================================================
+    // Current ViewProjection逆行列
+    //========================================================
+    float4x4 InverseViewProjection;
+
+    //========================================================
+    // xyz : Camera Position
+    // w   : Max Distance
+    //========================================================
+    float4 CameraPositionMaxDistance;
+
+    //========================================================
+    // xyz : Fog Color
+    // w   : Density
+    //========================================================
+    float4 FogColorDensity;
+
+    //========================================================
+    // xyz : Pixel → Light
+    // w   : HG Anisotropy
+    //========================================================
+    float4 LightDirectionAnisotropy;
+
+    //========================================================
+    // xyz : Light Color
+    // w   : Light Strength
+    //========================================================
+    float4 LightColorStrength;
+
+    //========================================================
+    // x : Scattering Albedo
+    // y : Ambient Strength
+    // z : Base Height
+    // w : Height Falloff
+    //========================================================
+    float4 FogParameters;
+
+    //============================================================
+    // x : Sample Count
+    // y : Frame Index
+    // z : Blue Noise Enable
+    // w : unused
+    //============================================================
+    float4 RaymarchParameters;
+
+    //========================================================
+    // Volumetric Shadow
+    //========================================================
+    float4x4 View;
+
+    float4x4 LightViewProjection[3];
+
+    float4 CascadeSplits;
+
+    float4 CascadeBlendStarts;
+
+    //========================================================
+    // x : Enable
+    // y : Strength
+    // z : Bias
+    // w : unused
+    //========================================================
+    float4 ShadowParameters;
+    
+    //============================================================
+    // Local Light / Spot Volume
+    //
+    // x : Local Light Count
+    // y : Spot Volumetric Strength
+    // z : Spot Shadow Enable
+    // w : unused
+    //============================================================
+    float4 LocalLightParameters;
+
+    //============================================================
+    // Spot Shadow行列
+    //============================================================
+    float4x4 SpotLightViewProjection[4];
+
+    //============================================================
+    // Spot Shadow Parameter
+    // x : Enable
+    // y : PCF Radius
+    // z : Minimum Bias
+    // w : Slope Bias
+    //============================================================
+    float4 SpotShadowParameters[4];
+    
+    //============================================================
+    // Point Light Volumetric
+    //
+    // x : Point Volumetric Strength
+    // y : Point Shadow Enable
+    // zw: unused
+    //============================================================
+    float4 PointLightParameters;
+
+
+    //============================================================
+    // Point Light Shadow ViewProjection
+    // 2灯 × 6 Face = 12
+    //============================================================
+    float4x4 PointLightViewProjection[18];
+
+
+    //============================================================
+    // Point Shadow Parameter
+    // x : Enable
+    // y : PCF Radius
+    // z : Minimum Bias
+    // w : Slope Bias
+    //============================================================
+    float4 PointShadowParameters[3];
+};
+
+//============================================================
+// t7 : Local Light StructuredBuffer
+//============================================================
+struct LocalLightData
+{
+    // xyz : World Position
+    // w   : Range
+    float4 PositionRange;
+
+    // rgb : Light Color
+    // w   : HDR Intensity
+    float4 ColorIntensity;
+
+    // xyz : Spot Direction
+    // w   : Spot Outer Cos
+    float4 DirectionOuterCos;
+
+    // x : Light Type
+    // y : Spot Inner Cos
+    // z : Enable
+    // w : Encoded Shadow Index
+    float4 Parameters;
+    
+    // xyz : 部屋のワールド座標の最小値
+    // w   : 1なら部屋境界を使用 0なら従来どおり距離や角度で減衰
+    float4 RoomMin;
+
+    // xyz : 部屋のワールド座標の最大値
+    float4 RoomMax;
+};
+
+StructuredBuffer<LocalLightData> txLocalLights : register(t7);
+//============================================================
+// t8 : Spot Light Shadow
+// Slice: Spot Shadow Index
+//============================================================
+Texture2DArray<float> txSpotLightShadow : register(t8);
+
+static const uint LOCAL_LIGHT_TYPE_POINT = 0u;
+static const uint LOCAL_LIGHT_TYPE_SPOT = 1u;
+static const uint MAX_LOCAL_LIGHTS = 16u;
+static const uint MAX_SPOT_SHADOW_LIGHTS = 3u;
+
+//============================================================
+// t9 : Point Light Shadow
+//
+// Point Light 0:
+//   Slice 0～5
+//
+// Point Light 1:
+//   Slice 6～11
+//============================================================
+Texture2DArray<float> txPointLightShadow : register(t9);
+
+static const uint POINT_SHADOW_FACE_COUNT = 6u;
+static const uint MAX_POINT_SHADOW_LIGHTS = 2u;
+static const uint POINT_SHADOW_TOTAL_SLICES = MAX_POINT_SHADOW_LIGHTS * POINT_SHADOW_FACE_COUNT;
+
+//============================================================
+// 最大Ray March数
+// Runtime Sample Countはこれ以下
+//============================================================
+static const int MAX_VOLUMETRIC_STEPS = 64;
+
+//============================================================
+// PI
+//============================================================
+static const float PI = 3.14159265359f;
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// Interleaved Gradient Noise
+// Ray開始位置をPixelごとに少しずらしRay Marchの縞模様を軽減する
+//============================================================
+float InterleavedGradientNoise(float2 pixelPosition,float frameIndex)
+{
+    //========================================================
+    // FrameごとにもPatternを少し移動させる
+    //========================================================
+    pixelPosition += frameIndex * float2(5.588238f, 5.588238f);
+
+    return frac(52.9829189f * frac(dot(pixelPosition, float2(0.06711056f, 0.00583715f))));
+}
+
+
+//============================================================
+// Henyey-Greenstein Phase Function
+// g = 0: 等方散乱
+// g > 0: Forward Scattering
+// カメラがLight方向を見たときに光芒が強くなる
+//============================================================
+float HenyeyGreenstein(float cosTheta,float g)
+{
+    const float g2 = g * g;
+
+    const float denominator = max(1.0f + g2 - 2.0f * g * cosTheta, 0.0001f);
+
+    return (1.0f - g2) / (4.0f * PI * pow(denominator, 1.5f));
+}
+
+
+//============================================================
+// Height Fog Density
+//============================================================
+float GetFogDensity(float3 worldPosition)
+{
+    const float baseDensity = max(FogColorDensity.w, 0.0f);
+    const float heightFalloff = max(FogParameters.w, 0.0f);
+
+
+    //========================================================
+    // Height Fog無効
+    //========================================================
+    if (heightFalloff <= 0.000001f)
+    {
+        return baseDensity;
+    }
+
+    //========================================================
+    // Base Heightより高くなるほどDensityを下げる
+    //========================================================
+    const float heightDifference = worldPosition.y - FogParameters.z;
+
+    const float exponentValue = clamp(-heightDifference * heightFalloff, -20.0f, 20.0f);
+
+    return baseDensity * exp(exponentValue);
+}
+
+
+
+//============================================================
+// View空間ZからCascadeを選択
+//============================================================
+int SelectVolumetricCascade(float viewDepth)
+{
+    if (viewDepth <= CascadeSplits.x)
+    {
+        return 0;
+    }
+
+
+    if (viewDepth <= CascadeSplits.y)
+    {
+        return 1;
+    }
+
+
+    if (viewDepth <= CascadeSplits.z)
+    {
+        return 2;
+    }
+
+    //========================================================
+    // Shadow範囲外
+    //========================================================
+    return 3;
+}
+
+//============================================================
+// 指定CascadeのVolumetric Shadowを計算
+//============================================================
+float EvaluateSingleVolumetricShadow(float3 worldPosition,int cascadeIndex)
+{
+    //========================================================
+    // World → Light Clip
+    //========================================================
+    float4 shadowPosition = mul(float4(worldPosition, 1.0f), LightViewProjection[cascadeIndex]);
+
+    //========================================================
+    // Light Projection失敗
+    //========================================================
+    if (shadowPosition.w <= 0.000001f)
+    {
+        return 1.0f;
+    }
+
+    //========================================================
+    // Clip → NDC
+    //========================================================
+    const float3 projected = shadowPosition.xyz / shadowPosition.w;
+
+    //========================================================
+    // NDC → Shadow UV
+    //========================================================
+    const float2 shadowUV =
+        float2(
+            projected.x * 0.5f + 0.5f,
+            -projected.y * 0.5f + 0.5f
+        );
+
+
+    //========================================================
+    // ShadowMap範囲外
+    //========================================================
+    if (shadowUV.x < 0.0f ||
+        shadowUV.x > 1.0f ||
+        shadowUV.y < 0.0f ||
+        shadowUV.y > 1.0f ||
+        projected.z < 0.0f ||
+        projected.z > 1.0f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // Cascadeが遠くなるほど少しBiasを増やす
+    //========================================================
+    float cascadeBiasScale = 1.0f;
+
+
+    if (cascadeIndex == 1)
+    {
+        cascadeBiasScale = 2.0f;
+    }
+    else if (cascadeIndex == 2)
+    {
+        cascadeBiasScale = 4.0f;
+    }
+
+
+    const float compareDepth = projected.z - ShadowParameters.z * cascadeBiasScale;
+
+
+    //========================================================
+    // Static
+    //========================================================
+    float staticVisibility = 1.0f;
+
+
+    if (cascadeIndex == 0)
+    {
+        staticVisibility =
+            txStaticShadow0.SampleCmpLevelZero(
+                samShadow,
+                shadowUV,
+                compareDepth
+            );
+    }
+    else if (cascadeIndex == 1)
+    {
+        staticVisibility =
+            txStaticShadow1.SampleCmpLevelZero(
+                samShadow,
+                shadowUV,
+                compareDepth
+            );
+    }
+    else
+    {
+        staticVisibility =
+            txStaticShadow2.SampleCmpLevelZero(
+                samShadow,
+                shadowUV,
+                compareDepth
+            );
+    }
+
+    //========================================================
+    // Dynamic
+    //========================================================
+    float dynamicVisibility = 1.0f;
+
+    if (cascadeIndex == 0)
+    {
+        dynamicVisibility =
+            txDynamicShadow0.SampleCmpLevelZero(
+                samShadow,
+                shadowUV,
+                compareDepth
+            );
+    }
+    else if (cascadeIndex == 1)
+    {
+        dynamicVisibility =
+            txDynamicShadow1.SampleCmpLevelZero(
+                samShadow,
+                shadowUV,
+                compareDepth
+            );
+    }
+    else
+    {
+        dynamicVisibility =
+            txDynamicShadow2.SampleCmpLevelZero(
+                samShadow,
+                shadowUV,
+                compareDepth
+            );
+    }
+
+
+    //========================================================
+    // StaticまたはDynamicのどちらかに遮られていれば影
+    //========================================================
+    return min(staticVisibility, dynamicVisibility);
+}
+
+//============================================================
+// Volumetric CSM全体
+//============================================================
+float EvaluateVolumetricShadow(float3 worldPosition)
+{
+    //========================================================
+    // Shadow無効
+    //========================================================
+    if (ShadowParameters.x < 0.5f)
+    {
+        return 1.0f;
+    }
+
+    //========================================================
+    // World → View
+    // CascadeSplitsはView空間Z基準なので
+    // Euclidean DistanceではなくView Zを使用する
+    //========================================================
+    const float4 viewPosition = mul(float4(worldPosition, 1.0f), View);
+
+    const float viewDepth = viewPosition.z;
+
+    const int cascadeIndex = SelectVolumetricCascade(viewDepth);
+
+
+    //========================================================
+    // CSMの最大距離より奥
+    //========================================================
+    if (cascadeIndex >= 3)
+    {
+        return 1.0f;
+    }
+
+
+    float visibility = EvaluateSingleVolumetricShadow(worldPosition, cascadeIndex);
+
+
+    //========================================================
+    // Cascade 2より後は次Cascadeなし
+    //========================================================
+    if (cascadeIndex < 2)
+    {
+        float blendStart = 0.0f;
+
+        float cascadeEnd = 0.0f;
+
+
+        if (cascadeIndex == 0)
+        {
+            blendStart = CascadeBlendStarts.x;
+
+            cascadeEnd = CascadeSplits.x;
+        }
+        else
+        {
+            blendStart = CascadeBlendStarts.y;
+
+            cascadeEnd = CascadeSplits.y;
+        }
+
+
+        //====================================================
+        // Blend領域
+        //====================================================
+        if (viewDepth >= blendStart)
+        {
+            const float denominator = max(cascadeEnd - blendStart, 0.0001f);
+
+            float blendRate = saturate((viewDepth - blendStart) / denominator);
+
+            //================================================
+            // SmoothStep
+            //================================================
+            blendRate = blendRate * blendRate * (3.0f - 2.0f * blendRate);
+
+
+            //================================================
+            // 次Cascadeも評価
+            //================================================
+            const float nextVisibility =
+                EvaluateSingleVolumetricShadow(worldPosition, cascadeIndex + 1);
+
+
+            visibility =
+                lerp(
+                    visibility,
+                    nextVisibility,
+                    blendRate
+                );
+        }
+    }
+
+
+    //========================================================
+    // Shadow Strength
+    // Strength = 0: 常に1
+    // Strength = 1: Shadow完全適用
+    //========================================================
+    return lerp(1.0f, visibility, saturate(ShadowParameters.y));
+}
+
+//============================================================
+// Volumetric Spot Shadow
+// worldPosition: Ray March中のFog Sample位置
+// shadowIndex: Spot Shadow Texture2DArrayのSlice番号
+// 戻り値:
+//   1 = Lightが届く
+//   0 = Casterによって遮られている
+//============================================================
+float EvaluateVolumetricSpotShadow(float3 worldPosition,uint shadowIndex)
+{
+    //========================================================
+    // Index範囲外
+    //========================================================
+    if (shadowIndex >= MAX_SPOT_SHADOW_LIGHTS)
+    {
+        return 1.0f;
+    }
+
+
+    const float4 shadowParam = SpotShadowParameters[shadowIndex];
+
+
+    //========================================================
+    // このShadow Slotが無効
+    //========================================================
+    if (shadowParam.x < 0.5f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // World → Spot Light Clip Space
+    //========================================================
+    const float4 shadowPosition = mul(float4(worldPosition, 1.0f), SpotLightViewProjection[shadowIndex]);
+
+
+    //========================================================
+    // Spot Cameraの後ろなど
+    //========================================================
+    if (shadowPosition.w <= 0.000001f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // Perspective Divide
+    //========================================================
+    const float3 projected = shadowPosition.xyz / shadowPosition.w;
+
+
+    //========================================================
+    // NDC → Texture UV
+    //========================================================
+    const float2 shadowUV =
+        float2(
+            projected.x * 0.5f + 0.5f,
+            -projected.y * 0.5f + 0.5f
+        );
+
+
+    //========================================================
+    // Shadow Map外
+    //========================================================
+    if (shadowUV.x < 0.0f ||
+        shadowUV.x > 1.0f ||
+        shadowUV.y < 0.0f ||
+        shadowUV.y > 1.0f ||
+        projected.z < 0.0f ||
+        projected.z > 1.0f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // VolumeにはSurface Normalが存在しない
+    // Slope BiasではなくSpot Shadow側のMinimum Biasを使用する
+    //========================================================
+    const float bias = max(shadowParam.z, 0.000001f);
+
+    const float compareDepth = projected.z - bias;
+
+    //========================================================
+    // Texture2DArray
+    // xyz:
+    //   x = U
+    //   y = V
+    //   z = Array Slice
+    // ※Comparison Linear Samplerなので
+    // ※1回でもHardwareによる補間PCFが入る
+    //========================================================
+    return txSpotLightShadow.SampleCmpLevelZero(samShadow, float3(shadowUV, (float) shadowIndex), compareDepth);
+}
+
+//============================================================
+// 1灯のSpot LightがFog Sampleへ与える光
+//============================================================
+float3 EvaluateVolumetricSpotLight(
+    LocalLightData light,
+    float3 samplePosition,
+    float3 rayDirection,
+    float anisotropy
+)
+{
+    //========================================================
+    // 無効Light
+    //========================================================
+    if (light.Parameters.z < 0.5f)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+
+
+    //========================================================
+    // Spot Light以外はここでは処理しない
+    //========================================================
+    const uint lightType = (uint) (light.Parameters.x + 0.5f);
+
+
+    if (lightType != LOCAL_LIGHT_TYPE_SPOT)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+
+
+    //========================================================
+    // Light → Fog Sample
+    //========================================================
+    const float3 lightToSample = samplePosition - light.PositionRange.xyz;
+
+    const float rawDistanceSquared = dot(lightToSample, lightToSample);
+
+
+    //========================================================
+    // ※Light中心付近で1/r^2が発散するのを防ぐ
+    // ※Surface Lightingでは非常に小さな値まで許容しているが
+    // ※VolumeはRay上に多数Sampleが存在するため、
+    // ※Light中心付近で極端な白飛びを起こしやすい
+    // 0.25 = 0.5 world unit相当の最低距離
+    //========================================================
+    const float distanceSquared = max(rawDistanceSquared, 0.25f);
+
+    const float distanceToLight = sqrt(max(rawDistanceSquared, 0.000001f));
+
+    const float lightRange = max(light.PositionRange.w, 0.001f);
+
+
+    //========================================================
+    // Range外
+    //========================================================
+    if (distanceToLight >= lightRange)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+
+
+    //========================================================
+    // Light → Sample方向
+    //========================================================
+    const float3 lightToSampleDirection = lightToSample / max(distanceToLight, 0.000001f);
+
+
+    //========================================================
+    // Spot中心方向
+    //========================================================
+    const float3 spotDirection = normalize(light.DirectionOuterCos.xyz);
+
+
+    //========================================================
+    // Spot Cone判定
+    //========================================================
+    const float coneCos = dot(spotDirection, lightToSampleDirection);
+
+    const float innerCos = light.Parameters.y;
+
+    const float outerCos = light.DirectionOuterCos.w;
+
+
+    //========================================================
+    // Outer Coneの外
+    //========================================================
+    if (coneCos <= outerCos)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+
+
+    //========================================================
+    // Outer → Innerを0～1へ変換
+    //========================================================
+    float coneAttenuation =
+        saturate((coneCos - outerCos) / max(innerCos - outerCos, 0.0001f));
+
+
+    //========================================================
+    // SmoothStep
+    //========================================================
+    coneAttenuation = coneAttenuation * coneAttenuation * (3.0f - 2.0f * coneAttenuation);
+
+    //========================================================
+    // Range Attenuation
+    // 通常PBRのLocal Lightと同系統の減衰
+    //========================================================
+    const float normalizedDistance = distanceToLight / lightRange;
+
+    float rangeAttenuation = saturate(1.0f - pow(normalizedDistance, 4.0f));
+
+    rangeAttenuation *= rangeAttenuation;
+
+
+    //============================================================
+    // 減衰の強さ
+    // 小さいほど遠くまで光芒が見える
+    // 0.01 : かなり遠くまで届く
+    // 0.02 : 標準的
+    // 0.05 : 比較的強く減衰
+    //============================================================
+    const float volumetricFalloff = 0.02f;
+
+    //============================================================
+    // Soft Distance Attenuation
+    //============================================================
+    const float distanceAttenuation = 1.0f / (1.0f + distanceSquared * volumetricFalloff);
+
+    //============================================================
+    // Rangeによる終端減衰はそのまま使用
+    // ※Range付近ではちゃんと0へ消えるので
+    // ※無限に光が届くわけではない
+    //============================================================
+    const float attenuation = rangeAttenuation * distanceAttenuation;
+    
+    //========================================================
+    // Spot Shadow
+    //========================================================
+    float shadowVisibility = 1.0f;
+
+    //========================================================
+    // Parameters.w:
+    //
+    // 0 = Shadowなし
+    // 1 = Shadow Index 0
+    // 2 = Shadow Index 1
+    // ...
+    //========================================================
+    const int encodedShadowIndex = (int) (light.Parameters.w + 0.5f);
+
+
+    if (encodedShadowIndex > 0 && LocalLightParameters.z > 0.5f)
+    {
+        const uint shadowIndex = (uint) (encodedShadowIndex - 1);
+
+
+        shadowVisibility =
+            EvaluateVolumetricSpotShadow(samplePosition, shadowIndex);
+    }
+
+
+    //========================================================
+    // Sample → Light方向
+    // Fog Sampleへ光が入ってくる方向を使用する
+    //========================================================
+    const float3 sampleToLight = normalize(light.PositionRange.xyz - samplePosition);
+
+    //========================================================
+    // Henyey-Greenstein
+    //========================================================
+    const float localCosTheta = dot(rayDirection, sampleToLight);
+
+    const float localPhase = HenyeyGreenstein(localCosTheta, anisotropy);
+
+
+    //========================================================
+    // HDR Radiance
+    // ※Surface PBRとは違いNdotLやBRDFは使用しない
+    //========================================================
+    const float3 radiance =
+        light.ColorIntensity.rgb * max(light.ColorIntensity.w, 0.0f);
+    
+    //========================================================
+    // 最終Spot Volumetric Light
+    // LocalLightParameters.y: Volumetric専用の全体強度
+    //========================================================
+    return
+        radiance *
+        attenuation *
+        coneAttenuation *
+        shadowVisibility *
+        localPhase *
+        max(LocalLightParameters.y, 0.0f);
+}
+
+//============================================================
+// Scene内のSpot LightをFog Sample上で評価
+//============================================================
+float3 EvaluateVolumetricSpotLights(
+    float3 samplePosition,
+    float3 rayDirection,
+    float anisotropy
+)
+{
+    float3 result = float3(0.0f, 0.0f, 0.0f);
+
+
+    //========================================================
+    // CPUから渡されたLocal Light数
+    //========================================================
+    const uint localLightCount =
+        min((uint) (LocalLightParameters.x + 0.5f), MAX_LOCAL_LIGHTS);
+
+
+    //========================================================
+    // Point + Spotが同じStructuredBufferに入っているので
+    // Spotだけを選別する
+    //========================================================
+    [loop]
+    for (uint lightIndex = 0u; lightIndex < localLightCount; ++lightIndex)
+    {
+        const LocalLightData light = txLocalLights[lightIndex];
+
+        //====================================================
+        // 無効Light
+        //====================================================
+        if (light.Parameters.z < 0.5f)
+        {
+            continue;
+        }
+        
+        //====================================================
+        // レイマーチ中の霧の位置がライトの所属部屋に入っているかを見る
+        // 部屋外のサンプルではこのライトの散乱光だけをスキップする
+        //====================================================
+        if (light.RoomMin.w >= 0.5f &&
+            (any(samplePosition < light.RoomMin.xyz) ||
+             any(samplePosition > light.RoomMax.xyz)))
+        {
+            continue;
+        }
+
+        const uint lightType = (uint) (light.Parameters.x + 0.5f);
+
+        //====================================================
+        // 今回はSpotのみ
+        //====================================================
+        if (lightType != LOCAL_LIGHT_TYPE_SPOT)
+        {
+            continue;
+        }
+
+
+        result +=
+            EvaluateVolumetricSpotLight(
+                light,
+                samplePosition,
+                rayDirection,
+                anisotropy
+            );
+    }
+
+
+    return result;
+}
+
+//============================================================
+// Point LightからSample地点への方向から
+// 使用するCube Faceを決定する
+//============================================================
+uint SelectVolumetricPointShadowFace(float3 lightToSampleDirection)
+{
+    const float3 absDirection = abs(lightToSampleDirection);
+
+    //========================================================
+    // X方向が最大
+    //========================================================
+    if (absDirection.x >= absDirection.y && absDirection.x >= absDirection.z)
+    {
+        // +X
+        if (lightToSampleDirection.x >= 0.0f)
+        {
+            return 0u;
+        }
+
+
+        // -X
+        return 1u;
+    }
+
+
+    //========================================================
+    // Y方向が最大
+    //========================================================
+    if (absDirection.y >= absDirection.x && absDirection.y >= absDirection.z)
+    {
+        // +Y
+        if (lightToSampleDirection.y >= 0.0f)
+        {
+            return 2u;
+        }
+
+
+        // -Y
+        return 3u;
+    }
+
+
+    //========================================================
+    // Z方向
+    //========================================================
+
+    // +Z
+    if (lightToSampleDirection.z >= 0.0f)
+    {
+        return 4u;
+    }
+
+    // -Z
+    return 5u;
+}
+
+//============================================================
+// Point Shadow Texture2DArray Slice
+// Shadow 0: 0～5
+// Shadow 1: 6～11
+//============================================================
+uint CalculateVolumetricPointShadowSlice( uint shadowIndex,uint faceIndex)
+{
+    return shadowIndex * POINT_SHADOW_FACE_COUNT + faceIndex;
+}
+
+//============================================================
+// Point Light Volumetric Shadow
+// worldPosition: Ray March中のFog Sample位置
+// pointLightPosition: Point Light位置
+// shadowIndex: Point Shadow 0～1
+// return:
+//   0 = Shadow
+//   1 = Lit
+//============================================================
+float EvaluateVolumetricPointShadow(
+    float3 worldPosition,
+    float3 pointLightPosition,
+    uint shadowIndex
+)
+{
+    //========================================================
+    // Shadow Index確認
+    //========================================================
+    if (shadowIndex >= MAX_POINT_SHADOW_LIGHTS)
+    {
+        return 1.0f;
+    }
+
+
+    const float4 shadowParameters = PointShadowParameters[shadowIndex];
+
+
+    //========================================================
+    // Shadow Slot無効
+    //========================================================
+    if (shadowParameters.x < 0.5f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // Point Light → Fog Sample
+    // Face選択にこの方向を使う
+    //========================================================
+    const float3 lightToSample = worldPosition - pointLightPosition;
+
+    const float distanceSquared = dot( lightToSample, lightToSample );
+
+    //========================================================
+    // Light中心ではFaceを決定できない
+    //========================================================
+    if (distanceSquared <= 0.000001f)
+    {
+        return 1.0f;
+    }
+
+    //========================================================
+    // Cube Face選択
+    //========================================================
+    const uint faceIndex = SelectVolumetricPointShadowFace(lightToSample);
+
+
+    //========================================================
+    // Texture2DArray Slice
+    //========================================================
+    const uint sliceIndex = CalculateVolumetricPointShadowSlice(shadowIndex, faceIndex);
+
+
+    if (sliceIndex >= POINT_SHADOW_TOTAL_SLICES)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // World → 選択したPoint Shadow Face Clip
+    //========================================================
+    const float4 shadowClip = mul(float4(worldPosition, 1.0f), PointLightViewProjection[sliceIndex]);
+
+
+    //========================================================
+    // Shadow Camera後方
+    //========================================================
+    if (shadowClip.w <= 0.000001f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // Perspective Divide
+    //========================================================
+    const float3 shadowNDC = shadowClip.xyz / shadowClip.w;
+
+
+    //========================================================
+    // NDC → UV
+    //========================================================
+    const float2 shadowUV =
+        float2(
+            shadowNDC.x * 0.5f + 0.5f,
+            -shadowNDC.y * 0.5f + 0.5f
+        );
+
+
+    //========================================================
+    // Shadow Map外
+    //========================================================
+    if (shadowUV.x < 0.0f ||
+        shadowUV.x > 1.0f ||
+        shadowUV.y < 0.0f ||
+        shadowUV.y > 1.0f ||
+        shadowNDC.z < 0.0f ||
+        shadowNDC.z > 1.0f)
+    {
+        return 1.0f;
+    }
+
+
+    //========================================================
+    // VolumetricではNormalがないためMinimum Biasだけ使う
+    //========================================================
+    const float bias = max(shadowParameters.z, 0.000001f);
+
+    const float compareDepth = shadowNDC.z - bias;
+
+
+    //========================================================
+    // 1 Sample Comparison
+    // Comparison Linear Samplerなので
+    // Hardware側の最低限の補間PCFが入る
+    // VolumetricではRay March回数が多いため
+    // 最初は1 Sampleで負荷を抑える
+    //========================================================
+    const float visibility =
+        txPointLightShadow.SampleCmpLevelZero(
+            samShadow,
+            float3(shadowUV, (float) sliceIndex),
+            compareDepth
+        );
+
+
+    return visibility;
+}
+
+//============================================================
+// 1灯のPoint LightをVolumetric評価
+//============================================================
+float3 EvaluateVolumetricPointLight(
+    LocalLightData light,
+    float3 samplePosition,
+    float3 rayDirection,
+    float anisotropy
+)
+{
+    //========================================================
+    // Light無効
+    //========================================================
+    if (light.Parameters.z < 0.5f)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // Point Lightだけ処理
+    //========================================================
+    const uint lightType = (uint) (light.Parameters.x + 0.5f);
+
+
+    if (lightType != LOCAL_LIGHT_TYPE_POINT)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // Point Light → Fog Sample
+    //========================================================
+    const float3 lightToSample = samplePosition - light.PositionRange.xyz;
+
+    const float rawDistanceSquared = dot(lightToSample, lightToSample);
+
+    //========================================================
+    // Light中心でInverse Squareが発散するのを抑える
+    //========================================================
+    const float distanceSquared = max(rawDistanceSquared, 0.25f);
+
+    const float distanceToLight = sqrt(max(rawDistanceSquared, 0.000001f));
+
+    const float lightRange = max(light.PositionRange.w, 0.001f);
+
+
+    //========================================================
+    // Range外
+    //========================================================
+    if (distanceToLight >= lightRange)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // Range Attenuation
+    //
+    // 通常Point Lightと同じ形。
+    //========================================================
+    const float normalizedDistance = distanceToLight / lightRange;
+
+    float rangeAttenuation = saturate(1.0f - pow(normalizedDistance, 4.0f));
+
+    rangeAttenuation *= rangeAttenuation;
+
+    //========================================================
+    // Inverse Square
+    //========================================================
+    //const float distanceAttenuation = 1.0f / distanceSquared;
+    
+    const float sourceRadius = 0.5f;
+    const float distanceAttenuation = 1.0f / (rawDistanceSquared + sourceRadius * sourceRadius);
+
+    const float attenuation = rangeAttenuation * distanceAttenuation;
+
+    //========================================================
+    // Point Shadow
+    //========================================================
+    float shadowVisibility = 1.0f;
+
+    //========================================================
+    // Parameters.w
+    // 0: Shadowなし
+    // 1: Shadow Index 0
+    // 2: Shadow Index 1
+    //========================================================
+    const int encodedShadowIndex = (int) (light.Parameters.w + 0.5f);
+
+
+    if (encodedShadowIndex > 0 &&PointLightParameters.y > 0.5f)
+    {
+        const uint shadowIndex = (uint) (encodedShadowIndex - 1);
+
+
+        shadowVisibility =
+            EvaluateVolumetricPointShadow(
+                samplePosition,
+                light.PositionRange.xyz,
+                shadowIndex
+            );
+    }
+
+
+    //========================================================
+    // Fog Sample → Point Light
+    // Phase Function評価に使用する
+    //========================================================
+    const float3 sampleToLight = normalize(light.PositionRange.xyz - samplePosition);
+
+
+    //========================================================
+    // HG Phase Function
+    //========================================================
+    const float cosTheta = dot(rayDirection, sampleToLight);
+
+    const float localPhase = HenyeyGreenstein(cosTheta, anisotropy);
+
+    //========================================================
+    // Point Light Radiance
+    //========================================================
+    const float3 radiance = light.ColorIntensity.rgb * max(light.ColorIntensity.w, 0.0f);
+
+    //========================================================
+    // 最終Volumetric Point Light
+    //========================================================
+    return
+        radiance *
+        attenuation *
+        shadowVisibility *
+        localPhase *
+        max(PointLightParameters.x, 0.0f);
+}
+
+//============================================================
+// Scene内のPoint LightをVolumetric評価
+//============================================================
+float3 EvaluateVolumetricPointLights(
+    float3 samplePosition,
+    float3 rayDirection,
+    float anisotropy
+)
+{
+    float3 result = float3(0.0f, 0.0f, 0.0f);
+
+    const uint localLightCount = min((uint) (LocalLightParameters.x + 0.5f), MAX_LOCAL_LIGHTS);
+
+    //========================================================
+    // LocalLightBufferにはPointとSpotが混在する
+    //========================================================
+    [loop]
+    for (uint lightIndex = 0u;lightIndex < localLightCount;++lightIndex)
+    {
+        const LocalLightData light = txLocalLights[lightIndex];
+
+        if (light.Parameters.z < 0.5f)
+        {
+            continue;
+        }
+        
+        // レイマーチ中の霧の位置がライトの所属部屋に入っているかを見る
+        // 部屋外のサンプルではこのライトの散乱光だけをスキップする
+        if (light.RoomMin.w >= 0.5f &&
+            (any(samplePosition < light.RoomMin.xyz) ||
+             any(samplePosition > light.RoomMax.xyz)))
+        {
+            continue;
+        }
+
+        const uint lightType = (uint) (light.Parameters.x + 0.5f);
+
+        if (lightType != LOCAL_LIGHT_TYPE_POINT)
+        {
+            continue;
+        }
+
+        result +=
+            EvaluateVolumetricPointLight(
+                light,
+                samplePosition,
+                rayDirection,
+                anisotropy
+            );
+    }
+
+    return result;
+}
+
+//============================================================
+// Blue Noise Jitter
+// pixelPosition: Half Resolutionの現在Pixel
+// frameIndex: Temporal用Frame番号
+// 戻り値: 0.0 ～ 1.0
+//============================================================
+float GetBlueNoiseJitter(float2 pixelPosition,uint frameIndex)
+{
+    //========================================================
+    // Blue Noise Texture Size
+    //========================================================
+    uint noiseWidth;
+    uint noiseHeight;
+
+    txBlueNoise.GetDimensions(noiseWidth, noiseHeight);
+
+    //========================================================
+    // 万一Texture Sizeが0ならFallback
+    //========================================================
+    if (noiseWidth == 0u || noiseHeight == 0u)
+    {
+        return InterleavedGradientNoise(pixelPosition, (float) frameIndex);
+    }
+
+
+    //========================================================
+    // Half Resolution Pixel
+    // SV_POSITIONはPixel Centerなのでuintへ変換
+    //========================================================
+    uint2 pixel = uint2(pixelPosition);
+
+
+    //========================================================
+    // ※FrameごとにBlue Noise Textureをずらす
+    // ※17 / 37は互いに単純な倍数関係ではないため
+    // ※同じPatternを連続Frameで踏みにくい
+    //========================================================
+    const uint2 frameOffset = uint2(frameIndex * 17u, frameIndex * 37u);
+
+
+    //========================================================
+    // TextureをTileする
+    //========================================================
+    const uint2 noiseCoordinate =
+        uint2((pixel.x + frameOffset.x) % noiseWidth, (pixel.y + frameOffset.y) % noiseHeight);
+
+
+    //========================================================
+    // Filtering不要なのでLoad
+    // Blue Noiseそのものの値を壊さず取得する
+    //========================================================
+    float noise =
+        txBlueNoise.Load(int3(noiseCoordinate, 0)).r;
+
+
+    //========================================================
+    // Cranley-Patterson Rotation
+    // ※Textureを単純に平行移動するだけでなく
+    // ※Frameごとに0～1範囲でも位相をずらす
+    // Golden Ratio由来の値を使用
+    //========================================================
+    const float temporalOffset = frac((float) frameIndex * 0.61803398875f);
+
+    noise = frac(noise + temporalOffset);
+
+    return noise;
+}
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Main Depth
+    // Half Resolution PixelからFull Resolution Depthを
+    // UVで読む
+    //========================================================
+    const float depth =
+        txDepth.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // UV → NDC
+    //========================================================
+    const float2 ndc =
+        float2(
+            input.uv.x * 2.0f - 1.0f,
+            1.0f - input.uv.y * 2.0f
+        );
+
+
+    //========================================================
+    // Depth位置をWorldへ復元
+    //========================================================
+    float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    float4 worldPosition = mul(clipPosition, InverseViewProjection);
+
+    worldPosition /= max(abs(worldPosition.w), 0.000001f);
+
+    const float3 cameraPosition = CameraPositionMaxDistance.xyz;
+
+
+    //========================================================
+    // Camera → Depth Position
+    //========================================================
+    float3 cameraToSurface = worldPosition.xyz - cameraPosition;
+
+    float surfaceDistance = length(cameraToSurface);
+
+    if (surfaceDistance <= 0.0001f)
+    {
+        return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    //========================================================
+    // View Ray方向
+    //========================================================
+    const float3 rayDirection = cameraToSurface / surfaceDistance;
+
+    //========================================================
+    // Sky / Far Plane
+    // Depthがほぼ1ならWorld復元位置が非常に遠くなるので
+    // Fog側Max Distanceで制限する
+    //========================================================
+    const float maxDistance = max(CameraPositionMaxDistance.w, 0.01f);
+
+    float rayLength = min(surfaceDistance, maxDistance);
+
+    //========================================================
+    // Geometryが存在しないSky Pixelでも
+    // MaxDistanceまではFogを積分する
+    //========================================================
+    if (depth >= 0.999999f)
+    {
+        rayLength = maxDistance;
+    }
+
+
+    //========================================================
+    // Sample Count
+    //========================================================
+    const int sampleCount =
+        clamp((int) (RaymarchParameters.x + 0.5f), 1, MAX_VOLUMETRIC_STEPS);
+
+    const float stepLength = rayLength / (float) sampleCount;
+
+    if (stepLength <= 0.000001f)
+    {
+        return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+
+    //============================================================
+    // Ray March Jitter
+    // Blue Noiseあり: Blue Noise + Temporal Offset
+    // Blue Noiseなし: 従来のInterleaved Gradient Noise
+    //============================================================
+    float jitter = 0.0f;
+
+
+    if (RaymarchParameters.z > 0.5f)
+    {
+        jitter =
+            GetBlueNoiseJitter(
+                input.position.xy,
+                (uint) (RaymarchParameters.y + 0.5f)
+            );
+    }
+    else
+    {
+        jitter =
+            InterleavedGradientNoise(
+                input.position.xy,
+                RaymarchParameters.y
+            );
+    }
+
+    //============================================================
+    // Ray開始位置
+    // 0 ～ 1 Step分の範囲で位置をずらす
+    //============================================================
+    float currentDistance = stepLength * jitter;
+
+    //========================================================
+    // Accumulation
+    //========================================================
+    float3 inScattering = float3(0.0f, 0.0f, 0.0f);
+
+    float transmittance = 1.0f;
+
+    const float3 lightDirection = normalize(LightDirectionAnisotropy.xyz);
+
+    const float anisotropy =
+        clamp(
+            LightDirectionAnisotropy.w,
+            -0.90f,
+            0.90f
+        );
+
+
+    //========================================================
+    // カメラがLight方向を向いたときForward Scatteringを強くする
+    //========================================================
+    const float cosTheta = dot(rayDirection, lightDirection);
+
+    const float phase = HenyeyGreenstein(cosTheta, anisotropy);
+
+
+    const float3 directionalLight =
+        LightColorStrength.xyz * max(LightColorStrength.w, 0.0f);
+
+    const float ambientStrength = max(FogParameters.y, 0.0f);
+
+    const float scatteringAlbedo = saturate(FogParameters.x);
+
+
+    //========================================================
+    // 現在のVolumetric Shadow
+    //========================================================
+    float shadowVisibility = 1.0f;
+
+    //============================================================
+    // Spot LightからFogへ入る光
+    // 2Stepごとに更新し間のStepでは再利用する
+    //============================================================
+    float3 spotIncomingLight = float3(0.0f, 0.0f, 0.0f);
+    
+    //============================================================
+    // Point LightからFogへ入る光
+    //============================================================
+    float3 pointIncomingLight = float3(0.0f, 0.0f, 0.0f);
+    
+    //========================================================
+    // Ray March
+    //========================================================
+    [loop]
+    for (int stepIndex = 0; stepIndex < sampleCount; ++stepIndex)
+    {
+        //====================================================
+        // 今回のRay March Sample位置
+        //====================================================
+        const float3 samplePosition =
+            cameraPosition + rayDirection * currentDistance;
+
+        //====================================================
+        // Sample位置のFog Density
+        // Height Fogを有効にしていれば
+        // World YによってDensityも変化する
+        //====================================================
+        const float density = GetFogDensity(samplePosition);
+
+        //====================================================
+        // Extinction Coefficient
+        // Fogによって光が失われる割合
+        // 0になって除算できなくならないよう最低値を持たせる
+        //====================================================
+        const float extinction = max(density, 0.000001f);
+
+
+        //====================================================
+        // Scattering Coefficient
+        // Extinctionのうち実際に散乱として見える割合
+        //====================================================
+        const float scattering = extinction * scatteringAlbedo;
+
+
+        //====================================================
+        // 1Step進んだときの透過率
+        // Beer-Lambert Law
+        // T = exp(-density * distance)
+        //====================================================
+        const float stepTransmittance = exp(-extinction * stepLength);
+
+
+        //============================================================
+        // 高コストなLight / Shadow評価
+        //============================================================
+        if ((stepIndex & 1) == 0)
+        {
+            //========================================================
+            // Directional CSM
+            //========================================================
+            shadowVisibility = EvaluateVolumetricShadow(samplePosition);
+        }
+
+        //========================================================
+        // Spot Volumetric Light
+        //========================================================
+        spotIncomingLight =
+            EvaluateVolumetricSpotLights(
+                samplePosition,
+                rayDirection,
+                anisotropy
+                );
+
+        
+        //============================================================
+        // Point
+        //============================================================
+        pointIncomingLight =
+            EvaluateVolumetricPointLights(
+                samplePosition,
+                rayDirection,
+                anisotropy
+                );
+
+        //====================================================
+        // Fogへ入射する光
+        //====================================================
+        const float3 incomingLight = (directionalLight * phase * shadowVisibility) +
+            ambientStrength + spotIncomingLight + pointIncomingLight;
+
+
+        //====================================================
+        // FogによるIn-Scattering
+        // FogColorでTintしながら、
+        // 入射光をCamera方向へ散乱させる
+        //====================================================
+        const float3 scatteringSource = FogColorDensity.xyz * incomingLight * scattering;
+
+        //====================================================
+        // Step区間の積分
+        // Beer-Lambertに沿った形で積分する
+        //====================================================
+        const float integratedLength = (1.0f - stepTransmittance) / extinction;
+
+        //====================================================
+        // Cameraに届くIn-Scatteringを蓄積
+        //====================================================
+        inScattering += transmittance * scatteringSource * integratedLength;
+
+
+        //====================================================
+        // 今回の区間を通過したことで、
+        // 奥からCameraへ届く光も減衰する
+        //====================================================
+        transmittance *= stepTransmittance;
+
+        if (transmittance < 0.01f)
+        {
+            break;
+        }
+
+        //====================================================
+        // 次のRay March Sample位置へ進む
+        //====================================================
+        currentDistance += stepLength;
+    }
+
+
+    //========================================================
+    // RGB: FogによるIn-Scattering
+    // A: Sceneの透過率
+    // Composite: Scene * transmittance + inScattering
+    //========================================================
+    return float4(inScattering, transmittance);
+}

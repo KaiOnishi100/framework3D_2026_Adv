@@ -1,0 +1,24 @@
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#AnnexArt.csv
+#============================================================
+# Annex Exterior
+#
+# Annex:
+#   World X = 46 ～ 74
+#   World Z = 5 ～ 31
+#
+# Pivot:
+#   (60, 0, 18)
+#
+# CSV RotY=180 に合わせたローカル形状。
+#
+# Entrance:
+#   World X=46
+#   World Z=18
+#============================================================
+
+# 別館外壁・玄関・窓
+Art_Annex_ExteriorShell,MansionArt,60.0,0.0,18.0,0,180,0,1,1,1,data/model/mansion/exterior/annex/annex_exterior_shell.vnm
+
+# 別館の切妻屋根・煙突
+Art_Annex_GableRoof,MansionArt,60.0,0.0,18.0,0,180,0,1,1,1,data/model/mansion/exterior/annex/annex_gable_roof.vnm

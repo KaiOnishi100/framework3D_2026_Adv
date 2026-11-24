@@ -1,0 +1,77 @@
+//============================================================
+// Motion Vector Debug Shader
+// Motion Vectorを色として可視化する
+// Motion Vector:
+//   x : 横方向
+//   y : 縦方向
+//
+// 停止: 灰色
+// 移動: Motionの方向に応じて色が変化する
+//============================================================
+
+Texture2D<float2> txMotionVector : register(t0);
+
+SamplerState samLinear : register(s0);
+
+
+//============================================================
+// Debug Parameter
+// x : Motion Vector表示倍率
+// yzw : 未使用
+//============================================================
+cbuffer DebugBuffer : register(b0)
+{
+    float4 DebugParam;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Motion Vector取得
+    //========================================================
+    float2 velocity =
+        txMotionVector.Sample(
+            samLinear,
+            input.uv
+        );
+
+
+    //========================================================
+    // 実際のMotion Vectorは非常に小さい
+    // 例えば:
+    //   0.001
+    //   0.005
+    // 程度なので、そのまま色へ変換するとほぼ見えない
+    // DebugParam.xで拡大する
+    //========================================================
+    velocity *=
+        DebugParam.x;
+
+
+    //========================================================
+    // -値～+値を0～1へ変換する
+    // velocity = 0
+    //   ↓
+    // encoded = 0.5
+    // 静止Pixelは灰色になる
+    //========================================================
+    const float2 encoded = saturate(velocity * 0.5f + 0.5f);
+
+    //========================================================
+    // R : X Motion
+    // G : Y Motion
+    // B : 0.5固定
+    // 完全静止:
+    //   (0.5, 0.5, 0.5)
+    // になる
+    //========================================================
+    return float4(encoded.x, encoded.y, 0.5f, 1.0f);
+}

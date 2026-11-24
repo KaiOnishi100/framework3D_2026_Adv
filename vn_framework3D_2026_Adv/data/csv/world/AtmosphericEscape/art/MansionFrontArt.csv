@@ -1,0 +1,118 @@
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#MansionFrontArt.csv
+#============================================================
+# Main Mansion Front Yard
+#============================================================
+
+#============================================================
+# Front Ground
+#============================================================
+Art_Front_Ground,MansionArt,0.0,0.0,-16.0,0,0,0,1,1,1,data/model/mansion/exterior/front/front_ground_60x32.vnm
+
+#============================================================
+# Main Approach
+#============================================================
+Art_Front_Approach,MansionArt,0.0,0.06,-16.0,0,0,0,1,1,1,data/model/mansion/exterior/front/front_approach_5x32.vnm
+
+
+#============================================================
+# Front Boundary
+#============================================================
+
+Art_Front_Boundary,MansionArt,0.0,0.0,-16.0,0,180,0,1,1,1,data/model/mansion/exterior/front/front_boundary_walls_gate.vnm
+
+
+#============================================================
+# Trees
+#============================================================
+
+Art_Front_Tree_L01,MansionArt,-16.0,0.0,-17.0,0,0,0,1,1,1,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+Art_Front_Tree_L02,MansionArt,-21.0,0.0,-8.0,0,65,0,1.2,1.2,1.2,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+Art_Front_Tree_R01,MansionArt,16.0,0.0,-17.0,0,130,0,1,1,1,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+Art_Front_Tree_R02,MansionArt,21.0,0.0,-8.0,0,210,0,1.2,1.2,1.2,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+
+#============================================================
+# Front Yard Additional Trees
+#============================================================
+
+# 西側・南寄り
+Art_Front_Tree_L03,MansionArt,-25.0,0.0,-26.0,0,25,0,1.15,1.15,1.15,data/model/mansion/exterior/front/front_tree_5m.vnm
+Art_Front_Tree_L04,MansionArt,-18.0,0.0,-27.0,0,80,0,0.90,0.90,0.90,data/model/mansion/exterior/front/front_tree_5m.vnm
+Art_Front_Tree_L05,MansionArt,-11.0,0.0,-23.0,0,145,0,1.25,1.25,1.25,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+# 西側・北寄り
+Art_Front_Tree_L06,MansionArt,-26.0,0.0,-15.0,0,210,0,1.30,1.30,1.30,data/model/mansion/exterior/front/front_tree_5m.vnm
+Art_Front_Tree_L07,MansionArt,-12.0,0.0,-10.0,0,310,0,0.85,0.85,0.85,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+# 東側・南寄り
+Art_Front_Tree_R03,MansionArt,25.0,0.0,-26.0,0,35,0,1.20,1.20,1.20,data/model/mansion/exterior/front/front_tree_5m.vnm
+Art_Front_Tree_R04,MansionArt,18.0,0.0,-27.0,0,95,0,0.95,0.95,0.95,data/model/mansion/exterior/front/front_tree_5m.vnm
+Art_Front_Tree_R05,MansionArt,11.0,0.0,-23.0,0,165,0,1.15,1.15,1.15,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+# 東側・北寄り
+Art_Front_Tree_R06,MansionArt,26.0,0.0,-15.0,0,235,0,1.30,1.30,1.30,data/model/mansion/exterior/front/front_tree_5m.vnm
+Art_Front_Tree_R07,MansionArt,12.0,0.0,-10.0,0,330,0,0.90,0.90,0.90,data/model/mansion/exterior/front/front_tree_5m.vnm
+
+
+#============================================================
+# Stone Statues
+#============================================================
+
+Art_Front_Statue_L,MansionArt,-6.0,0.0,-8.0,0,0,0,1,1,1,data/model/mansion/exterior/front/front_statue_2m.vnm
+
+Art_Front_Statue_R,MansionArt,6.0,0.0,-8.0,0,180,0,1,1,1,data/model/mansion/exterior/front/front_statue_2m.vnm
+
+
+#============================================================
+# Main Mansion Exterior
+#
+# 外壁：
+#   X=-26～26
+#   Z=0～36
+#   Height=9m
+#
+# 屋根：
+#   Eave Height=9.43m
+#   Ridge Height=13.30m
+#============================================================
+
+# 本館外壁・窓・玄関柱・ポーチ
+Art_Main_ExteriorShell,MansionArt,0,0,0,0,180,0,1,1,1,data/model/mansion/exterior/building/mansion_exterior_shell.vnm
+
+# 切妻屋根・妻壁・煙突
+Art_Main_GableRoof,MansionArt,0,0,0,0,180,0,1,1,1,data/model/mansion/exterior/building/mansion_gable_roof.vnm
+
+#============================================================
+# Front Yard Side Closure Walls
+#============================================================
+
+# 左側の隙間
+Art_Front_SideClosure_L,MansionArt,-28.0,0.0,-0.25,0,0,0,1,1,1,data/model/mansion/exterior/front/front_side_closure_wall_4m.vnm
+
+# 右側の隙間
+Art_Front_SideClosure_R,MansionArt,28.0,0.0,-0.25,0,0,0,1,1,1,data/model/mansion/exterior/front/front_side_closure_wall_4m.vnm
+
+
+#============================================================
+# Main Mansion Exterior Corner Repair
+#
+# Exterior Range:
+#   X=-26 ～ 26
+#   Z=0 ～ 36
+#
+# 同じ角柱VNMを4箇所へ配置する
+#============================================================
+
+Art_Main_Repair_Corner_SW,MansionArt,-26.0,0.0,0.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main_exterior_corner_pilaster.vnm
+
+Art_Main_Repair_Corner_SE,MansionArt,26.0,0.0,0.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main_exterior_corner_pilaster.vnm
+
+Art_Main_Repair_Corner_NW,MansionArt,-26.0,0.0,36.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main_exterior_corner_pilaster.vnm
+
+Art_Main_Repair_Corner_NE,MansionArt,26.0,0.0,36.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main_exterior_corner_pilaster.vnm
+
+Art_Main_FrontRoofMask,MansionArt,0.0,8.90,0.40,0,180,0,1,1,1,data/model/mansion/repair/step31/main_roof_front_mask.vnm

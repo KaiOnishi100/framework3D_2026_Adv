@@ -1,0 +1,334 @@
+//============================================================
+// Temporal SSS Resolve
+// t0: Current Blurred Diffusion
+// t1: Previous Temporal History
+// t2: Motion Vector
+// t3: Current Main Depth
+// t4: Current SSS Mask
+// History Texture:
+// RGB: Resolved SSS Diffusion
+// A: Camera Distance
+//============================================================
+
+Texture2D<float4> txCurrentDiffusion : register(t0);
+
+Texture2D<float4> txPreviousHistory : register(t1);
+
+Texture2D<float2> txMotionVector : register(t2);
+
+Texture2D<float> txDepth : register(t3);
+
+Texture2D<float> txSSSMask : register(t4);
+
+
+SamplerState samLinear : register(s0);
+
+SamplerState samPoint : register(s1);
+
+
+cbuffer SSSTemporalBuffer : register(b0)
+{
+    float4x4 InverseViewProjection;
+
+    // xyz Camera Position
+    float4 CameraPosition;
+
+    // xy Resolution
+    // zw Inverse Resolution
+    float4 ScreenParameters;
+
+    // x History Weight
+    // y Relative Depth Threshold
+    // z Motion Response
+    // w History Valid
+    float4 TemporalParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// Depth → World Position
+//============================================================
+bool ReconstructWorldPosition(
+    float2 uv,
+    float depth,
+    out float3 worldPosition
+)
+{
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    float4 worldPositionH = mul(clipPosition, InverseViewProjection);
+
+
+    if (abs(worldPositionH.w) <= 0.000001f)
+    {
+        worldPosition = 0.0f;
+        return false;
+    }
+
+    worldPosition = worldPositionH.xyz / worldPositionH.w;
+
+    return true;
+}
+
+
+//============================================================
+// 3x3 Neighborhood Clamp
+// Historyの色が現在Frameの周囲から大きく外れている場合
+// Ghostingの原因になる
+// Current Frameの3x3 Min / Max範囲へHistoryをClampする
+//============================================================
+void CalculateNeighborhoodBounds(
+    float2 uv,
+    out float3 minimumColor,
+    out float3 maximumColor
+)
+{
+    minimumColor = float3(1e20f, 1e20f, 1e20f);
+    maximumColor = float3(-1e20f, -1e20f, -1e20f);
+
+
+    [unroll]
+    for (int y = -1; y <= 1; ++y)
+    {
+        [unroll]
+        for (int x = -1; x <= 1; ++x)
+        {
+            const float2 sampleUV =
+                uv +
+                float2((float) x, (float) y) *
+                ScreenParameters.zw;
+
+
+            const float3 color =
+                txCurrentDiffusion.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                ).rgb;
+
+
+            minimumColor = min(minimumColor, color);
+            maximumColor = max(maximumColor, color);
+        }
+    }
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // 現在Frame
+    //========================================================
+    const float3 currentColor =
+        txCurrentDiffusion.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        ).rgb;
+
+
+    //========================================================
+    // SSS対象外
+    // Alpha = 0にして
+    // History上でも無効Pixelとして扱う
+    //========================================================
+    const float currentMask =
+        txSSSMask.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    if (currentMask <= 0.0001f)
+    {
+        return float4(0.0f, 0.0f, 0.0f, 0.0f);
+    }
+
+    //========================================================
+    // Current Depth
+    //========================================================
+    const float currentDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    float3 currentWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+        input.uv,
+        currentDepth,
+        currentWorldPosition))
+    {
+        return float4(currentColor, 0.0f);
+    }
+
+
+    //========================================================
+    // Current Camera Distance
+    // HistoryのAlphaへ保存する
+    //========================================================
+    const float currentCameraDistance = length(currentWorldPosition - CameraPosition.xyz);
+
+
+    //========================================================
+    // Historyがまだ存在しないFrame
+    //========================================================
+    if (TemporalParameters.w < 0.5f)
+    {
+        return float4(currentColor, currentCameraDistance);
+    }
+
+
+    //========================================================
+    // Motion Vector
+    //========================================================
+    const float2 velocity =
+        txMotionVector.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+    const float2 previousUV = input.uv - velocity;
+
+    //========================================================
+    // 画面外へ移動したPixelにはHistoryが存在しない
+    //========================================================
+    if (previousUV.x <= 0.0f ||
+        previousUV.x >= 1.0f ||
+        previousUV.y <= 0.0f ||
+        previousUV.y >= 1.0f)
+    {
+        return float4(currentColor, currentCameraDistance);
+    }
+
+
+    //========================================================
+    // Previous History
+    // RGB = Color
+    // A   = Previous Camera Distance
+    //========================================================
+    const float4 history =
+        txPreviousHistory.SampleLevel(
+            samLinear,
+            previousUV,
+            0.0f
+        );
+
+
+    //========================================================
+    // Alpha 0 = History無効
+    //========================================================
+    if (history.a <= 0.0001f)
+    {
+        return float4(currentColor, currentCameraDistance);
+    }
+
+
+    //========================================================
+    // Depth Disocclusion Reject
+    // 絶対距離ではなくCamera Distanceに対する相対差にすることで
+    // World Scaleや遠近に多少強くする
+    //========================================================
+    const float relativeDepthDifference =
+        abs(history.a - currentCameraDistance) / max(currentCameraDistance, 0.01f);
+
+
+    if (relativeDepthDifference > TemporalParameters.y)
+    {
+        return float4(currentColor, currentCameraDistance);
+    }
+
+
+    //========================================================
+    // Neighborhood Clamp
+    // History ColorをCurrentの3x3範囲内へ制限する
+    //========================================================
+    float3 minimumColor;
+    float3 maximumColor;
+
+
+    CalculateNeighborhoodBounds(
+        input.uv,
+        minimumColor,
+        maximumColor
+    );
+
+
+    const float3 clampedHistory =
+        clamp(
+            history.rgb,
+            minimumColor,
+            maximumColor
+        );
+
+
+    //========================================================
+    // Motionが大きいほどHistoryを弱くする
+    // velocityはUV単位
+    //========================================================
+    const float motionLength = length(velocity);
+
+    const float motionConfidence =
+        exp(-motionLength * max(TemporalParameters.z, 0.0f));
+
+
+    //========================================================
+    // Color Difference
+    //========================================================
+    const float3 colorDifference =
+        abs(clampedHistory - currentColor);
+
+    const float maximumColorDifference =
+        max(colorDifference.r, max(colorDifference.g, colorDifference.b));
+
+    const float colorConfidence =
+        exp(-maximumColorDifference * 2.0f);
+
+
+    //========================================================
+    // 最終History Weight
+    //========================================================
+    const float historyWeight =
+        saturate(
+            TemporalParameters.x *
+            motionConfidence *
+            colorConfidence
+        );
+
+
+    //========================================================
+    // Temporal Resolve
+    //========================================================
+    const float3 resolvedColor =
+        lerp(
+            currentColor,
+            clampedHistory,
+            historyWeight
+        );
+
+
+    return float4(resolvedColor, currentCameraDistance);
+}

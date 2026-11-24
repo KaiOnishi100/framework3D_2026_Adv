@@ -1,0 +1,646 @@
+//============================================================
+// Screen-Space Subsurface Diffusion
+//
+// t0 : HDR Input
+// t1 : SSS Mask
+// t2 : Main Depth
+// t3 : Per-Material SSS Diffusion Profile
+//============================================================
+
+Texture2D<float4> txInput : register(t0);
+Texture2D<float> txSSSMask : register(t1);
+Texture2D<float> txDepth : register(t2);
+Texture2D<float4> txSSSProfile : register(t3);
+
+SamplerState samLinear : register(s0);
+SamplerState samPoint : register(s1);
+
+
+cbuffer SSSDiffusionBuffer : register(b0)
+{
+    float4x4 InverseViewProjection;
+
+    // xyz : Camera Position
+    float4 CameraPosition;
+
+    // xy : Resolution
+    // zw : 1 / Resolution
+    float4 ScreenParameters;
+    
+    // Full Resolution
+    float4 FullScreenParameters;
+
+    // xy : Direction
+    // z  : Radius
+    // w  : Depth Falloff
+    float4 BlurParameters;
+
+    // x : Strength
+    // y : Mask Threshold
+    // z : Sky Threshold
+    // w : unused
+    float4 DiffusionParameters;
+
+    // RGB scattering width
+    float4 ScatteringProfile;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// 最大Blur Radius
+// Shaderの最大Loop数を固定する
+//============================================================
+static const int MAX_SSS_BLUR_RADIUS = 12;
+
+
+//============================================================
+// DepthからWorld Positionを復元
+// DirectX Depth:
+//   0 = Near
+//   1 = Far
+// uv: 0～1 Screen UV
+//============================================================
+bool ReconstructWorldPosition(float2 uv,float depth,out float3 worldPosition)
+{
+    //========================================================
+    // Screen UV → NDC
+    // Yだけ反転する
+    //========================================================
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+
+    //========================================================
+    // Clip Space Position
+    //========================================================
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    //========================================================
+    // Clip → World
+    //========================================================
+    float4 worldPositionH = mul(clipPosition, InverseViewProjection);
+
+
+    //========================================================
+    // 不正なWを除外
+    //========================================================
+    if (abs(worldPositionH.w) <= 0.000001f)
+    {
+        worldPosition = float3(0.0f, 0.0f, 0.0f);
+        return false;
+    }
+
+    //========================================================
+    // Perspective Divide
+    //========================================================
+    worldPosition = worldPositionH.xyz / worldPositionH.w;
+
+    return true;
+}
+
+//============================================================
+// Depth → Camera Distance
+// Raw DepthはPerspectiveで非線形なので
+// そのまま差を取らずWorld Positionへ復元する
+//============================================================
+bool ReconstructCameraDistance( float2 uv,float depth,out float cameraDistance)
+{
+    //========================================================
+    // Sky
+    //========================================================
+    if (depth >= DiffusionParameters.z)
+    {
+        cameraDistance = 0.0f;
+        return true;
+    }
+
+
+    float3 worldPosition;
+
+
+    if (!ReconstructWorldPosition(
+        uv,
+        depth,
+        worldPosition))
+    {
+        cameraDistance = 0.0f;
+
+        return false;
+    }
+
+
+    //========================================================
+    // CameraからSurfaceまでのWorld距離
+    //========================================================
+    cameraDistance = length(worldPosition - CameraPosition.xyz);
+
+
+    return true;
+}
+
+//============================================================
+// 現在のPixel位置において
+// Screen上の1PixelがWorld Space上で
+// どれくらいの長さになるかを求める
+//============================================================
+bool CalculateWorldUnitsPerPixel(
+    float2 uv,
+    float depth,
+    float2 pixelDirection,
+    out float worldUnitsPerPixel
+)
+{
+    worldUnitsPerPixel = 0.0f;
+
+    //========================================================
+    // Center World Position
+    //========================================================
+    float3 centerWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+        uv,
+        depth,
+        centerWorldPosition))
+    {
+        return false;
+    }
+
+    //========================================================
+    // 1Pixel分だけUVを移動
+    // Horizontal Pass: pixelDirection = (1 / Width, 0)
+    // Vertical Pass: pixelDirection = (0, 1 / Height)
+    //========================================================
+    float2 probeUV = uv + pixelDirection;
+
+    //========================================================
+    // Screen端の場合
+    // 外側へ出るなら逆方向へ1Pixel移動する
+    //========================================================
+    if (probeUV.x < 0.0f ||
+        probeUV.x > 1.0f ||
+        probeUV.y < 0.0f ||
+        probeUV.y > 1.0f)
+    {
+        probeUV = uv - pixelDirection;
+    }
+
+
+    //========================================================
+    // Neighbor World Position
+    // Centerと同じDepthを使用する
+    // 同じ深度面上で1Pixel移動したWorld距離を取得できる
+    //========================================================
+    float3 probeWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+        probeUV,
+        depth,
+        probeWorldPosition))
+    {
+        return false;
+    }
+
+
+    //========================================================
+    // 1Pixel = 何World Unitsか
+    //========================================================
+    worldUnitsPerPixel = length(probeWorldPosition - centerWorldPosition);
+
+    return worldUnitsPerPixel > 0.000001f;
+}
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    const float4 centerColor =
+        txInput.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // SSS Mask
+    //========================================================
+    const float centerMask =
+        txSSSMask.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // SSS対象外
+    //========================================================
+    if (centerMask <= DiffusionParameters.y)
+    {
+        return centerColor;
+    }
+
+    //============================================================
+    // Per-Material SSS Diffusion Profile
+    //============================================================
+    const float4 materialDiffusionProfile =
+        txSSSProfile.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+    //============================================================
+    // Material Scattering Profileが設定されているか
+    //============================================================
+    const bool hasMaterialScatteringProfile =
+        dot(materialDiffusionProfile.rgb, materialDiffusionProfile.rgb) > 0.000001f;
+
+    
+    //============================================================
+    // 最終Scattering Profile
+    // Material設定あり: Material Profile
+    // Material設定なし: PostProcess Global Profile
+    //============================================================
+    const float3 activeScatteringProfile =
+        hasMaterialScatteringProfile ? max(materialDiffusionProfile.rgb, 0.01f) : max(ScatteringProfile.rgb, 0.01f);
+
+
+    //============================================================
+    // Material Radius
+    // 0: Global RadiusへFallback
+    //============================================================
+    const float materialWorldSpaceRadius = max(materialDiffusionProfile.a, 0.0f);
+
+    const float globalWorldSpaceRadius = max(DiffusionParameters.w, 0.0f);
+
+
+    const float worldSpaceRadius =
+        materialWorldSpaceRadius > 0.000001f ? materialWorldSpaceRadius : globalWorldSpaceRadius;
+    
+    //========================================================
+    // Center Depth
+    //========================================================
+    const float centerDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    const bool centerIsSky = centerDepth >= DiffusionParameters.z;
+
+
+    float centerDistance = 0.0f;
+
+
+    if (!ReconstructCameraDistance(
+            input.uv,
+            centerDepth,
+            centerDistance))
+    {
+        return centerColor;
+    }
+
+
+    //============================================================
+    // 最大Screen-Space Radius
+    // CPU側のmBlurRadius
+    //============================================================
+    const int maxPixelRadius =
+        clamp(
+            (int) (BlurParameters.z + 0.5f),
+            1,
+            MAX_SSS_BLUR_RADIUS
+        );
+
+
+    //============================================================
+    // 初期状態:
+    // 従来の固定Pixel Radius
+    //============================================================
+    float radiusInPixels = (float) maxPixelRadius;
+
+
+    if (worldSpaceRadius > 0.000001f)
+    {
+        //========================================================
+        // 現在のBlur方向における1Pixel分のUV
+        // Horizontal: (1 / Width, 0)
+        // Vertical: (0, 1 / Height)
+        //========================================================
+        const float2 onePixelUV = BlurParameters.xy * ScreenParameters.zw;
+
+
+        float worldUnitsPerPixel = 0.0f;
+
+
+        //========================================================
+        // 1PixelがWorld Spaceでどの程度か取得
+        //========================================================
+        if (CalculateWorldUnitsPerPixel(
+            input.uv,
+            centerDepth,
+            onePixelUV,
+            worldUnitsPerPixel))
+        {
+            //====================================================
+            // World Radius → Pixel Radius
+            //====================================================
+            radiusInPixels = worldSpaceRadius / max(worldUnitsPerPixel, 0.000001f);
+        }
+    }
+
+
+    if (radiusInPixels < 0.5f)
+    {
+        return centerColor;
+    }
+
+
+    //============================================================
+    // Shaderで実際に使う整数Radius
+    //============================================================
+    const int radius = clamp((int) ceil(radiusInPixels), 1, maxPixelRadius);
+
+    //============================================================
+    // Adaptive Sample Count
+    // ScatteringProfile.w:
+    // 0: Low Quality
+    // 1: Full Quality
+    //============================================================
+    const float sampleQuality = saturate(ScatteringProfile.w);
+
+
+    //============================================================
+    // 最大Pair数
+    //============================================================
+    const int qualityMaxPairCount =
+        clamp((int) round(lerp(2.0f, (float) MAX_SSS_BLUR_RADIUS, sampleQuality)), 2, MAX_SSS_BLUR_RADIUS);
+
+
+    //============================================================
+    // Radiusが小さい場合は必要以上のSampleを行わない
+    //============================================================
+    const int pairCount = min(radius, qualityMaxPairCount);
+
+
+    //============================================================
+    // Sampling間隔
+    //============================================================
+    const float sampleSpacing =
+        (float) radius / max((float) pairCount, 1.0f);
+
+    //========================================================
+    // Pixel移動方向
+    // Horizontal: (1,0)
+    // Vertical: (0,1)
+    //========================================================
+    const float2 texelDirection =
+        BlurParameters.xy * ScreenParameters.zw;
+
+
+    //========================================================
+    // RGBごとにGaussian幅を変更する
+    // Red: 広い
+    // Green: 中
+    // Blue: 狭い
+    //========================================================
+    const float3 sigma =
+        max(activeScatteringProfile * (float) radius * 0.5f, float3(0.35f, 0.35f, 0.35f));
+    
+    //========================================================
+    // Center Sample
+    //========================================================
+    float3 accumulatedColor = centerColor.rgb;
+
+    float3 accumulatedWeight = float3(1.0f, 1.0f, 1.0f);
+
+    //============================================================
+    // Adaptive Separable Bilateral Diffusion
+    // を左右両方向へSamplingする
+    //============================================================
+    [loop]
+    for (int pairIndex = 1; pairIndex <= MAX_SSS_BLUR_RADIUS; ++pairIndex)
+    {
+        //========================================================
+        // 現在のQualityで必要なPair数を超えたら終了
+        //========================================================
+        if (pairIndex > pairCount)
+        {
+            break;
+        }
+
+
+        //========================================================
+        // Sampling Offset
+        // pair数を減らしてもBlur Radius全体をCoverageする
+        //========================================================
+        const float sampleOffset = sampleSpacing * (float) pairIndex;
+
+
+        //========================================================
+        // 左右2方向
+        //========================================================
+        [unroll]
+        for (int side = 0; side < 2; ++side)
+        {
+            const float signedOffset = side == 0 ? -sampleOffset : sampleOffset;
+
+
+            //====================================================
+            // Sample UV
+            //====================================================
+            const float2 sampleUV = input.uv + texelDirection * signedOffset;
+
+
+            //====================================================
+            // Screen外はSamplingしない
+            //====================================================
+            if (sampleUV.x < 0.0f ||
+                sampleUV.x > 1.0f ||
+                sampleUV.y < 0.0f ||
+                sampleUV.y > 1.0f)
+            {
+                continue;
+            }
+
+
+            //====================================================
+            // Neighbor Mask
+            //====================================================
+            const float sampleMask =
+                txSSSMask.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                );
+
+
+            //====================================================
+            // SSS Material外は除外
+            //====================================================
+            if (sampleMask <= DiffusionParameters.y)
+            {
+                continue;
+            }
+
+
+            //====================================================
+            // Thickness / Mask Weight
+            //====================================================
+            const float maskWeight = saturate(sampleMask / max(centerMask, 0.001f));
+
+
+            //====================================================
+            // Depth
+            //====================================================
+            const float sampleDepth =
+                txDepth.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                );
+
+
+            const bool sampleIsSky = sampleDepth >= DiffusionParameters.z;
+
+
+            //====================================================
+            // GeometryとSkyをまたがない
+            //====================================================
+            if (sampleIsSky != centerIsSky)
+            {
+                continue;
+            }
+
+
+            float depthWeight = 1.0f;
+
+
+            if (!centerIsSky)
+            {
+                float sampleDistance = 0.0f;
+
+
+                if (!ReconstructCameraDistance(
+                    sampleUV,
+                    sampleDepth,
+                    sampleDistance))
+                {
+                    continue;
+                }
+
+
+                const float depthDifference = abs(sampleDistance - centerDistance);
+
+
+                //================================================
+                // World-Space Radius基準でDepth差を評価
+                //================================================
+                const float depthReference =
+                    worldSpaceRadius > 0.000001f ?
+                    worldSpaceRadius : 0.1f;
+
+
+                const float normalizedDepthDifference =
+                    depthDifference / max(depthReference, 0.0001f);
+
+
+                depthWeight =
+                    exp(-normalizedDepthDifference * max(BlurParameters.w, 0.0f));
+            }
+
+
+            //====================================================
+            // Material Profile
+            //====================================================
+            const float4 sampleMaterialProfile =
+                txSSSProfile.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                );
+
+
+            const bool sampleHasMaterialProfile =
+                dot(sampleMaterialProfile.rgb, sampleMaterialProfile.rgb) > 0.000001f;
+
+
+            const float3 sampleScatteringProfile =
+                sampleHasMaterialProfile ?
+                max(sampleMaterialProfile.rgb, 0.01f) : max(ScatteringProfile.rgb, 0.01f);
+
+
+            //====================================================
+            // Material Profile差
+            //====================================================
+            const float profileDifference =
+                length(sampleScatteringProfile - activeScatteringProfile);
+
+
+            const float profileWeight = exp(-profileDifference * 4.0f);
+
+
+            //====================================================
+            // Gaussian Weight
+            //====================================================
+            const float offsetSquared =
+                sampleOffset * sampleOffset;
+
+            const float3 gaussianWeight = exp(-0.5f * offsetSquared / (sigma * sigma));
+
+
+            //====================================================
+            // Final Weight
+            //====================================================
+            const float3 weight =
+                gaussianWeight *
+                depthWeight *
+                maskWeight *
+                profileWeight;
+
+
+            //====================================================
+            // Diffusion Source
+            //====================================================
+            const float3 sampleColor =
+                txInput.SampleLevel(
+                    samLinear,
+                    sampleUV,
+                    0.0f
+                ).rgb;
+
+
+            accumulatedColor += sampleColor * weight;
+
+            accumulatedWeight += weight;
+        }
+    }
+
+
+    //========================================================
+    // Normalize
+    //========================================================
+    const float3 blurredColor = accumulatedColor / max(accumulatedWeight, 0.0001f);
+
+
+    //========================================================
+    // AlphaはBlurしない
+    //========================================================
+    return float4(blurredColor, centerColor.a);
+}

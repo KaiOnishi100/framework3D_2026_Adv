@@ -1,0 +1,55 @@
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+#MainBuildingRoof.csv
+
+
+#============================================================
+# Main Building Roof - Graybox
+#
+# 現在は最終的な屋根Modelではなく、
+# 本館内部が外から丸見えにならないようにするための
+# Graybox Roof / Ceiling。
+#
+# Main Building:
+#
+#     X = -26 ～ 26
+#     Z =   0 ～ 36
+#
+# 2F Ceiling:
+#
+#     Y = 9.00
+#
+# Roof Thickness:
+#
+#     0.30m
+#
+# Roof中心:
+#
+#     Y = 9.15
+#
+# Bottom:
+#
+#     Y = 9.00
+#
+# Top:
+#
+#     Y = 9.30
+#============================================================
+
+
+#============================================================
+# Main Roof Slab
+#
+# 外壁の上端へちょうど接続する。
+#
+# 現在は完全なFlat Roof。
+# 後で本館Modelを導入する際に、
+#
+# ・切妻屋根
+# ・寄棟屋根
+# ・Dormer
+# ・Chimney
+#
+# などへ置換可能。
+#============================================================
+
+MainRoof_MainSlab,MansionBlock,0.0,9.15,18.0,0,0,0,53.0,0.30,37.0,

@@ -1,0 +1,52 @@
+既存 SoundID に追加する項目
+==========================
+AE_Interact,
+AE_PursuerBreath,
+AE_PursuerAttack,
+AE_PursuerStep,
+AE_PursuerStep2,
+AE_PursuerStep3,
+AE_Footstep2,
+AE_Footstep3,
+AE_PlayerRun,
+AE_PlayerRun2,
+AE_PlayerRun3,
+AE_PlayerHit,
+AE_PlayerDeath,
+AE_DocumentPage,
+AE_FusePickup,
+AE_FuseSet,
+AE_PuzzleInteract,
+AE_PuzzleError,
+AE_PursuerNotice,
+AE_Heartbeat,
+
+SoundBank.cpp の既存 kAtmosphericSfx の末尾に追記する項目
+======================================================
+既存の AE_Ambience、AE_Footstep、AE_Flashlight、AE_DoorOpen、AE_DoorClose、
+AE_Pickup、AE_PowerRestore、AE_PursuerWake の宣言・登録を引き継ぎます。
+AE_Ambience は既存どおり mLoopSounds で管理します。
+
+{ SoundID::AE_Interact,      L"data/mySound/AtmosphericEscape/Interact.wav",       2 },
+{ SoundID::AE_PursuerBreath, L"data/mySound/AtmosphericEscape/PursuerBreath.wav",  1 },
+{ SoundID::AE_PursuerAttack, L"data/mySound/AtmosphericEscape/PursuerAttack.wav",  1 },
+{ SoundID::AE_PursuerStep,   L"data/mySound/AtmosphericEscape/PursuerStep.wav",    2 },
+{ SoundID::AE_PursuerStep2,  L"data/mySound/AtmosphericEscape/PursuerStep_2.wav",  1 },
+{ SoundID::AE_PursuerStep3,  L"data/mySound/AtmosphericEscape/PursuerStep_3.wav",  1 },
+{ SoundID::AE_Footstep2,     L"data/mySound/AtmosphericEscape/Footstep_2.wav",     1 },
+{ SoundID::AE_Footstep3,     L"data/mySound/AtmosphericEscape/Footstep_3.wav",     1 },
+{ SoundID::AE_PlayerRun,     L"data/mySound/AtmosphericEscape/PlayerRun.wav",      2 },
+{ SoundID::AE_PlayerRun2,    L"data/mySound/AtmosphericEscape/PlayerRun_2.wav",    1 },
+{ SoundID::AE_PlayerRun3,    L"data/mySound/AtmosphericEscape/PlayerRun_3.wav",    1 },
+{ SoundID::AE_PlayerHit,     L"data/mySound/AtmosphericEscape/PlayerHit.wav",      2 },
+{ SoundID::AE_PlayerDeath,   L"data/mySound/AtmosphericEscape/PlayerDeath.wav",    1 },
+{ SoundID::AE_DocumentPage,  L"data/mySound/AtmosphericEscape/DocumentPage.wav",  2 },
+{ SoundID::AE_FusePickup,    L"data/mySound/AtmosphericEscape/FusePickup.wav",    2 },
+{ SoundID::AE_FuseSet,       L"data/mySound/AtmosphericEscape/FuseSet.wav",       2 },
+{ SoundID::AE_PuzzleInteract,L"data/mySound/AtmosphericEscape/PuzzleInteract.wav",2 },
+{ SoundID::AE_PuzzleError,   L"data/mySound/AtmosphericEscape/PuzzleError.wav",   2 },
+{ SoundID::AE_PursuerNotice, L"data/mySound/AtmosphericEscape/PursuerNotice.wav", 1 },
+{ SoundID::AE_Heartbeat,     L"data/mySound/AtmosphericEscape/Heartbeat.wav",     1 },
+
+足音の各バリエーションは別のSoundIDです。同じファイルを複数ボイスで再生する
+SoundPoolと、異なるファイルの切り替えを分けて扱います。

@@ -1,0 +1,71 @@
+Phase 1: Forward基礎
+1. Lambert / Blinn-Phong整理 : 実装済み|shader/ps3d/legacy_lighting.hlsli、directional_lighting.hlsli
+2. Normal Mapping : 実装済み|shader/ps3d/surface_data.hlsli、vn_model.cppのNormal Map設定
+3. HDR Rendering : 実装済み|framework/render_format.h、Direct3DのHDRリソース
+4. Tone Mapping : 実装済み|postProcessManager.cppの最終ToneMappingPass
+5. Forward PBR : 実装済み|shader/ps_3d.psh、ps3d/pbr_lighting.hlsli
+
+Phase 2: Deferred
+6. G-Buffer
+7. Deferred PBR Lighting
+8. Forward Transparent併用
+9. SSAO
+10. SSAO Blur
+
+Phase 3: 最適化
+11. Camera Frustum Culling : 実装済み|public/vn_model.cppのIsInsideMainCameraFrustumとrender内の判定
+12. Distance Culling
+13. GPU Instancing
+14. LOD
+15. Compute Shader基盤
+16. Hi-Z
+17. GPU Occlusion Culling
+18. ExecuteIndirect
+
+Phase 4: GPU処理
+19. Compute Bloom
+20. GPU Particle
+21. GPU Particle Sorting
+22. Clustered / Tiled Lighting
+
+Phase 5: PBR完成
+23. Skybox : 実装済み|framework/environmentMapManager.cpp
+24. IBL Irradiance : 実装済み|environmentMapManager.cpp、ps_irradiance_environment.psh
+25. Prefilter Environment : 実装済み|environmentMapManager.cpp、ps_prefilter_environment.psh
+26. BRDF LUT : 実装済み|environmentMapManager.cpp、ps_brdf_lut.psh、ibl_lighting.hlsli
+27. Emissive : 実装済み|VNM材質、surface_data.hlsli、パズル発光設定
+28. Auto Exposure
+
+Phase 6: 時間方向処理
+29. Motion Vector : 実装あり|PostProcessManagerからGenerate / renderMotionVector
+30. TAA
+31. Temporal SSAO
+32. SSR
+33. Temporal SSR
+34. FSR / XeSS
+35. DLSS
+
+Phase 7: 高度な描画
+36. DXR Ray Traced Shadow
+37. Ray Traced Reflection
+38. Hybrid Reflection
+39. SSGI : 実装済み|PostProcessManager→SSGIPass、raymarch/filter/temporal/upsample/composite
+40. DDGI
+41. Volumetric Fog
+
+Phase 8: GPU Driven
+42. Meshlet
+43. Mesh Shader
+44. Cluster Culling
+45. Asset Streaming
+46. Virtual Texture
+47. Virtual Shadow Map
+48. Nanite相当
+
+Phase 9: 表現技術
+49. NPR Toon Shading
+50. Outline
+51. Hatching
+52. Watercolor
+53. Photogrammetry Asset Pipeline
+54. Material Scanning

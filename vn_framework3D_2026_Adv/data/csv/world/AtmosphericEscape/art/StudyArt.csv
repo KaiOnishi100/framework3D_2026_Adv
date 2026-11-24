@@ -1,0 +1,119 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Main1F Study - Floor
+#============================================================
+Art_Main1F_Study_Floor,MansionArt,-21,0.01,12,0,90,0,1.142857,1,0.625,data/model/mansion/architecture/floor/corridor_floor_7x16.vnm
+
+#============================================================
+# Study - West Wall
+#============================================================
+Art_Main1F_Study_WestWall_01,MansionArt,-25.92,0,9.0025,0,-90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_WestWall_02,MansionArt,-25.92,0,11,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_WestWall_03,MansionArt,-25.92,0,13,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_WestWall_04,MansionArt,-25.92,0,15,0,-90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+#============================================================
+# Study - South Wall
+#============================================================
+Art_Main1F_Study_SouthWall_01,MansionArt,-24.9975,0,8.2305,0,180,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_SouthWall_02,MansionArt,-23,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_SouthWall_03,MansionArt,-21,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_SouthWall_04,MansionArt,-19,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_SouthWall_05,MansionArt,-17,0,8.2305,0,180,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Study - East Wall
+#============================================================
+
+# Z=8～11
+Art_Main1F_Study_EastWall_S01,MansionArt,-16.2305,0,9.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_EastWall_S02,MansionArt,-16.2305,0,10.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Z=13～16
+Art_Main1F_Study_EastWall_N01,MansionArt,-16.2305,0,14.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_EastWall_N02,MansionArt,-16.2305,0,15.5,0,90,0,0.5050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Study - North Wall
+#============================================================
+
+# Left: X=-26～-22
+Art_Main1F_Study_NorthWall_L01,MansionArt,-24.9975,0,15.7695,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_NorthWall_L02,MansionArt,-23.0025,0,15.7695,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Right: X=-20～-16
+Art_Main1F_Study_NorthWall_R01,MansionArt,-18.9975,0,15.7695,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_Study_NorthWall_R02,MansionArt,-17.0025,0,15.7695,0,0,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Study - Furniture
+#============================================================
+
+#------------------------------------------------------------
+# Antique Desk
+#------------------------------------------------------------
+Art_Main1F_Study_Desk,MansionArt,-21,0,9.7,0,0,0,1,1,1,data/model/mansion/props/desk/antique_desk_01.vnm
+
+
+#------------------------------------------------------------
+# Bookshelves
+#------------------------------------------------------------
+Art_Main1F_Study_Bookshelf_01,MansionArt,-25.6,0,10.0,0,90,0,1,1,1,data/model/mansion/props/bookshelf/library_bookshelf_tall.vnm
+
+Art_Main1F_Study_Bookshelf_02,MansionArt,-25.6,0,14.0,0,90,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_damaged_01.vnm
+
+Art47_Study_Bookshelf_Low,MansionArt,-23.60,0,8.85,0,0,0,1,1,1,data/model/mansion/props/bookshelf/prop_bookshelf_low_wide_01.vnm
+
+#============================================================
+# Study - Antique Armchair
+#============================================================
+Art_Main1F_Study_Armchair,MansionArt,-21,0,11.1,0,180,0,1,1,1,data/model/mansion/props/chair/study_armchair_01.vnm
+
+
+#============================================================
+# Study - Door Frames
+#============================================================
+
+# 西廊下への入口
+Art_Main1F_Study_CorridorDoorFrame,MansionArt,-16.2305,0,12,0,90,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+Art_Main1F_Study_CorridorDoorUpper,MansionArt,-16.2305,3.5,12,0,90,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+# 図書室への入口
+Art_Main1F_Study_LibraryDoorFrame,MansionArt,-21,0,15.7695,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_doorframe_200.vnm
+Art_Main1F_Study_LibraryDoorUpper,MansionArt,-21,3.5,15.7695,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/mansion_door_upper_200.vnm
+
+
+#============================================================
+# Main1F Study - Wall Lamps
+#============================================================
+
+Art_Main1F_Study_WallLamp_L,MansionArt,-24,2.85,8.35,0,0,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+Art_Main1F_Study_WallLamp_R,MansionArt,-18,2.85,8.35,0,0,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+
+
+#============================================================
+# STEP29 - Main 1F Study Ceiling
+#
+# Room:
+#   X=-26 ～ -16
+#   Z=8 ～ 16
+#============================================================
+
+Art_Main_Repair_StudyCeiling,MansionArt,-21.0,4.41,12.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main1f_study_ceiling.vnm
+
+#============================================================
+# STEP31 - Study / Library Wall End Caps
+#============================================================
+
+# 左側
+Art31_WallCap_StudyLibrary_L,MansionArt,-22.000,0.000,16.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 右側
+Art31_WallCap_StudyLibrary_R,MansionArt,-20.000,0.000,16.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art_Main1F_Study_Candle_Desk,MansionArt,-21.00,0.78,9.70,0,0,0,1,1,1,data/model/mansion/props/candle/mansion_candle_01.vnm

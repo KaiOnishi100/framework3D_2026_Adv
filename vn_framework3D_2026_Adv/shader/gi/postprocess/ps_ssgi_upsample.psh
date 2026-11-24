@@ -1,0 +1,362 @@
+//============================================================
+// SSGI Depth / Normal-aware Full Resolution Upsampling
+// t0: Half Resolution SSGI
+// t1: Full Resolution Depth
+// t2: Full Resolution Normal + Roughness
+//============================================================
+
+Texture2D<float4> txSSGI : register(t0);
+
+Texture2D<float> txDepth : register(t1);
+
+Texture2D<float4> txGISurface : register(t2);
+
+
+SamplerState samLinear : register(s0);
+
+SamplerState samPoint : register(s1);
+
+
+cbuffer SSGIUpsampleBuffer : register(b0)
+{
+    float4x4 InverseViewProjection;
+
+    float4 CameraPosition;
+
+    float4 WorkScreenParameters;
+
+    float4 FullScreenParameters;
+
+    // x Depth Falloff
+    // y Normal Power
+    // z Confidence Minimum
+    // w Sky Threshold
+    float4 UpsampleParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// Depth → World Position
+//============================================================
+bool ReconstructWorldPosition(
+    float2 uv,
+    float depth,
+    out float3 worldPosition
+)
+{
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    const float4 worldH = mul(clipPosition, InverseViewProjection);
+
+
+    if (abs(worldH.w) <= 0.000001f)
+    {
+        worldPosition = 0.0f;
+        return false;
+    }
+
+    worldPosition = worldH.xyz / worldH.w;
+
+    return true;
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Full Resolution Center Depth
+    //========================================================
+    const float centerDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Sky
+    //========================================================
+    if (centerDepth >= UpsampleParameters.w)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // Center Normal
+    //========================================================
+    float3 centerNormal =
+        txGISurface.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        ).xyz;
+
+
+    if (dot(centerNormal, centerNormal) < 0.25f)
+    {
+        return 0.0f;
+    }
+
+
+    centerNormal = normalize(centerNormal);
+
+
+    //========================================================
+    // Center World Position
+    //========================================================
+    float3 centerWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+            input.uv,
+            centerDepth,
+            centerWorldPosition))
+    {
+        return 0.0f;
+    }
+
+
+    const float centerCameraDistance =
+        length(centerWorldPosition - CameraPosition.xyz);
+
+
+    //========================================================
+    // Full-res UVからHalf-res Texture上の位置を求める
+    // -0.5することで、Texture Pixel Center基準に変換する
+    //========================================================
+    const float2 halfPosition =
+        input.uv * WorkScreenParameters.xy - 0.5f;
+
+    const float2 basePosition = floor(halfPosition);
+
+    const float2 fractionPart = frac(halfPosition);
+
+
+    float3 accumulatedColor = 0.0f;
+
+    float accumulatedConfidence = 0.0f;
+
+    float accumulatedWeight = 0.0f;
+
+
+    //========================================================
+    // Half-resの周囲4Pixelを取得する
+    // 00 10
+    // 01 11
+    //========================================================
+    [unroll]
+    for (int y = 0; y < 2; ++y)
+    {
+        [unroll]
+        for (int x = 0; x < 2; ++x)
+        {
+            //================================================
+            // Half Resolution Pixel座標
+            //================================================
+            float2 samplePixel =
+                basePosition + float2((float) x, (float) y);
+
+
+            //================================================
+            // Texture範囲内へClamp
+            //================================================
+            samplePixel =
+                clamp(
+                    samplePixel,
+                    0.0f,
+                    WorkScreenParameters.xy -
+                    1.0f
+                );
+
+
+            //================================================
+            // Pixel Center UV
+            //================================================
+            const float2 sampleUV =
+                (samplePixel + 0.5f) * WorkScreenParameters.zw;
+
+
+            //================================================
+            // Bilinear Weight
+            //================================================
+            const float weightX =
+                x == 0 ? 1.0f - fractionPart.x : fractionPart.x;
+
+            const float weightY =
+                y == 0 ? 1.0f - fractionPart.y : fractionPart.y;
+
+            const float bilinearWeight = weightX * weightY;
+
+            //================================================
+            // Half-res GI
+            //================================================
+            const float4 sampleGI =
+                txSSGI.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                );
+
+
+            //================================================
+            // IMPORTANT
+            // Depth / Normal Texture自体はFull Resolution
+            // ※Normalized UVなので同じsampleUVを使用すれば
+            // ※Half-res GI Sampleが代表している画面位置の
+            // ※Full-res Geometry情報を取得できる
+            //================================================
+            const float sampleDepth =
+                txDepth.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                );
+
+
+            if (sampleDepth >= UpsampleParameters.w)
+            {
+                continue;
+            }
+
+
+            //================================================
+            // Sample World Position
+            //================================================
+            float3 sampleWorldPosition;
+
+
+            if (!ReconstructWorldPosition(
+                    sampleUV,
+                    sampleDepth,
+                    sampleWorldPosition))
+            {
+                continue;
+            }
+
+
+            const float sampleCameraDistance =
+                length(sampleWorldPosition - CameraPosition.xyz);
+
+
+            //================================================
+            // Relative Depth Difference
+            //================================================
+            const float relativeDepthDifference =
+                abs(sampleCameraDistance - centerCameraDistance) / max(centerCameraDistance, 0.01f);
+
+
+            const float depthWeight =
+                exp(-relativeDepthDifference * max(UpsampleParameters.x, 0.0f));
+
+
+            //================================================
+            // Sample Normal
+            //================================================
+            float3 sampleNormal =
+                txGISurface.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                ).xyz;
+
+
+            if (dot(sampleNormal, sampleNormal) < 0.25f)
+            {
+                continue;
+            }
+
+            sampleNormal = normalize(sampleNormal);
+
+            //================================================
+            // Normal Similarity
+            //================================================
+            const float normalSimilarity =
+                saturate(dot(centerNormal, sampleNormal));
+
+
+            const float normalWeight =
+                pow(normalSimilarity, max(UpsampleParameters.y, 1.0f));
+
+
+            //================================================
+            // Confidence Weight
+            // ※Confidence 0でも完全除外する
+            // ※周囲4SampleすべてRejectされるケースが増えるため
+            // ※Minimumを残す
+            //================================================
+            const float confidenceWeight =
+                lerp(
+                    UpsampleParameters.z,
+                    1.0f,
+                    saturate(sampleGI.a)
+                );
+
+
+            //================================================
+            // Final Weight
+            //================================================
+            const float finalWeight =
+                bilinearWeight *
+                depthWeight *
+                normalWeight *
+                confidenceWeight;
+
+
+            accumulatedColor += sampleGI.rgb * finalWeight;
+
+            accumulatedConfidence += sampleGI.a * finalWeight;
+
+            accumulatedWeight += finalWeight;
+        }
+    }
+
+
+    //========================================================
+    // 全SampleがGeometry Rejectされた場合
+    // 単純Linear SamplingへFallbackする
+    //========================================================
+    if (accumulatedWeight <= 0.0001f)
+    {
+        const float4 fallback =
+            txSSGI.SampleLevel(
+                samLinear,
+                input.uv,
+                0.0f
+            );
+
+
+        return float4(max(fallback.rgb, 0.0f), saturate(fallback.a));
+    }
+
+
+    //========================================================
+    // Normalize
+    //========================================================
+    const float3 resultColor =
+        accumulatedColor / accumulatedWeight;
+
+
+    const float resultConfidence =
+        accumulatedConfidence / accumulatedWeight;
+
+
+    return float4(max(resultColor, 0.0f), saturate(resultConfidence));
+}

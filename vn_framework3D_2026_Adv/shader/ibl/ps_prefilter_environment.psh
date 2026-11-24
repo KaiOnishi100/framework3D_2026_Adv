@@ -1,0 +1,296 @@
+#include "../common/environment_common.hlsli"
+
+//============================================================
+// Prefiltered Environment Map生成用Pixel Shader
+//============================================================
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float3 direction : TEXCOORD0;
+};
+
+//============================================================
+// 元のEnvironment CubeMap
+//============================================================
+TextureCube txEnvironment : register(t0);
+
+SamplerState samEnvironment : register(s0);
+
+//============================================================
+// Prefilter Parameter
+//
+// x : Roughness
+// y : 元CubeMapの解像度
+// z : 元CubeMapの最大Mip Level
+// w : 未使用
+//============================================================
+cbuffer PrefilterBuffer : register(b1)
+{
+    float4 PrefilterParam;
+}
+
+//============================================================
+// Van der Corput Radical Inverse
+// Hammersley列を生成するために使用する
+//============================================================
+float RadicalInverseVanDerCorput(uint bits)
+{
+	//========================================================
+	// 32bitのビット順を反転する
+	//========================================================
+    bits = reversebits(bits);
+
+	//========================================================
+	// 0～1へ変換
+	//========================================================
+    return (float) bits * 2.3283064365386963e-10f;
+}
+
+//============================================================
+// Hammersley Sequence
+// ランダムより均等にサンプルを分布できる
+//============================================================
+float2 Hammersley(uint sampleIndex,uint sampleCount)
+{
+    return float2((float) sampleIndex / (float) sampleCount, RadicalInverseVanDerCorput(sampleIndex));
+}
+
+//============================================================
+// GGX Importance Sampling
+// Xi: Hammersley列の2次元値
+// normal: 現在の環境参照方向
+// roughness: 表面の粗さ
+// 戻り値: GGX分布に従ったHalf Vector
+//============================================================
+float3 ImportanceSampleGGX(
+	float2 Xi,
+	float3 normal,
+	float roughness
+)
+{
+	//========================================================
+	// GGXではalpha = roughness²を使用する
+	//========================================================
+    const float alpha = roughness * roughness;
+
+    const float alphaSquared = alpha * alpha;
+
+	//========================================================
+	// 方位角
+	//========================================================
+    const float phi = 2.0f * 3.14159265359f * Xi.x;
+
+	//========================================================
+	// GGX分布に従った仰角
+	//========================================================
+    const float cosTheta =
+		sqrt((1.0f - Xi.y) / (1.0f + (alphaSquared - 1.0f) * Xi.y));
+
+    const float sinTheta =
+		sqrt(max(1.0f - cosTheta * cosTheta, 0.0001f));
+
+	//========================================================
+	// Tangent空間のHalf Vector
+	//========================================================
+    const float3 tangentHalfVector =
+		float3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
+
+    const float3 N =
+		normalize(normal);
+
+	//========================================================
+	// Nとほぼ平行でない補助軸を選ぶ
+	//========================================================
+    const float3 helperAxis =
+		abs(N.z) < 0.999f ? float3(0.0f, 0.0f, 1.0f) : float3(1.0f, 0.0f, 0.0f);
+
+	//========================================================
+	// Tangent Basisを作成
+	//========================================================
+    const float3 tangent =
+		normalize(cross(helperAxis, N));
+
+    const float3 bitangent =
+		cross(N, tangent);
+
+	//========================================================
+	// Tangent空間からWorld空間へ変換
+	//========================================================
+    const float3 worldHalfVector =
+		tangent * tangentHalfVector.x +
+		bitangent * tangentHalfVector.y +
+		N * tangentHalfVector.z;
+
+    return normalize(worldHalfVector);
+}
+
+//============================================================
+// GGX Distribution
+// Prefilter時のPDF計算に使用する
+//============================================================
+float DistributionGGXForPrefilter(
+	float3 normal,
+	float3 halfVector,
+	float roughness
+)
+{
+    const float3 N = normalize(normal);
+
+    const float3 H = normalize(halfVector);
+
+    const float alpha = roughness * roughness;
+
+    const float alphaSquared = alpha * alpha;
+
+    const float NdotH = saturate(dot(N, H));
+
+    const float NdotHSquared = NdotH * NdotH;
+
+    const float denominatorBase = NdotHSquared * (alphaSquared - 1.0f) + 1.0f;
+
+    const float denominator =
+		3.14159265359f * denominatorBase * denominatorBase;
+
+    return alphaSquared / max(denominator, 0.0001f);
+}
+
+float4 main(PixelInput IN) : SV_TARGET
+{
+	//============================================================
+	// Prefiltered CubeMap側の方向
+	// このCubeMapはエンジン座標系で生成する
+	//============================================================
+    const float3 N = normalize(IN.direction);
+
+	//============================================================
+	// ※Environment Prefilterでは
+	// ※視線方向と反射方向を法線方向と同じとして近似する
+	//============================================================
+    const float3 R = N;
+
+    const float3 V = R;
+
+    const float roughness =
+		saturate(PrefilterParam.x);
+
+    const float sourceResolution =
+		max(PrefilterParam.y, 1.0f);
+
+    const float sourceMaximumMip =
+		max(PrefilterParam.z, 0.0f);
+
+    float3 accumulatedColor =
+		float3(0.0f, 0.0f, 0.0f);
+
+    float accumulatedWeight = 0.0f;
+
+	//============================================================
+	// Importance Samplingのサンプル数
+	// C++側からPrefilterParam.wへ渡す
+	// 最低1サンプルを保証して0除算を防ぐ
+	//============================================================
+    const uint sampleCount = max((uint) PrefilterParam.w, 1u);
+	
+	//============================================================
+	// GGX Importance Sampling
+	//============================================================
+	[loop]
+    for (uint sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
+    {
+        const float2 Xi = Hammersley(sampleIndex, sampleCount);
+
+		//========================================================
+		// GGX分布に従ったHalf Vector
+		//========================================================
+        const float3 H =
+			ImportanceSampleGGX(
+				Xi,
+				N,
+				roughness
+			);
+
+		//========================================================
+		// Half Vectorからライト方向を復元
+		//========================================================
+        const float3 L =
+			normalize(2.0f * dot(V, H) * H - V);
+
+        const float NdotL =
+			saturate(dot(N, L));
+
+        if (NdotL > 0.0f)
+        {
+            const float NdotH =
+				saturate(dot(N, H));
+
+            const float HdotV =
+				saturate(dot(H, V));
+
+            const float distribution =
+				DistributionGGXForPrefilter(
+					N,
+					H,
+					roughness
+				);
+
+			//====================================================
+			// GGX Importance SamplingのPDF
+			//====================================================
+            const float pdf =
+				distribution * NdotH / max(4.0f * HdotV, 0.0001f);
+
+			//====================================================
+			// 元CubeMapの1テクセルが占める立体角
+			//====================================================
+            const float texelSolidAngle =
+				4.0f * 3.14159265359f / (6.0f * sourceResolution * sourceResolution);
+
+			//====================================================
+			// 1サンプルが占める立体角
+			//====================================================
+            const float sampleSolidAngle =
+				1.0f / max((float) sampleCount * pdf, 0.0001f);
+
+			//====================================================
+			// 適切な元CubeMap Mipを選択
+			// Roughness 0ではMip 0を使用する
+			//====================================================
+            float sourceMipLevel =
+				roughness <= 0.0001f ? 0.0f : 0.5f * log2(sampleSolidAngle / texelSolidAngle);
+
+            sourceMipLevel =
+				clamp(
+					sourceMipLevel,
+					0.0f,
+					sourceMaximumMip
+				);
+
+			//====================================================
+			// UE由来CubeMap向けの方向変換
+			// Skyboxと同じ変換を使用する
+			// 出力されるPrefiltered CubeMap自体は
+			// エンジン座標系として保存される
+			//====================================================
+            const float3 sourceDirection =
+				ConvertWorldDirectionToEnvironment(L);
+
+            const float3 environmentColor =
+				txEnvironment.SampleLevel(
+					samEnvironment,
+					sourceDirection,
+					sourceMipLevel
+				).rgb;
+
+            accumulatedColor += environmentColor * NdotL;
+
+            accumulatedWeight += NdotL;
+        }
+    }
+
+	//============================================================
+	// 加重平均
+	//============================================================
+    const float3 resultColor = accumulatedColor / max(accumulatedWeight, 0.0001f);
+
+    return float4(resultColor, 1.0f);
+}

@@ -1,0 +1,131 @@
+Texture2D sceneTex : register(t0);
+SamplerState smp : register(s0);
+
+struct PSInput
+{
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+//============================================================
+// 現在の描画サイズに合わせる
+//============================================================
+static const float SCREEN_WIDTH = 1920.0f;
+static const float SCREEN_HEIGHT = 1080.0f;
+
+//============================================================
+// 1ピクセル分のUVサイズ
+//============================================================
+static const float2 TEXEL_SIZE = float2(1.0f / SCREEN_WIDTH, 1.0f / SCREEN_HEIGHT);
+
+//============================================================
+// 輝度計算
+//============================================================
+float Luma(float3 color)
+{
+    return dot(color, float3(0.299f, 0.587f, 0.114f));
+}
+
+//============================================================
+// 安全にサンプリングする
+// ※Sampler が WRAP の場合、uv が 0未満 / 1超えになると
+// ※反対側の画面を読んでしまう
+// ※それを防ぐため、画面端の内側にUVを制限する
+//============================================================
+float3 SampleSafe(float2 uv)
+{
+    float2 minUV = TEXEL_SIZE * 0.5f;
+    float2 maxUV = 1.0f - TEXEL_SIZE * 0.5f;
+
+    uv = clamp(uv, minUV, maxUV);
+
+    return sceneTex.Sample(smp, uv).rgb;
+}
+
+float4 main(PSInput input) : SV_TARGET
+{
+    float2 uv = input.uv;
+
+	//============================================================
+	// 中心色
+	//============================================================
+    float3 colorC = SampleSafe(uv);
+
+	//============================================================
+	// 斜め4方向を使う
+	// 4方向の上下左右平均より、線状のにじみが出にくい
+	//============================================================
+    float3 colorNW = SampleSafe(uv + float2(-1.0f, -1.0f) * TEXEL_SIZE);
+    float3 colorNE = SampleSafe(uv + float2(1.0f, -1.0f) * TEXEL_SIZE);
+    float3 colorSW = SampleSafe(uv + float2(-1.0f, 1.0f) * TEXEL_SIZE);
+    float3 colorSE = SampleSafe(uv + float2(1.0f, 1.0f) * TEXEL_SIZE);
+
+    float lumaC = Luma(colorC);
+    float lumaNW = Luma(colorNW);
+    float lumaNE = Luma(colorNE);
+    float lumaSW = Luma(colorSW);
+    float lumaSE = Luma(colorSE);
+
+    float lumaMin = min(lumaC, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
+    float lumaMax = max(lumaC, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
+
+    float contrast = lumaMax - lumaMin;
+
+	//============================================================
+	// 小さい輝度差はエッジ扱いしない
+	// 値を小さくするほどFXAAが強くかかる
+	// 値を大きくするほどFXAAが弱くなる
+	//============================================================
+    float edgeThreshold = 0.12f;
+
+    if (contrast < edgeThreshold)
+    {
+        return float4(colorC, 1.0f);
+    }
+
+	//============================================================
+	// エッジ方向をざっくり求める
+	//============================================================
+    float2 dir;
+
+    dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));
+    dir.y = ((lumaNW + lumaSW) - (lumaNE + lumaSE));
+
+	//============================================================
+	// ※dir が大きくなりすぎると、離れたピクセルを読んで線が出やすい
+	// ※そのため最大移動量を制限する
+	//============================================================
+    float dirLength = max(abs(dir.x), abs(dir.y));
+
+    if (dirLength < 0.0001f)
+    {
+        return float4(colorC, 1.0f);
+    }
+
+    dir /= dirLength;
+
+	//============================================================
+	// サンプリング距離
+	// 強くしすぎると画面が眠くなる
+	//============================================================
+    float fxaaSpan = 1.0f;
+    dir *= TEXEL_SIZE * fxaaSpan;
+
+	//============================================================
+	// エッジ方向に少しだけサンプリングしてなじませる
+	//============================================================
+    float3 colorA = SampleSafe(uv + dir * -0.5f);
+    float3 colorB = SampleSafe(uv + dir * 0.5f);
+
+    float3 averageColor = (colorA + colorB) * 0.5f;
+
+	//============================================================
+	// blendを上げるほどFXAAが強い
+	// ただし上げすぎるとボケる・線が出る
+	//============================================================
+    float blend = 0.35f;
+
+    float3 result = lerp(colorC, averageColor, blend);
+
+    return float4(result, 1.0f);
+}

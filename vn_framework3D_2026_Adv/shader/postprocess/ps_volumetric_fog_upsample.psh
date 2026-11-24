@@ -1,0 +1,365 @@
+//============================================================
+// Volumetric Fog Depth-aware Bilateral Upsampling
+//
+// t0 : Full Resolution HDR Scene
+// t1 : Half Resolution Resolved Fog
+// t2 : Full Resolution Main Depth
+//
+// Fog:
+//   RGB = In-Scattering
+//   A   = Transmittance
+//============================================================
+
+Texture2D<float4> txScene : register(t0);
+
+Texture2D<float4> txFog : register(t1);
+
+Texture2D<float> txDepth : register(t2);
+
+
+//============================================================
+// Scene
+//============================================================
+SamplerState samLinear : register(s0);
+
+
+//============================================================
+// Fog / Depth
+// Bilateral補間は自前で行うためPoint
+//============================================================
+SamplerState samPoint : register(s1);
+
+
+cbuffer VolumetricUpsampleBuffer : register(b0)
+{
+    //========================================================
+    // Full Resolution Depth → World Position
+    //========================================================
+    float4x4 InverseViewProjection;
+
+
+    //========================================================
+    // xyz : Camera Position
+    // w   : Fog Max Distance
+    //========================================================
+    float4 CameraPositionMaxDistance;
+
+
+    //========================================================
+    // x : Depth Falloff
+    // y : Sky Threshold
+    // z : Depth-aware Enable
+    // w : unused
+    //========================================================
+    float4 UpsampleParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// DepthからCameraまでのWorld距離を求める
+// ※Raw Depth差をそのまま比較すると
+// ※Perspective Projectionの非線形性により
+// ※Near/FarでThresholdの意味が変わる
+// World Positionを復元してCameraからの距離を比較する
+//============================================================
+bool ReconstructDistance(
+    float2 uv,
+    float depth,
+    out float distanceFromCamera
+)
+{
+    //========================================================
+    // Sky
+    //========================================================
+    if (depth >= UpsampleParameters.y)
+    {
+        distanceFromCamera = CameraPositionMaxDistance.w;
+        return true;
+    }
+
+
+    //========================================================
+    // UV → DirectX NDC
+    //========================================================
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+
+    float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    float4 worldPosition = mul(clipPosition, InverseViewProjection);
+
+
+    if (abs(worldPosition.w) <= 0.000001f)
+    {
+        distanceFromCamera = 0.0f;
+
+        return false;
+    }
+
+    worldPosition /= worldPosition.w;
+
+    distanceFromCamera = length(worldPosition.xyz - CameraPositionMaxDistance.xyz);
+
+    return true;
+}
+
+
+//============================================================
+// 4tap Bilateral Fog Upsampling
+//============================================================
+float4 SampleFogDepthAware(float2 uv)
+{
+    
+    //============================================================
+    // Fallback Fog
+    //============================================================
+    const float4 fallbackFog =
+        txFog.SampleLevel(
+            samLinear,
+            uv,
+            0.0f
+        );
+    
+    
+    //========================================================
+    // Debug / Fallback:
+    // Depth-aware OFFなら通常Linear Upsample
+    //========================================================
+    if (UpsampleParameters.z < 0.5f)
+    {
+        return fallbackFog;
+    }
+
+
+    //========================================================
+    // Half Resolutionサイズ取得
+    //========================================================
+    uint fogWidth = 1u;
+    uint fogHeight = 1u;
+
+    txFog.GetDimensions(fogWidth, fogHeight);
+
+    const float2 fogSize = float2((float) fogWidth, (float) fogHeight);
+
+    //========================================================
+    // Current Full Resolution Depth
+    //========================================================
+    const float centerDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            uv,
+            0.0f
+        );
+
+
+    const bool centerIsSky = centerDepth >= UpsampleParameters.y;
+
+    float centerDistance = 0.0f;
+
+
+    if (!ReconstructDistance(
+            uv,
+            centerDepth,
+            centerDistance))
+    {
+        return fallbackFog;
+    }
+
+
+    //========================================================
+    // Full UVがHalf Resolution Texture上のどこにあるか
+    // -0.5することでPixel Center基準に変換する
+    //========================================================
+    const float2 fogPixel = uv * fogSize - 0.5f;
+
+    const float2 basePixel = floor( fogPixel  );
+
+    //========================================================
+    // Bilinear Fraction
+    //========================================================
+    const float2 fraction = frac( fogPixel);
+
+    float4 accumulatedFog = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    float totalWeight = 0.0f;
+
+
+    //========================================================
+    // 4tap
+    // (0,0) (1,0)
+    // (0,1) (1,1)
+    //========================================================
+    [unroll]
+    for (int y = 0; y < 2; ++y)
+    {
+        [unroll]
+        for (int x = 0; x < 2; ++x)
+        {
+            const float2 offset = float2((float) x, (float) y);
+
+            //================================================
+            // Candidate Half Resolution Pixel
+            //================================================
+            float2 candidatePixel = basePixel + offset;
+
+            //================================================
+            // Texture範囲内へClamp
+            //================================================
+            candidatePixel =
+                clamp(candidatePixel, float2(0.0f, 0.0f), fogSize - 1.0f);
+
+            //================================================
+            // Candidate Pixel Center → UV
+            //================================================
+            const float2 candidateUV = (candidatePixel + 0.5f) / fogSize;
+
+            //================================================
+            // 通常Bilinear Weight
+            //================================================
+            const float weightX =
+                (x == 0) ? 1.0f - fraction.x : fraction.x;
+
+
+            const float weightY =
+                (y == 0) ? 1.0f - fraction.y : fraction.y;
+
+            const float spatialWeight = weightX * weightY;
+
+            //================================================
+            // Candidate地点に対応するFull Resolution Depth
+            // このDepthと現在PixelのDepthを比較することで
+            // Geometry境界を検出する
+            //================================================
+            const float candidateDepth =
+                txDepth.SampleLevel(
+                    samPoint,
+                    candidateUV,
+                    0.0f
+                );
+
+            const bool candidateIsSky = candidateDepth >= UpsampleParameters.y;
+
+            //================================================
+            // Geometry/Sky境界
+            // SkyとGeometryは強制的にほぼReject
+            //================================================
+            float depthWeight = 1.0f;
+
+
+            if (centerIsSky !=candidateIsSky)
+            {
+                depthWeight = 0.001f;
+            }
+            else if (!centerIsSky)
+            {
+                float candidateDistance = 0.0f;
+
+                if (ReconstructDistance(candidateUV, candidateDepth, candidateDistance))
+                {
+                    //========================================
+                    // World Space Depth Difference
+                    //========================================
+                    const float depthDifference =
+                        abs(candidateDistance - centerDistance);
+
+                    //========================================
+                    // Bilateral Weight
+                    // 差が大きいFog SampleほどReject
+                    //========================================
+                    depthWeight = exp(-depthDifference * UpsampleParameters.x);
+                }
+                else
+                {
+                    depthWeight = 0.0f;
+                }
+            }
+
+
+            //================================================
+            // Spatial × Depth
+            //================================================
+            const float finalWeight = spatialWeight * depthWeight;
+
+            //================================================
+            // Half Resolution Fog
+            //================================================
+            const float4 fogSample =
+                txFog.SampleLevel(
+                    samPoint,
+                    candidateUV,
+                    0.0f
+                );
+
+            accumulatedFog += fogSample * finalWeight;
+
+            totalWeight += finalWeight;
+        }
+    }
+
+
+    //========================================================
+    // 4つともRejectされた場合
+    // NaN / 黒化を防ぐ
+    //========================================================
+    if (totalWeight <= 0.0001f)
+    {
+        return
+            txFog.SampleLevel(
+                samPoint,
+                uv,
+                0.0f
+            );
+    }
+
+
+    //========================================================
+    // Normalize
+    //========================================================
+    return accumulatedFog / totalWeight;
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // HDR Scene
+    //========================================================
+    const float4 sceneColor =
+        txScene.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Depth-aware Half → Full Upsampling
+    //========================================================
+    const float4 fog = SampleFogDepthAware(input.uv);
+
+    const float transmittance = saturate(fog.a);
+
+
+    //========================================================
+    // Volume Rendering Equation
+    // Final = Surface * Transmittance + In-Scattering
+    //========================================================
+    const float3 finalColor = sceneColor.rgb * transmittance + fog.rgb;
+
+    return float4(finalColor, sceneColor.a);
+}

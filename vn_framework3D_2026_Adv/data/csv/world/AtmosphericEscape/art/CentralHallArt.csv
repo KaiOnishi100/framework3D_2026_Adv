@@ -1,0 +1,193 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Central Hall - Floor
+#============================================================
+Art_Main1F_CentralHall_Floor,MansionArt,0,0.01,16,0,0,0,1.53846,1,2.07792,data/model/mansion/architecture/floor/entrance_floor.vnm
+
+#============================================================
+# Central Hall - West Wall
+#============================================================
+
+# South: Z=8～11
+Art_Main1F_CentralHall_WestWall_S01,MansionArt,-8.92,0,9.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_WestWall_S02,MansionArt,-8.92,0,10.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Middle: Z=13～19
+Art_Main1F_CentralHall_WestWall_M01,MansionArt,-8.92,0,14.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_WestWall_M02,MansionArt,-8.92,0,16,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_WestWall_M03,MansionArt,-8.92,0,17.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# North: Z=21～24
+Art_Main1F_CentralHall_WestWall_N01,MansionArt,-8.92,0,22.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_WestWall_N02,MansionArt,-8.92,0,23.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Central Hall - East Wall
+#============================================================
+
+# South: Z=8～11
+Art_Main1F_CentralHall_EastWall_S01,MansionArt,8.92,0,9.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_EastWall_S02,MansionArt,8.92,0,10.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# Middle: Z=13～19
+Art_Main1F_CentralHall_EastWall_M01,MansionArt,8.92,0,14.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_EastWall_M02,MansionArt,8.92,0,16,0,90,0,1.0050,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_EastWall_M03,MansionArt,8.92,0,17.9975,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+# North: Z=21～24
+Art_Main1F_CentralHall_EastWall_N01,MansionArt,8.92,0,22.0025,0,90,0,1.0025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+Art_Main1F_CentralHall_EastWall_N02,MansionArt,8.92,0,23.4975,0,90,0,0.5025,1,1,data/model/mansion/architecture/wall/entrance_wall_straight_200.vnm
+
+
+#============================================================
+# Central Hall - Reused Chandeliers
+#============================================================
+Art_Main1F_CentralHall_Chandelier_South,MansionArt,0,4.45,12,0,0,0,1.5,1.5,1.5,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+Art_Main1F_CentralHall_Chandelier_North,MansionArt,0,4.45,20,0,0,0,1.5,1.5,1.5,data/model/mansion/props/chandelier/entrance_chandelier.vnm
+
+
+#============================================================
+# Central Hall - Reused Console Tables
+#============================================================
+Art_Main1F_CentralHall_Console_East,MansionArt,8.45,0,16,0,90,0,1,1,1,data/model/mansion/props/console/entrance_console_01.vnm
+Art_Main1F_CentralHall_Console_West,MansionArt,-8.45,0,16,0,-90,0,1,1,1,data/model/mansion/props/console/entrance_console_01.vnm
+
+
+#============================================================
+# Central Hall - Grandfather Clock
+#============================================================
+Art_Main1F_CentralHall_GrandfatherClock,MansionArt,-8.25,0,22.5,0,-90,0,1,1,1,data/model/mansion/props/clock/grandfather_clock_01.vnm
+
+
+#============================================================
+# STEP29 - Main 1F Central Hall Ceiling
+#
+# Room:
+#   X=-9 ～ 9
+#   Z=8 ～ 24
+#============================================================
+
+Art_Main_Repair_CentralHallCeiling,MansionArt,0.0,4.41,16.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main1f_centralhall_ceiling.vnm
+
+#============================================================
+# Central Hall North Gate
+#============================================================
+#///////////////////////////////////////////////////////////////////
+Art41_Main1F_NorthAccess_DoorFrame,MansionArt,0.0,0.0,24.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/main_north_access_doorframe_300.vnm
+Art41_Main1F_NorthAccess_DoorUpper,MansionArt,0.0,2.62,24.0,0,0,0,1,1,1,data/model/mansion/architecture/doorframe/main_north_access_upper_300.vnm
+
+#============================================================
+# STEP31 - Central Hall Wall End Caps
+#============================================================
+
+# 南側・左
+Art31_WallCap_Central_South_L,MansionArt,-1.600,0.000,8.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 南側・右
+Art31_WallCap_Central_South_R,MansionArt,1.600,0.000,8.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 北側・左
+Art31_WallCap_Central_North_L,MansionArt,-1.500,0.000,24.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 北側・右
+Art31_WallCap_Central_North_R,MansionArt,1.500,0.000,24.000,0,90,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 西側壁・開口1
+Art31_WallCap_Central_W_Portal1,MansionArt,-9.000,0.000,11.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art31_WallCap_Central_W_Portal2,MansionArt,-9.000,0.000,13.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 西側壁・開口2
+Art31_WallCap_Central_W_Portal3,MansionArt,-9.000,0.000,19.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art31_WallCap_Central_W_Portal4,MansionArt,-9.000,0.000,21.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 東側壁・開口1
+Art31_WallCap_Central_E_Portal1,MansionArt,9.000,0.000,11.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art31_WallCap_Central_E_Portal2,MansionArt,9.000,0.000,13.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+# 東側壁・開口2
+Art31_WallCap_Central_E_Portal3,MansionArt,9.000,0.000,19.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+Art31_WallCap_Central_E_Portal4,MansionArt,9.000,0.000,21.000,0,180,0,1,1,1,data/model/mansion/repair/step31/main_wall_endcap_4p5.vnm
+
+
+#============================================================
+# STEP46 - Central Hall Props
+#
+# 中央ホール:
+# X=-9～9 / Z=8～24
+#
+# 南北中央の通路は空ける。
+# 東西の出入口付近にも大型家具を置かない
+#============================================================
+
+# 左右のサイドテーブル
+Art46_Central_Table_W,MansionArt,-6.50,0.00,16.0,0,0,0,1,1,1,data/model/mansion/props/prop_side_table_01.vnm
+Art46_Central_Table_E,MansionArt,6.50,0.00,16.0,0,180,0,1,1,1,data/model/mansion/props/prop_side_table_01.vnm
+
+# テーブルの天板に花瓶を置く
+# サイドテーブル天板の上面はY=0.78
+Art46_Central_Vase_W,MansionArt,-6.50,0.78,16.0,0,0,0,1,1,1,data/model/mansion/props/prop_vase_01.vnm
+Art46_Central_Vase_E,MansionArt,6.50,0.78,16.0,0,0,0,1,1,1,data/model/mansion/props/prop_vase_01.vnm
+
+# 北壁の装飾額
+# 北ゲートX=0,Z=24を避ける
+Art46_Central_Frame_NW,MansionArt,-5.70,1.80,23.82,0,0,0,1,1,1,data/model/mansion/props/prop_frame_01.vnm
+Art46_Central_Frame_NE,MansionArt,5.70,1.80,23.82,0,0,0,1,1,1,data/model/mansion/props/prop_frame_01.vnm
+
+# 床に散乱した本
+Art46_Central_Book_01,MansionArt,-5.90,0.02,14.10,0,25,0,1,1,1,data/model/mansion/props/prop_book_closed_01.vnm
+Art46_Central_Book_02,MansionArt,-5.55,0.02,13.90,0,-40,0,1,1,1,data/model/mansion/props/prop_book_open_01.vnm
+
+# 足元の汚れ
+Art46_Central_Stain_01,MansionArt,-5.40,0.022,20.50,0,35,0,1,1,1,data/model/mansion/props/prop_floor_stain_small_01.vnm
+Art46_Central_Stain_02,MansionArt,5.20,0.022,10.00,0,-15,0,1,1,1,data/model/mansion/props/prop_floor_stain_large_01.vnm
+
+# 西壁の湿気による汚れ
+Art46_Central_WallStain_W,MansionArt,-8.82,0.85,16.0,0,-90,0,1,1,1,data/model/mansion/props/prop_wall_stain_01.vnm
+
+
+#============================================================
+# CentralHall Dense Props
+#============================================================
+
+# 南西側の小さなサイドテーブル
+Art46B_Central_Table_SW,MansionArt,-7.25,0.00,9.50,0,20,0,0.92,1.00,0.95,data/model/mansion/props/prop_side_table_01.vnm
+
+# 南西側テーブル上の小さな花瓶
+# 天板上面Y=0.78
+Art46B_Central_Vase_SW,MansionArt,-7.25,0.78,9.50,0,55,0,0.75,0.82,0.75,data/model/mansion/props/prop_vase_01.vnm
+
+# 北東側のサイドテーブル
+Art46B_Central_Table_NE,MansionArt,7.25,0.00,22.30,0,-15,0,1.05,1.00,0.92,data/model/mansion/props/prop_side_table_01.vnm
+
+# 北東側テーブル上の大きめの花瓶
+Art46B_Central_Vase_NE,MansionArt,7.25,0.78,22.30,0,-20,0,1.15,1.05,1.15,data/model/mansion/props/prop_vase_01.vnm
+
+# 西側の床に倒れた花瓶
+# 胴体半径分だけ持ち上げる
+Art46B_Central_FallenVase_W,MansionArt,-6.70,0.14,18.20,90,20,0,0.88,0.88,0.88,data/model/mansion/props/prop_vase_01.vnm
+
+# 西壁寄りの横倒しサイドテーブル
+# 床から約0.25m持ち上げ、側面を床に接触させる
+Art46B_Central_FallenTable_W,MansionArt,-7.15,0.26,21.50,90,10,0,0.90,0.90,0.90,data/model/mansion/props/prop_side_table_01.vnm
+
+# 南西側の散乱本（大）
+Art46B_Central_Book_SW01,MansionArt,-6.35,0.02,11.20,0,67,0,1.15,1.00,0.95,data/model/mansion/props/prop_book_closed_01.vnm
+
+# 南西側の散乱本（小）
+Art46B_Central_Book_SW02,MansionArt,-6.00,0.02,11.00,0,-13,0,0.80,1.00,1.10,data/model/mansion/props/prop_book_open_01.vnm
+
+# 西側の紙束
+Art46B_Central_Papers_W,MansionArt,-7.20,0.02,17.80,0,-28,0,1.00,1.00,1.00,data/model/mansion/props/prop_paper_stack_01.vnm
+
+# 東壁の小さな額縁
+Art46B_Central_Frame_E,MansionArt,8.82,1.55,17.30,0,90,0,0.85,0.95,1.00,data/model/mansion/props/prop_frame_01.vnm
+
+# 北東側の汚れ
+Art46B_Central_Stain_NE,MansionArt,6.80,0.022,22.80,0,45,0,0.80,1.00,0.80,data/model/mansion/props/prop_floor_stain_small_01.vnm

@@ -1,0 +1,380 @@
+//============================================================
+// Half Resolution Volumetric Fog
+// Main Depthを使ってView Rayの終端を決め
+// CameraからGeometryまでRay Marchする
+// Output:
+// RGB : In-Scattering
+// A   : Transmittance
+//============================================================
+
+Texture2D<float> txDepth : register(t0);
+
+SamplerState samLinear : register(s0);
+
+cbuffer VolumetricFogBuffer : register(b0)
+{
+    //========================================================
+    // Current ViewProjection逆行列
+    //========================================================
+    float4x4 InverseViewProjection;
+
+
+    //========================================================
+    // xyz : Camera Position
+    // w   : Max Distance
+    //========================================================
+    float4 CameraPositionMaxDistance;
+
+
+    //========================================================
+    // xyz : Fog Color
+    // w   : Density
+    //========================================================
+    float4 FogColorDensity;
+
+
+    //========================================================
+    // xyz : Pixel → Light
+    // w   : HG Anisotropy
+    //========================================================
+    float4 LightDirectionAnisotropy;
+
+
+    //========================================================
+    // xyz : Light Color
+    // w   : Light Strength
+    //========================================================
+    float4 LightColorStrength;
+
+
+    //========================================================
+    // x : Scattering Albedo
+    // y : Ambient Strength
+    // z : Base Height
+    // w : Height Falloff
+    //========================================================
+    float4 FogParameters;
+
+
+    //========================================================
+    // x : Sample Count
+    // y : Frame Index
+    //========================================================
+    float4 RaymarchParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+//============================================================
+// 最大Ray March数
+// Runtime Sample Countはこれ以下
+//============================================================
+static const int MAX_VOLUMETRIC_STEPS = 64;
+
+
+//============================================================
+// PI
+//============================================================
+static const float PI = 3.14159265359f;
+
+
+//============================================================
+// Interleaved Gradient Noise
+// Ray開始位置をPixelごとに少しずらし、
+// Ray Marchの縞模様を軽減する
+//============================================================
+float InterleavedGradientNoise(float2 pixelPosition,float frameIndex)
+{
+    //========================================================
+    // FrameごとにもPatternを少し移動させる
+    //========================================================
+    pixelPosition += frameIndex * float2(5.588238f, 5.588238f);
+
+
+    return frac(52.9829189f * frac(dot(pixelPosition, float2(0.06711056f, 0.00583715f))));
+}
+
+
+//============================================================
+// Henyey-Greenstein Phase Function
+// g = 0: 等方散乱
+// g > 0: Forward Scattering
+// カメラがLight方向を見たときに光芒が強くなる
+//============================================================
+float HenyeyGreenstein(float cosTheta,float g)
+{
+    const float g2 = g * g;
+
+    const float denominator = max(1.0f + g2 - 2.0f * g * cosTheta, 0.0001f);
+
+    return (1.0f - g2) / (4.0f * PI * pow(denominator, 1.5f));
+}
+
+
+//============================================================
+// Height Fog Density
+//============================================================
+float GetFogDensity(float3 worldPosition)
+{
+    const float baseDensity = max(FogColorDensity.w, 0.0f);
+    const float heightFalloff = max(FogParameters.w, 0.0f);
+
+    //========================================================
+    // Height Fog無効
+    //========================================================
+    if (heightFalloff <= 0.000001f)
+    {
+        return baseDensity;
+    }
+
+    //========================================================
+    // Base Heightより高くなるほどDensityを下げる
+    //========================================================
+    const float heightDifference = worldPosition.y - FogParameters.z;
+
+    const float exponentValue = clamp(-heightDifference * heightFalloff, -20.0f, 20.0f);
+
+    return baseDensity * exp(exponentValue);
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Main Depth
+    // Half Resolution PixelからFull Resolution DepthをUVで読む
+    //========================================================
+    const float depth =
+        txDepth.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // UV → NDC
+    //========================================================
+    const float2 ndc =
+        float2(
+            input.uv.x * 2.0f - 1.0f,
+            1.0f - input.uv.y * 2.0f
+        );
+
+
+    //========================================================
+    // Depth位置をWorldへ復元
+    //========================================================
+    float4 clipPosition = float4(ndc, depth, 1.0f);
+
+
+    float4 worldPosition = mul(clipPosition, InverseViewProjection);
+
+
+    worldPosition /= max(abs(worldPosition.w), 0.000001f);
+
+
+    const float3 cameraPosition = CameraPositionMaxDistance.xyz;
+
+
+    //========================================================
+    // Camera → Depth Position
+    //========================================================
+    float3 cameraToSurface =
+        worldPosition.xyz - cameraPosition;
+
+
+    float surfaceDistance = length(cameraToSurface);
+
+
+    if (surfaceDistance <= 0.0001f)
+    {
+        return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    
+    //========================================================
+    // View Ray方向
+    //========================================================
+    const float3 rayDirection = cameraToSurface / surfaceDistance;
+
+    //========================================================
+    // Sky / Far Plane
+    // Depthがほぼ1ならWorld復元位置が非常に遠くなるので
+    // Fog側Max Distanceで制限する
+    //========================================================
+    const float maxDistance = max(CameraPositionMaxDistance.w, 0.01f);
+
+    float rayLength = min(surfaceDistance, maxDistance);
+
+
+    //========================================================
+    // ※Geometryが存在しないSky PixelでもMaxDistanceまではFogを積分する
+    //========================================================
+    if (depth >= 0.999999f)
+    {
+        rayLength = maxDistance;
+    }
+
+
+    //========================================================
+    // Sample Count
+    //========================================================
+    const int sampleCount =
+        clamp(
+            (int) (RaymarchParameters.x + 0.5f),
+            1,
+            MAX_VOLUMETRIC_STEPS
+        );
+
+
+    const float stepLength = rayLength / (float) sampleCount;
+
+
+    if (stepLength <= 0.000001f)
+    {
+        return float4(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+
+    //========================================================
+    // Jitter
+    // 各Pixelで最初のSample位置を少しずらす
+    //========================================================
+    const float jitter =
+        InterleavedGradientNoise(
+            input.position.xy,
+            RaymarchParameters.y
+        );
+
+
+    float currentDistance = stepLength * jitter;
+
+
+    //========================================================
+    // Accumulation
+    //========================================================
+    float3 inScattering = float3(0.0f, 0.0f, 0.0f);
+
+    float transmittance = 1.0f;
+
+    const float3 lightDirection = normalize(LightDirectionAnisotropy.xyz);
+
+    const float anisotropy =
+        clamp(
+            LightDirectionAnisotropy.w,
+            -0.90f,
+            0.90f
+        );
+
+
+    //========================================================
+    // カメラがLight方向を向いたときForward Scatteringを強くする
+    //========================================================
+    const float cosTheta = dot(rayDirection, lightDirection);
+
+    const float phase = HenyeyGreenstein(cosTheta, anisotropy);
+
+    const float3 directionalLight =
+        LightColorStrength.xyz * max(LightColorStrength.w, 0.0f);
+
+    const float ambientStrength = max(FogParameters.y, 0.0f);
+
+
+    const float scatteringAlbedo = saturate(FogParameters.x);
+
+
+    //========================================================
+    // Ray March
+    //========================================================
+    [loop]
+    for (int stepIndex = 0; stepIndex < sampleCount; ++stepIndex)
+    {
+        //====================================================
+        // Sample World Position
+        //====================================================
+        const float3 samplePosition =
+            cameraPosition + rayDirection * currentDistance;
+
+
+        //====================================================
+        // Medium Density
+        //====================================================
+        const float density = GetFogDensity(samplePosition);
+
+
+        //====================================================
+        // Extinction
+        // 吸収+散乱でView Ray上の光が減衰する
+        //====================================================
+        const float extinction = max(density, 0.000001f);
+
+
+        //====================================================
+        // Scattering Coefficient
+        //====================================================
+        const float scattering =
+            extinction * scatteringAlbedo;
+
+
+        //====================================================
+        // 1Step分の透過率
+        // Beer-Lambert Law:
+        //   T = exp(-sigma_t * distance)
+        //====================================================
+        const float stepTransmittance = exp(-extinction * stepLength);
+
+
+        //====================================================
+        // Fogへ入ってくる光
+        // Directional: HG Phase Functionあり
+        // Ambient: 等方的な最低限の散乱
+        //====================================================
+        const float3 incomingLight = (directionalLight * phase) + ambientStrength;
+
+
+        //====================================================
+        // Fog自体の色でTint
+        //====================================================
+        const float3 scatteringSource =
+            FogColorDensity.xyz * incomingLight * scattering;
+
+
+        //====================================================
+        // このStep区間における積分
+        // Beer-Lambertに合わせた積分
+        //====================================================
+        const float integratedLength = (1.0f - stepTransmittance) / extinction;
+
+
+        inScattering += transmittance * scatteringSource * integratedLength;
+
+
+        //====================================================
+        // Cameraへ届く光を減衰
+        //====================================================
+        transmittance *= stepTransmittance;
+
+
+        //====================================================
+        // ほぼ完全にFogで遮られたら早期終了
+        //====================================================
+        if (transmittance < 0.01f)
+        {
+            break;
+        }
+
+        currentDistance += stepLength;
+    }
+
+    return float4(inScattering, transmittance);
+}

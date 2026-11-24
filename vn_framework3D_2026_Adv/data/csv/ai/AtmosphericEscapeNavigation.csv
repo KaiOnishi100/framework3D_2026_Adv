@@ -1,0 +1,1075 @@
+Id,PosX,PosY,PosZ,Links
+#============================================================
+# Entrance Hall
+#============================================================
+
+Nav_Entrance_South,0.0,0.0,2.0,Nav_Entrance_Center
+
+Nav_Entrance_Center,0.0,0.0,5.5,Nav_Entrance_South|Nav_Entrance_North
+
+# Entrance Hall → Central Hallの開口直前
+Nav_Entrance_North,0.0,0.0,7.5,Nav_Entrance_Center|Nav_Central_South
+
+
+#============================================================
+# Central Hall
+#============================================================
+
+Nav_Central_South,0.0,0.0,10.0,Nav_Entrance_North|Nav_Central_Mid|Nav_Central_EastSouth|Nav_Central_WestSouth
+Nav_Central_Mid,0.0,0.0,16.0,Nav_Central_South|Nav_Central_North|Nav_Central_West
+
+Nav_Central_North,0.0,0.0,22.0,Nav_Central_Mid|Nav_Central_EastNorth|Nav_Central_WestNorth|Nav_NorthAccess_South
+
+Nav_Central_West,-6.0,0.0,16.0,Nav_Central_Mid
+
+
+#============================================================
+# Central Hall → East Corridor
+#
+# South Opening : Z 11 ～ 13
+#============================================================
+
+Nav_Central_EastSouth,7.5,0.0,12.0,Nav_Central_South|Nav_Door_EastSouth
+
+Nav_Door_EastSouth,9.0,0.0,12.0,Nav_Central_EastSouth|Nav_East_SouthEntry
+
+Nav_East_SouthEntry,10.5,0.0,12.0,Nav_Door_EastSouth|Nav_East_South
+
+
+#============================================================
+# East Corridor South
+#============================================================
+
+Nav_East_South,12.5,0.0,12.0,Nav_East_SouthEntry|Nav_East_Mid
+
+
+#============================================================
+# East Corridor Center
+#============================================================
+
+Nav_East_Mid,12.5,0.0,16.0,Nav_East_South|Nav_East_North|Nav_PowerDoor_West
+
+
+#============================================================
+# East Corridor North
+#============================================================
+
+Nav_East_North,12.5,0.0,20.0,Nav_East_Mid|Nav_East_NorthEntry
+
+Nav_East_NorthEntry,10.5,0.0,20.0,Nav_East_North|Nav_Door_EastNorth
+
+Nav_Door_EastNorth,9.0,0.0,20.0,Nav_East_NorthEntry|Nav_Central_EastNorth
+
+Nav_Central_EastNorth,7.5,0.0,20.0,Nav_Door_EastNorth|Nav_Central_North
+
+
+#============================================================
+# Power Room Entrance
+#
+# Door Opening:
+# X = 16
+# Z = 15 ～ 17
+#============================================================
+
+Nav_PowerDoor_West,15.0,0.0,16.0,Nav_East_Mid|Nav_PowerDoor
+
+Nav_PowerDoor,16.0,0.0,16.0,Nav_PowerDoor_West|Nav_Power_Entry
+
+Nav_Power_Entry,18.0,0.0,16.0,Nav_PowerDoor|Nav_Power_Center
+
+
+#============================================================
+# Power Room
+#============================================================
+
+Nav_Power_Center,21.0,0.0,16.0,Nav_Power_Entry|Nav_Power_East
+
+Nav_Power_East,23.0,0.0,16.0,Nav_Power_Center|Nav_CourtyardDoor_Inside
+
+#============================================================
+# Central -> West Corridor South
+#============================================================
+
+Nav_Central_WestSouth,-7.5,0.0,12.0,Nav_Central_South|Nav_Door_WestSouth
+
+Nav_Door_WestSouth,-9.0,0.0,12.0,Nav_Central_WestSouth|Nav_West_SouthEntry
+
+Nav_West_SouthEntry,-10.5,0.0,12.0,Nav_Door_WestSouth|Nav_West_South
+
+
+#============================================================
+# West Corridor
+#============================================================
+
+Nav_West_South,-12.5,0.0,12.0,Nav_West_SouthEntry|Nav_West_Mid|Nav_StudyDoor|Nav_Main1F_BasementApproach
+
+Nav_West_Mid,-12.5,0.0,16.0,Nav_West_South|Nav_West_North
+
+Nav_West_North,-12.5,0.0,20.0,Nav_West_Mid|Nav_West_NorthEntry|Nav_LibraryDoor
+
+
+#============================================================
+# Central -> West Corridor North
+#============================================================
+
+Nav_West_NorthEntry,-10.5,0.0,20.0,Nav_West_North|Nav_Door_WestNorth
+
+Nav_Door_WestNorth,-9.0,0.0,20.0,Nav_West_NorthEntry|Nav_Central_WestNorth
+
+Nav_Central_WestNorth,-7.5,0.0,20.0,Nav_Door_WestNorth|Nav_Central_North
+
+
+#============================================================
+# Study
+#============================================================
+
+Nav_StudyDoor,-16.0,0.0,12.0,Nav_West_South|Nav_StudyCenter
+
+Nav_StudyCenter,-21.0,0.0,12.0,Nav_StudyDoor|Nav_StudyLibraryDoor
+
+
+#============================================================
+# Study <-> Library
+#============================================================
+
+Nav_StudyLibraryDoor,-21.0,0.0,16.0,Nav_StudyCenter|Nav_LibraryCenter
+
+
+#============================================================
+# Library
+#============================================================
+
+Nav_LibraryCenter,-21.0,0.0,20.0,Nav_StudyLibraryDoor|Nav_LibraryDoor
+
+Nav_LibraryDoor,-16.0,0.0,20.0,Nav_LibraryCenter|Nav_West_North
+
+#============================================================
+# Central Hall -> Grand Stair Hall
+#
+# North Access Door:
+# X = 0
+# Z = 24
+#============================================================
+
+Nav_NorthAccess_South,0.0,0.0,23.0,Nav_Central_North|Nav_NorthAccessDoor
+
+Nav_NorthAccessDoor,0.0,0.0,24.0,Nav_NorthAccess_South|Nav_GrandStair_South
+
+
+#============================================================
+# Grand Stair Hall
+#============================================================
+
+Nav_GrandStair_South,0.0,0.0,26.0,Nav_NorthAccessDoor|Nav_GrandStair_Front
+
+Nav_GrandStair_Front,0.0,0.0,27.0,Nav_GrandStair_South|Nav_GrandStair_WestGround|Nav_GrandStair_EastGround|Nav_Stair_Lower01
+
+Nav_GrandStair_WestGround,-6.0,0.0,28.5,Nav_GrandStair_Front
+
+Nav_GrandStair_EastGround,6.0,0.0,28.5,Nav_GrandStair_Front
+
+#============================================================
+# Lower Stair Navigation
+#============================================================
+
+Nav_Stair_Lower01,0.0,0.25,27.80,Nav_GrandStair_Front|Nav_Stair_Lower03
+
+Nav_Stair_Lower03,0.0,0.75,28.70,Nav_Stair_Lower01|Nav_Stair_Lower05
+
+Nav_Stair_Lower05,0.0,1.25,29.60,Nav_Stair_Lower03|Nav_Stair_Lower07
+
+Nav_Stair_Lower07,0.0,1.75,30.50,Nav_Stair_Lower05|Nav_Stair_Lower09
+
+Nav_Stair_Lower09,0.0,2.25,31.40,Nav_Stair_Lower07|Nav_Stair_MidLanding
+
+Nav_Stair_MidLanding,0.0,2.25,32.35,Nav_Stair_Lower09|Nav_Stair_Left01|Nav_Stair_Right01
+
+#============================================================
+# Upper Left Stair Navigation
+#============================================================
+
+Nav_Stair_Left01,-2.725,2.50,32.85,Nav_Stair_MidLanding|Nav_Stair_Left03
+
+Nav_Stair_Left03,-3.625,3.00,32.85,Nav_Stair_Left01|Nav_Stair_Left05
+
+Nav_Stair_Left05,-4.525,3.50,32.85,Nav_Stair_Left03|Nav_Stair_Left07
+
+Nav_Stair_Left07,-5.425,4.00,32.85,Nav_Stair_Left05|Nav_Stair_Left09
+
+Nav_Stair_Left09,-6.325,4.50,32.85,Nav_Stair_Left07|Nav_GrandLanding_West
+
+#============================================================
+# Upper Right Stair Navigation
+#============================================================
+
+Nav_Stair_Right01,2.725,2.50,32.85,Nav_Stair_MidLanding|Nav_Stair_Right03
+
+Nav_Stair_Right03,3.625,3.00,32.85,Nav_Stair_Right01|Nav_Stair_Right05
+
+Nav_Stair_Right05,4.525,3.50,32.85,Nav_Stair_Right03|Nav_Stair_Right07
+
+Nav_Stair_Right07,5.425,4.00,32.85,Nav_Stair_Right05|Nav_Stair_Right09
+
+Nav_Stair_Right09,6.325,4.50,32.85,Nav_Stair_Right07|Nav_GrandLanding_East
+
+#============================================================
+# Grand Landing - Floor2
+#============================================================
+
+Nav_GrandLanding_West,-6.5,4.50,34.50,Nav_Stair_Left09|Nav_GrandLanding_Center|Nav_2F_WestGallery_North
+
+Nav_GrandLanding_Center,0.0,4.50,35.00,Nav_GrandLanding_West|Nav_GrandLanding_East
+
+Nav_GrandLanding_East,6.5,4.50,34.50,Nav_Stair_Right09|Nav_GrandLanding_Center|Nav_2F_EastGallery_North
+
+#============================================================
+# Floor2 West Gallery
+#============================================================
+
+Nav_2F_WestGallery_North,-7.75,4.50,33.0,Nav_GrandLanding_West|Nav_2F_WestGallery_Mid
+
+Nav_2F_WestGallery_Mid,-7.75,4.50,29.5,Nav_2F_WestGallery_North|Nav_2F_WestGallery_South|Nav_2F_WestBedroom_Gallery
+
+Nav_2F_WestGallery_South,-7.75,4.50,25.5,Nav_2F_WestGallery_Mid|Nav_2F_SouthBalcony_West
+
+#============================================================
+# Floor2 South Balcony
+#============================================================
+
+Nav_2F_SouthBalcony_West,-5.0,4.50,25.0,Nav_2F_WestGallery_South|Nav_2F_SouthBalcony_Center
+
+Nav_2F_SouthBalcony_Center,0.0,4.50,25.0,Nav_2F_SouthBalcony_West|Nav_2F_SouthBalcony_East
+
+Nav_2F_SouthBalcony_East,5.0,4.50,25.0,Nav_2F_SouthBalcony_Center|Nav_2F_EastGallery_South
+
+#============================================================
+# Floor2 East Gallery
+#============================================================
+
+Nav_2F_EastGallery_South,7.75,4.50,25.5,Nav_2F_SouthBalcony_East|Nav_2F_EastGallery_Mid
+
+Nav_2F_EastGallery_Mid,7.75,4.50,29.5,Nav_2F_EastGallery_South|Nav_2F_EastGallery_North|Nav_2F_EastBedroom_Gallery
+
+Nav_2F_EastGallery_North,7.75,4.50,33.0,Nav_2F_EastGallery_Mid|Nav_GrandLanding_East
+
+#============================================================
+# Gallery側
+#
+# Doorへ入る直前。
+#============================================================
+
+Nav_2F_EastBedroom_Gallery,8.50,4.50,29.50,Nav_2F_EastGallery_Mid|Nav_2F_EastBedroom_Door
+
+
+#============================================================
+# Door中心
+#
+# Main2F_EastBedroomDoor:
+#
+#     X = 9.15
+#     Y = 5.60
+#     Z = 29.50
+#
+# Door中心を通すことで、
+# INavigationDoorによるDoor処理を利用する。
+#============================================================
+
+Nav_2F_EastBedroom_Door,9.15,4.50,29.50,Nav_2F_EastBedroom_Gallery|Nav_2F_EastBedroom_Entry
+
+
+#============================================================
+# Bedroom入口
+#
+# Doorを通過した直後。
+#============================================================
+
+Nav_2F_EastBedroom_Entry,10.50,4.50,29.50,Nav_2F_EastBedroom_Door|Nav_2F_EastBedroom_Center
+
+
+#============================================================
+# Bedroom中央
+#
+# 部屋内NavigationのHub。
+#============================================================
+
+Nav_2F_EastBedroom_Center,14.00,4.50,29.50,Nav_2F_EastBedroom_Entry|Nav_2F_EastBedroom_North|Nav_2F_EastBedroom_South|Nav_2F_EastPrivateRoom_Approach
+
+#============================================================
+# Bedroom側のDoor手前
+#============================================================
+
+Nav_2F_EastPrivateRoom_Approach,17.00,4.50,29.50,Nav_2F_EastBedroom_Center|Nav_2F_EastPrivateRoom_Door
+
+
+#============================================================
+# Door中心
+#
+# Main2F_EastPrivateRoomDoor:
+#
+#     X = 18.30
+#     Z = 29.50
+#============================================================
+
+Nav_2F_EastPrivateRoom_Door,18.30,4.50,29.50,Nav_2F_EastPrivateRoom_Approach|Nav_2F_EastPrivateRoom_Center
+
+
+#============================================================
+# Private Room Center
+#============================================================
+
+Nav_2F_EastPrivateRoom_Center,22.15,4.50,29.50,Nav_2F_EastPrivateRoom_Door|Nav_2F_EastPrivateRoom_North|Nav_2F_EastPrivateRoom_South
+
+
+#============================================================
+# North Side
+#============================================================
+
+Nav_2F_EastPrivateRoom_North,22.15,4.50,32.00,Nav_2F_EastPrivateRoom_Center
+
+
+#============================================================
+# South Side
+#============================================================
+
+Nav_2F_EastPrivateRoom_South,22.15,4.50,27.50,Nav_2F_EastPrivateRoom_Center
+
+#============================================================
+# Bedroom北側
+#
+# 部屋奥までPursuerが入れるようにする。
+#============================================================
+
+Nav_2F_EastBedroom_North,14.00,4.50,32.00,Nav_2F_EastBedroom_Center
+
+
+#============================================================
+# Bedroom南側
+#============================================================
+
+Nav_2F_EastBedroom_South,14.00,4.50,27.50,Nav_2F_EastBedroom_Center
+
+#============================================================
+# Floor2 West Bedroom Navigation
+#============================================================
+
+# Gallery側
+Nav_2F_WestBedroom_Gallery,-8.50,4.50,29.50,Nav_2F_WestGallery_Mid|Nav_2F_WestBedroom_Door
+
+# Door中心
+Nav_2F_WestBedroom_Door,-9.15,4.50,29.50,Nav_2F_WestBedroom_Gallery|Nav_2F_WestBedroom_Entry
+
+# Bedroom入口
+Nav_2F_WestBedroom_Entry,-10.50,4.50,29.50,Nav_2F_WestBedroom_Door|Nav_2F_WestBedroom_Center
+
+# Bedroom中央
+Nav_2F_WestBedroom_Center,-14.00,4.50,29.50,Nav_2F_WestBedroom_Entry|Nav_2F_WestBedroom_North|Nav_2F_WestBedroom_South|Nav_2F_WestDressingRoom_Approach
+
+
+#============================================================
+# Bedroom側のDoor手前
+#============================================================
+Nav_2F_WestDressingRoom_Approach,-17.00,4.50,29.50,Nav_2F_WestBedroom_Center|Nav_2F_WestDressingRoom_Door
+
+
+#============================================================
+# Door中心
+#
+# MansionDoor中心を必ずNavigation経路として通す。
+# これによりPursuerのDoor Open処理が利用される。
+#============================================================
+
+Nav_2F_WestDressingRoom_Door,-18.30,4.50,29.50,Nav_2F_WestDressingRoom_Approach|Nav_2F_WestDressingRoom_Center
+
+
+#============================================================
+# Dressing Room Center
+#============================================================
+
+Nav_2F_WestDressingRoom_Center,-22.15,4.50,29.50,Nav_2F_WestDressingRoom_Door|Nav_2F_WestDressingRoom_North|Nav_2F_WestDressingRoom_South
+
+
+#============================================================
+# North Side
+#============================================================
+
+Nav_2F_WestDressingRoom_North,-22.15,4.50,32.00,Nav_2F_WestDressingRoom_Center
+
+
+#============================================================
+# South Side
+#============================================================
+
+Nav_2F_WestDressingRoom_South,-22.15,4.50,27.50,Nav_2F_WestDressingRoom_Center
+
+# 少し奥まで探索可能にする
+Nav_2F_WestBedroom_North,-14.00,4.50,32.00,Nav_2F_WestBedroom_Center
+
+Nav_2F_WestBedroom_South,-14.00,4.50,27.50,Nav_2F_WestBedroom_Center
+
+#============================================================
+# Main Building Basement
+#
+# West Corridor
+#     ↓
+# Basement Door
+#     ↓
+# Basement Stair
+#     ↓
+# B1 Service Corridor
+#
+# Pursuer用Navigation
+#============================================================
+
+
+#============================================================
+# 1F Basement Entrance Approach
+#
+# West Corridor内。
+#
+# Basement DoorがLockedなら、
+# Approach -> Door EdgeがNavigation側でBlockされる。
+#============================================================
+
+Nav_Main1F_BasementApproach,-12.5,0.00,10.0,Nav_West_South|Nav_Main1F_BasementDoor
+
+
+#============================================================
+# Basement Door
+#
+# Main1F_BasementDoor:
+#     Position = (-12.5, 1.1, 8.0)
+#
+# Door中心にNodeを置く。
+#
+# INavigationDoorによって
+#
+# Locked:
+#     Edge使用不可
+#
+# Unlocked:
+#     Edge使用可能
+#
+# となる。
+#============================================================
+
+Nav_Main1F_BasementDoor,-12.5,0.00,8.0,Nav_Main1F_BasementApproach|Nav_MainB1_Stair01
+
+
+#============================================================
+# Basement Stair
+#
+# 全18段にNodeを置く必要はない。
+#
+# 2段ごと程度にNodeを置き、
+# XYZを徐々に下げる。
+#
+# Yは「各段のTop + 1.1m」。
+#============================================================
+
+Nav_MainB1_Stair01,-12.5,0.00,7.45,Nav_Main1F_BasementDoor|Nav_MainB1_Stair03
+
+Nav_MainB1_Stair03,-12.5,-0.50,6.55,Nav_MainB1_Stair01|Nav_MainB1_Stair05
+
+Nav_MainB1_Stair05,-12.5,-1.00,5.65,Nav_MainB1_Stair03|Nav_MainB1_Stair07
+
+Nav_MainB1_Stair07,-12.5,-1.50,4.75,Nav_MainB1_Stair05|Nav_MainB1_Stair09
+
+Nav_MainB1_Stair09,-12.5,-2.00,3.85,Nav_MainB1_Stair07|Nav_MainB1_Stair11
+
+Nav_MainB1_Stair11,-12.5,-2.50,2.95,Nav_MainB1_Stair09|Nav_MainB1_Stair13
+
+Nav_MainB1_Stair13,-12.5,-3.00,2.05,Nav_MainB1_Stair11|Nav_MainB1_Stair15
+
+Nav_MainB1_Stair15,-12.5,-3.50,1.15,Nav_MainB1_Stair13|Nav_MainB1_Stair17
+
+Nav_MainB1_Stair17,-12.5,-4.00,0.25,Nav_MainB1_Stair15|Nav_MainB1_Landing
+
+
+#============================================================
+# B1 Landing
+#
+# Basement Floor:
+#     Y = -4.50
+#
+# Nav:
+#     -4.50 + 1.10 = -3.40
+#============================================================
+
+Nav_MainB1_Landing,-12.5,-4.50,-1.10,Nav_MainB1_Stair17|Nav_MainB1_ServiceCorridorNear
+
+
+#============================================================
+# B1 Service Corridor
+#============================================================
+
+Nav_MainB1_ServiceCorridorNear,-12.5,-4.50,-2.50,Nav_MainB1_Landing|Nav_MainB1_ServiceCorridorMid
+
+Nav_MainB1_ServiceCorridorMid,-12.5,-4.50,-5.00,Nav_MainB1_ServiceCorridorNear|Nav_MainB1_ServiceCorridorEnd
+
+Nav_MainB1_ServiceCorridorEnd,-12.5,-4.50,-7.00,Nav_MainB1_ServiceCorridorMid|Nav_MainB1_Junction
+
+#============================================================
+# B1 Junction
+#============================================================
+
+Nav_MainB1_Junction,-12.5,-4.50,-10.5,Nav_MainB1_ServiceCorridorEnd|Nav_MainB1_BoilerDoor|Nav_MainB1_StorageDoor
+
+
+#============================================================
+# Boiler Room
+#============================================================
+
+Nav_MainB1_BoilerDoor,-15.0,-4.50,-11.0,Nav_MainB1_Junction|Nav_MainB1_BoilerCenter
+
+Nav_MainB1_BoilerCenter,-20.0,-4.50,-11.0,Nav_MainB1_BoilerDoor|Nav_MainB1_BoilerWest
+
+Nav_MainB1_BoilerWest,-23.0,-4.50,-11.0,Nav_MainB1_BoilerCenter
+
+
+#============================================================
+# Storage Room
+#============================================================
+
+Nav_MainB1_StorageDoor,-10.0,-4.50,-11.0,Nav_MainB1_Junction|Nav_MainB1_StorageCenter
+
+Nav_MainB1_StorageCenter,-5.0,-4.50,-11.0,Nav_MainB1_StorageDoor|Nav_MainB1_StorageEast
+
+Nav_MainB1_StorageEast,-2.0,-4.50,-11.0,Nav_MainB1_StorageCenter
+
+#============================================================
+# Main Building -> Courtyard
+#============================================================
+
+Nav_CourtyardDoor_Inside,24.5,0.00,18.0,Nav_CourtyardDoor|Nav_Power_East
+
+Nav_CourtyardDoor,26.0,0.00,18.0,Nav_CourtyardDoor_Inside|Nav_CourtyardDoor_Outside
+
+Nav_CourtyardDoor_Outside,28.0,0.00,18.0,Nav_CourtyardDoor|Nav_Courtyard_West
+
+
+#============================================================
+# Courtyard
+#============================================================
+
+Nav_Courtyard_West,31.0,0.00,18.0,Nav_CourtyardDoor_Outside|Nav_Courtyard_Center
+
+Nav_Courtyard_Center,36.0,0.00,18.0,Nav_Courtyard_West|Nav_Courtyard_North|Nav_Courtyard_South|Nav_Courtyard_East
+
+Nav_Courtyard_North,36.0,0.00,23.0,Nav_Courtyard_Center
+
+Nav_Courtyard_South,36.0,0.00,13.0,Nav_Courtyard_Center|Nav_Courtyard_EastSouth
+
+Nav_Courtyard_East,42.0,0.00,18.0,Nav_Courtyard_Center|Nav_Courtyard_EastNorth|Nav_Courtyard_EastSouth|Nav_AnnexEntrance_Outside
+
+Nav_Courtyard_EastNorth,42.0,0.00,23.0,Nav_Courtyard_East
+
+Nav_Courtyard_EastSouth,42.0,0.00,13.0,Nav_Courtyard_South|Nav_Courtyard_East
+
+#============================================================
+# Courtyard -> Annex
+#
+# Annex Entrance Door:
+#
+#     X = 46
+#     Y = 1.10
+#     Z = 18
+#
+# Doorの前後にNodeを配置し、
+# 必ずDoor中心を通る経路にする。
+#
+# これにより既存の
+#
+#     INavigationDoor
+#     IsEdgeTraversable()
+#
+# によるLock判定がそのまま利用できる。
+#============================================================
+
+
+#============================================================
+# Courtyard側
+#============================================================
+
+Nav_AnnexEntrance_Outside,44.0,0.00,18.0,Nav_Courtyard_East|Nav_AnnexEntranceDoor
+
+
+#============================================================
+# Annex Entrance Door中心
+#============================================================
+
+Nav_AnnexEntranceDoor,46.0,0.00,18.0,Nav_AnnexEntrance_Outside|Nav_AnnexEntrance_Inside
+
+
+#============================================================
+# Annex側
+#============================================================
+
+Nav_AnnexEntrance_Inside,48.0,0.00,18.0,Nav_AnnexEntranceDoor|Nav_Annex_EntranceCenter
+
+
+
+#============================================================
+# Annex 1F - Entrance Hall
+#
+# Range:
+#     X = 46 ～ 54
+#     Z = 14 ～ 22
+#============================================================
+
+Nav_Annex_EntranceCenter,50.0,0.00,18.0,Nav_AnnexEntrance_Inside|Nav_Annex_CorridorWest|Nav_Annex_OfficeApproach|Nav_Annex_StorageApproach
+
+#============================================================
+# Annex 1F - Storage Navigation
+#
+# Entrance Hall
+#       ↓
+# Storage Approach
+#       ↓
+# Storage Door
+#       ↓
+# Storage Center
+#============================================================
+
+
+#============================================================
+# Entrance Hall側
+#
+# Doorより少し北側。
+#============================================================
+
+Nav_Annex_StorageApproach,50.0,0.00,15.5,Nav_Annex_EntranceCenter|Nav_Annex_StorageDoor
+
+
+#============================================================
+# Storage Door Center
+#
+# MansionDoor:
+#     X = 50
+#     Z = 14
+#============================================================
+
+Nav_Annex_StorageDoor,50.0,0.00,14.0,Nav_Annex_StorageApproach|Nav_Annex_StorageCenter
+
+
+#============================================================
+# Storage内部
+#============================================================
+
+Nav_Annex_StorageCenter,50.0,0.00,10.0,Nav_Annex_StorageDoor
+
+#============================================================
+# Office Route
+#
+# Office Door:
+#     X = 51
+#     Z = 22
+#
+# Entrance Hall
+#     ↓
+# Door前
+#     ↓
+# Door中心
+#     ↓
+# Office内部
+#============================================================
+
+Nav_Annex_OfficeApproach,51.0,0.00,20.5,Nav_Annex_EntranceCenter|Nav_Annex_OfficeDoor
+
+Nav_Annex_OfficeDoor,51.0,0.00,22.0,Nav_Annex_OfficeApproach|Nav_Annex_OfficeCenter
+
+Nav_Annex_OfficeCenter,51.0,0.00,26.0,Nav_Annex_OfficeDoor|Nav_Annex_OfficeNorth
+
+Nav_Annex_OfficeNorth,51.0,0.00,29.0,Nav_Annex_OfficeCenter
+
+
+
+#============================================================
+# Annex 1F - Main Corridor
+#
+# Range:
+#     X = 54 ～ 74
+#     Z = 16 ～ 20
+#
+# 西 → 中央 → 東
+#============================================================
+
+Nav_Annex_CorridorWest,56.0,0.00,18.0,Nav_Annex_EntranceCenter|Nav_Annex_CorridorMid|Nav_Annex_ArchiveApproach
+
+Nav_Annex_CorridorMid,64.0,0.00,18.0,Nav_Annex_CorridorWest|Nav_Annex_CorridorEast|Nav_Annex_ServiceDoor
+
+Nav_Annex_CorridorEast,72.0,0.00,18.0,Nav_Annex_CorridorMid|Nav_Annex_LabApproach
+
+
+
+#============================================================
+# Archive Route
+#
+# Archive Door:
+#     X = 59
+#     Z = 20
+#============================================================
+
+Nav_Annex_ArchiveApproach,59.0,0.00,18.0,Nav_Annex_CorridorWest|Nav_Annex_ArchiveDoor
+
+Nav_Annex_ArchiveDoor,59.0,0.00,20.0,Nav_Annex_ArchiveApproach|Nav_Annex_ArchiveCenter
+
+Nav_Annex_ArchiveCenter,59.0,0.00,25.0,Nav_Annex_ArchiveDoor|Nav_Annex_ArchiveNorth
+
+Nav_Annex_ArchiveNorth,56.5,0.00,29.0,Nav_Annex_ArchiveCenter
+
+
+
+#============================================================
+# Laboratory Route
+#
+# Laboratory Door:
+#     X = 69
+#     Z = 20
+#============================================================
+
+Nav_Annex_LabApproach,69.0,0.00,18.0,Nav_Annex_CorridorEast|Nav_Annex_LabDoor
+
+Nav_Annex_LabDoor,69.0,0.00,20.0,Nav_Annex_LabApproach|Nav_Annex_LabCenter
+
+Nav_Annex_LabCenter,69.0,0.00,25.0,Nav_Annex_LabDoor|Nav_Annex_LabNorth
+
+Nav_Annex_LabNorth,69.0,0.00,29.0,Nav_Annex_LabCenter
+
+#============================================================
+# Annex 1F -> Service Area
+#
+# Service Door:
+#     X = 64
+#     Z = 16
+#
+# 階段入口:
+#     X = 68
+#     Z ≒ 15
+#============================================================
+
+
+#============================================================
+# Service Door
+#
+# MansionDoorの中心へNav Nodeを置く。
+# Door判定を行わせるため、Door中心を経路として通す。
+#============================================================
+
+Nav_Annex_ServiceDoor,64.0,0.00,16.0,Nav_Annex_CorridorMid|Nav_Annex_ServiceInside
+
+
+#============================================================
+# Service Area内部
+#============================================================
+
+Nav_Annex_ServiceInside,64.0,0.00,14.0,Nav_Annex_ServiceDoor|Nav_Annex_StairTurn
+
+#============================================================
+# Stair Turn
+#============================================================
+
+Nav_Annex_StairTurn,65.5,0.00,15.2,Nav_Annex_ServiceInside|Nav_Annex_StairApproach
+
+#============================================================
+# Basement Stair Approach
+#
+# Stair Hole:
+#     X = 66.5 ～ 69.5
+#     Z = 6 ～ 15
+#
+# Hole北側へ配置することで、
+# Railを横切らず階段正面へ移動する
+#============================================================
+
+Nav_Annex_StairApproach,68.0,0.00,15.2,Nav_Annex_StairTurn|Nav_Annex_Stair01
+
+#============================================================
+# Annex Basement Stair Navigation
+#
+# 階段を数段ごとに追従する。
+#
+# Player/Pursuer中心高さ:
+#     Floor + 1.10m
+#
+# そのため各StepのTop Yへ1.10を加えた値を
+# Navigation Yとして使用する。
+#============================================================
+
+
+# Step 01
+Nav_Annex_Stair01,68.0,0.00,14.775,Nav_Annex_StairApproach|Nav_Annex_Stair04
+
+
+# Step 04
+Nav_Annex_Stair04,68.0,-0.75,13.425,Nav_Annex_Stair01|Nav_Annex_Stair07
+
+
+# Step 07
+Nav_Annex_Stair07,68.0,-1.50,12.075,Nav_Annex_Stair04|Nav_Annex_Stair10
+
+
+# Step 10
+Nav_Annex_Stair10,68.0,-2.25,10.725,Nav_Annex_Stair07|Nav_Annex_Stair13
+
+
+# Step 13
+Nav_Annex_Stair13,68.0,-3.00,9.375,Nav_Annex_Stair10|Nav_Annex_Stair16
+
+
+# Step 16
+Nav_Annex_Stair16,68.0,-3.75,8.025,Nav_Annex_Stair13|Nav_Annex_Stair18
+
+
+# Step 18
+Nav_Annex_Stair18,68.0,-4.25,7.125,Nav_Annex_Stair16|Nav_AnnexB1_Landing
+
+
+#============================================================
+# Bottom Landing
+#============================================================
+
+Nav_AnnexB1_Landing,68.0,-4.50,6.45,Nav_Annex_Stair18|Nav_AnnexB1_EntryCenter
+
+#============================================================
+# Annex B1 Entry
+#
+# Entry Floor:
+#     X = 60 ～ 70
+#     Z = 5 ～ 8
+#
+# B1 Floor Top:
+#     Y = -4.50
+#
+# Pursuer Center:
+#     Y = -3.40
+#============================================================
+
+Nav_AnnexB1_EntryCenter,64.0,-4.50,6.50,Nav_AnnexB1_Landing|Nav_AnnexB1_CorridorEast|Nav_AnnexB1_ExperimentalApproach
+
+
+#============================================================
+# Main Corridor
+#
+# Range:
+#     X = 48 ～ 60
+#     Z = 5 ～ 8
+#============================================================
+
+Nav_AnnexB1_CorridorEast,59.0,-4.50,6.50,Nav_AnnexB1_EntryCenter|Nav_AnnexB1_CorridorWest
+
+Nav_AnnexB1_CorridorWest,52.5,-4.50,6.50,Nav_AnnexB1_CorridorEast|Nav_AnnexB1_ObservationDoor
+
+#============================================================
+# Observation Room Navigation
+#
+# Door:
+#     X = 52.5
+#     Z = 8
+#
+# Room:
+#     X = 48 ～ 57
+#     Z = 8 ～ 20
+#============================================================
+
+Nav_AnnexB1_ObservationDoor,52.5,-4.50,8.0,Nav_AnnexB1_CorridorWest|Nav_AnnexB1_ObservationCenter
+
+Nav_AnnexB1_ObservationCenter,52.5,-4.50,14.0,Nav_AnnexB1_ObservationDoor|Nav_AnnexB1_ObservationNorth
+
+Nav_AnnexB1_ObservationNorth,52.5,-4.50,18.0,Nav_AnnexB1_ObservationCenter
+
+#============================================================
+# Experimental Room Navigation
+#
+# Door:
+#     X = 61.5
+#     Z = 8
+#
+# Room:
+#     X = 57 ～ 66
+#     Z = 8 ～ 20
+#============================================================
+
+Nav_AnnexB1_ExperimentalDoor,61.5,-4.50,8.0,Nav_AnnexB1_ExperimentalApproach|Nav_AnnexB1_ExperimentalCenter
+
+Nav_AnnexB1_ExperimentalCenter,61.5,-4.50,14.0,Nav_AnnexB1_ExperimentalDoor|Nav_AnnexB1_ExperimentalNorth
+
+Nav_AnnexB1_ExperimentalNorth,61.5,-4.50,18.0,Nav_AnnexB1_ExperimentalCenter|Nav_AnnexB1_CentralResearchDoor
+
+#============================================================
+# Annex B1 - Central Research Chamber Navigation
+#
+# Experimental Room
+#       ↓
+# Central Research Door
+#       ↓
+# South
+#       ↓
+# Center
+#       ↓
+# North
+#
+# Chamber:
+#     X = 54 ～ 70
+#     Z = 20 ～ 30
+#
+# Floor:
+#     Y = -4.50
+#
+# Pursuer Center:
+#     Y = -3.40
+#============================================================
+
+
+#============================================================
+# Door Center
+#
+# MansionDoor:
+#     X = 61.5
+#     Z = 20.0
+# Door中心をNav Nodeとして通すことで、
+# MansionDoorのINavigationDoor判定を利用する
+#============================================================
+
+Nav_AnnexB1_CentralResearchDoor,61.5,-4.50,20.0,Nav_AnnexB1_ExperimentalNorth|Nav_AnnexB1_CentralResearchSouth
+
+
+#============================================================
+# Experimental Room Door Approach
+# Entry AreaからDoorへ斜めに突っ込ませず
+# 一度Door正面へ移動させる。
+#============================================================
+
+Nav_AnnexB1_ExperimentalApproach,61.5,-4.50,6.50,Nav_AnnexB1_EntryCenter|Nav_AnnexB1_ExperimentalDoor
+
+#============================================================
+# Chamber South
+#============================================================
+
+Nav_AnnexB1_CentralResearchSouth,61.5,-4.50,22.0,Nav_AnnexB1_CentralResearchDoor|Nav_AnnexB1_CentralResearchCenter
+
+
+#============================================================
+# Chamber Center
+#
+# 部屋中心付近。
+#
+# 将来的に
+#
+# ・Puzzle
+# ・Terminal
+# ・研究装置
+# ・重要Item
+#
+# を置いても、ここを中心Nodeとして分岐できる。
+#============================================================
+
+Nav_AnnexB1_CentralResearchCenter,62.0,-4.50,25.0,Nav_AnnexB1_CentralResearchSouth|Nav_AnnexB1_CentralResearchWest|Nav_AnnexB1_CentralResearchEast|Nav_AnnexB1_CentralResearchNorth
+
+
+#============================================================
+# West Side
+#============================================================
+
+Nav_AnnexB1_CentralResearchWest,57.0,-4.50,25.0,Nav_AnnexB1_CentralResearchCenter
+
+
+#============================================================
+# East Side
+#============================================================
+
+Nav_AnnexB1_CentralResearchEast,67.0,-4.50,25.0,Nav_AnnexB1_CentralResearchCenter
+
+
+#============================================================
+# North Side
+#============================================================
+
+Nav_AnnexB1_CentralResearchNorth,60.0,-4.50,28.0,Nav_AnnexB1_CentralResearchCenter|Nav_AnnexB1_ControlRoomDoor
+
+#============================================================
+# Annex B1 - Control Room Navigation
+#
+# Control Room:
+#
+#     X = 56 ～ 68
+#     Z = 30 ～ 38
+#
+# Entrance:
+#
+#     X = 62
+#     Z = 30
+#
+# Floor:
+#
+#     Y = -4.50
+#
+# Pursuer Center:
+#
+#     Y = -3.40
+#============================================================
+
+
+#============================================================
+# Control Room Door
+#
+# MansionDoor中心。
+#
+# ResearchSealが未解除の場合はDoorがLockedなので、
+# PursuerNavigation側でも通行不可として扱われる。
+#
+# Seal Activated
+#      ↓
+# Door Unlock
+#      ↓
+# このEdgeを通行可能
+#============================================================
+
+Nav_AnnexB1_ControlRoomDoor,62.0,-4.50,30.0,Nav_AnnexB1_CentralResearchNorth|Nav_AnnexB1_ControlRoomSouth
+
+
+#============================================================
+# Control Room South
+# Doorを抜けた直後
+# Door付近でPursuerが急に左右へ向きを変えないよう
+# 一度中央線上を進ませる
+#============================================================
+
+Nav_AnnexB1_ControlRoomSouth,62.0,-4.50,31.5,Nav_AnnexB1_ControlRoomDoor|Nav_AnnexB1_ControlRoomCenter
+
+
+#============================================================
+# Control Room Center
+#
+# 部屋全体のHub Node。
+#============================================================
+
+Nav_AnnexB1_ControlRoomCenter,62.0,-4.50,34.0,Nav_AnnexB1_ControlRoomSouth|Nav_AnnexB1_ControlRoomWest|Nav_AnnexB1_ControlRoomEast|Nav_AnnexB1_ControlRoomNorth
+
+
+#============================================================
+# West Side
+#
+# West Wall:
+#     X = 56
+#
+# 壁から1.5m程度離す。
+#============================================================
+
+Nav_AnnexB1_ControlRoomWest,58.0,-4.50,34.0,Nav_AnnexB1_ControlRoomCenter
+
+
+#============================================================
+# East Side
+#
+# East Wall:
+#     X = 68
+#============================================================
+
+Nav_AnnexB1_ControlRoomEast,66.0,-4.50,34.0,Nav_AnnexB1_ControlRoomCenter
+
+
+#============================================================
+# North Side
+#============================================================
+
+Nav_AnnexB1_ControlRoomNorth,62.0,-4.50,36.0,Nav_AnnexB1_ControlRoomCenter

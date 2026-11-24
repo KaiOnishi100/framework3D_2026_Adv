@@ -1,0 +1,42 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex 1F - Entrance Hall
+#
+# X=46～54
+# Z=14～22
+# Size=8x8m
+#
+# Floor / Walls / Ceiling を1モデルに統合。
+#============================================================
+
+Art_Annex1F_EntranceHall_Architecture,MansionArt,50.0,0.0,18.0,0,180,0,1,1,1,data/model/mansion/architecture/annex1f/annex1f_entrance_hall.vnm
+
+
+#============================================================
+# STEP 26 - Annex Entrance Hall Furniture
+#============================================================
+
+# 西側のコンソールテーブル
+Art_Annex1F_Entrance_Console,MansionArt,47.3,0,20.5,0,-90,0,1,1,1,data/model/mansion/props/console/entrance_console_01.vnm
+
+# 壁ランプ
+Art_Annex1F_Entrance_Lamp,MansionArt,47.1,2.85,19.8,0,-90,0,1,1,1,data/model/mansion/props/lamp/mansion_wall_lamp_01.vnm
+
+#============================================================
+# STEP31追加 - 別館玄関ホール→主廊下 開口部の角補修
+#============================================================
+
+# 開口部 左側の角
+Art31_AnnexEntrance_MainCorridorCorner_L,MansionArt,53.90,0.00,16.20,0,90,0,1,1,1,data/model/mansion/repair/step31/annex1f_inner_corner_trim.vnm
+
+# 開口部 右側の角
+Art31_AnnexEntrance_MainCorridorCorner_R,MansionArt,53.90,0.00,19.80,0,180,0,1,1,1,data/model/mansion/repair/step31/annex1f_inner_corner_trim.vnm
+
+#============================================================
+# STEP40 - Courtyard -> Annex Entrance Door Frame
+#============================================================
+Art40_Annex1F_EntranceDoorFrame,MansionArt,46.0,0.0,18.0,0,90,0,1,1,1,data/model/mansion/architecture/doorframe/courtyard_to_annex_doorframe_200.vnm
+
+Art_Annex1F_Entrance_Candle,MansionArt,47.30,0.82,20.50,0,0,0,1,1,1,data/model/mansion/props/candle/mansion_candle_01.vnm

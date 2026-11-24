@@ -1,0 +1,10 @@
+﻿# Visual Studio で、C++ の設定で .editorconfig ファイルが生成されました。
+root = true
+
+# デフォルト：すべてのファイルを「UTF-8（BOMあり）」で保存
+[*]
+charset = utf-8-bom
+
+# HLSL関連の拡張子だけ「UTF-8（BOMなし）」で上書き設定
+[*.{hlsl,hlsli,fx,psh,vsh}]
+charset = utf-8

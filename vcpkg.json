@@ -1,0 +1,13 @@
+{
+  "name": "vn-asset-converter",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "assimp",
+    {
+      "name": "directxtex",
+      "features": [
+        "openexr"
+      ]
+    }
+  ]
+}

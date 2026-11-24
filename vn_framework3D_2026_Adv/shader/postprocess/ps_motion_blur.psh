@@ -1,0 +1,313 @@
+//============================================================
+// Depth / Velocity Aware Motion Blur
+//
+// t0 : Scene HDR
+// t1 : Motion Vector
+// t2 : Main Depth
+//============================================================
+
+//============================================================
+// HDR Scene
+//============================================================
+Texture2D<float4> txScene : register(t0);
+
+
+//============================================================
+// Motion Vector
+//
+// R = X Velocity
+// G = Y Velocity
+//============================================================
+Texture2D<float2> txMotionVector : register(t1);
+
+
+//============================================================
+//Main Depth
+//============================================================
+Texture2D<float> txDepth : register(t2);
+
+
+//============================================================
+// Linear Clamp Sampler
+// ※Motion Blurで画面端をSampleするためClamp必須
+//============================================================
+SamplerState samLinear : register(s0);
+
+//============================================================
+// Depth
+// Geometry境界を補間したくないためPoint
+//============================================================
+SamplerState samPoint : register(s1);
+
+//============================================================
+// Motion Blur Parameter
+//============================================================
+cbuffer MotionBlurBuffer : register(b0)
+{
+    //========================================================
+    // x : Strength
+    // y : Max Blur Pixels
+    // z : Sample Count
+    // w : Velocity Scale
+    //========================================================
+    float4 MotionParam;
+
+
+    //========================================================
+    // x : Screen Width
+    // y : Screen Height
+    // z : 1 / Width
+    // w : 1 / Height
+    //========================================================
+    float4 ScreenParam;
+    
+    
+    //========================================================
+    // x : Depth Threshold
+    // y : Velocity Threshold
+    // z : Depth Reject Enable
+    // w : Velocity Reject Enable
+    //========================================================
+    float4 RejectionParam;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv       : TEXCOORD0;
+};
+
+
+//============================================================
+// 最大Sample数
+//============================================================
+static const int MAX_MOTION_BLUR_SAMPLES = 12;
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput input) : SV_Target
+{
+    //========================================================
+    // Center Color
+    //========================================================
+    const float4 centerColor =
+        txScene.Sample(
+            samLinear,
+            input.uv
+        );
+
+
+    //========================================================
+    // Center Velocity
+    //========================================================
+    float2 centerVelocity =
+        txMotionVector.Sample(
+            samLinear,
+            input.uv
+        );
+
+
+    centerVelocity *= MotionParam.x * MotionParam.w;
+
+
+    //========================================================
+    // VelocityをPixel単位へ
+    //========================================================
+    float2 velocityPixels = centerVelocity * ScreenParam.xy;
+
+    float blurLengthPixels = length(velocityPixels);
+
+    //========================================================
+    // Motionがほぼない
+    //========================================================
+    if (blurLengthPixels < 0.5f)
+    {
+        return centerColor;
+    }
+
+
+    //========================================================
+    // Blur最大長
+    //========================================================
+    const float maxBlurPixels = max(MotionParam.y, 0.0f);
+
+
+    if (maxBlurPixels > 0.0f && blurLengthPixels > maxBlurPixels)
+    {
+        velocityPixels *= maxBlurPixels / blurLengthPixels;
+
+        blurLengthPixels = maxBlurPixels;
+    }
+
+
+    //========================================================
+    // Pixel → UV
+    //========================================================
+    const float2 blurVector = velocityPixels * ScreenParam.zw;
+
+    //========================================================
+    // Center Depth
+    //========================================================
+    const float centerDepth =
+        txDepth.Sample(
+            samPoint,
+            input.uv
+        );
+
+
+    //========================================================
+    // Sample数
+    //========================================================
+    const int sampleCount = clamp((int) (MotionParam.z + 0.5f), 2, MAX_MOTION_BLUR_SAMPLES);
+
+
+    //========================================================
+    // Center Pixelは必ず採用
+    // 全SampleがRejectされた場合でも黒くならない
+    //========================================================
+    float4 accumulatedColor = centerColor;
+
+    float totalWeight = 1.0f;
+
+    //========================================================
+    // Blur Sampling
+    //========================================================
+    [loop]
+    for (int sampleIndex = 0; sampleIndex < sampleCount; ++sampleIndex)
+    {
+        //====================================================
+        // 0 ～ 1
+        //====================================================
+        const float normalizedIndex = (float) sampleIndex / max((float) (sampleCount - 1), 1.0f);
+
+        //====================================================
+        // -0.5 ～ +0.5
+        //====================================================
+        const float sampleOffset = normalizedIndex - 0.5f;
+
+        //====================================================
+        // Center付近はすでに1回Sample済みなので
+        // 完全Center Sampleは飛ばす
+        //====================================================
+        if (abs(sampleOffset) < 0.001f)
+        {
+            continue;
+        }
+
+        const float2 sampleUV = input.uv + blurVector * sampleOffset;
+
+        //====================================================
+        // 画面外Sampleは採用しない
+        //====================================================
+        if (sampleUV.x < 0.0f ||
+            sampleUV.x > 1.0f ||
+            sampleUV.y < 0.0f ||
+            sampleUV.y > 1.0f)
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // Sample Depth
+        //====================================================
+        const float sampleDepth =
+            txDepth.SampleLevel(
+                samPoint,
+                sampleUV,
+                0.0f
+            );
+
+
+        //====================================================
+        // Depth差
+        // 通常Depth:
+        // Near = 小さい
+        // Far  = 大きい
+        // Foreground → Background境界などでは
+        // Depth差が大きくなる
+        //====================================================
+        const float depthDifference = abs(sampleDepth - centerDepth);
+
+
+        //====================================================
+        // 深度が大きく違うなら別Surfaceと判断してReject
+        //====================================================
+        if (RejectionParam.z > 0.5f && depthDifference > RejectionParam.x)
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // Sample地点のVelocity
+        //====================================================
+        const float2 sampleVelocity =
+            txMotionVector.SampleLevel(
+                samLinear,
+                sampleUV,
+                0.0f
+            );
+
+
+        //====================================================
+        // Center Velocityとの差
+        //====================================================
+        const float velocityDifference =
+            length(sampleVelocity - txMotionVector.SampleLevel(samLinear, input.uv, 0.0f));
+
+
+        if (RejectionParam.w > 0.5f && velocityDifference > RejectionParam.y)
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // Centerに近いSampleを少し強くする
+        //====================================================
+        const float spatialWeight = 1.0f - abs(sampleOffset) * 0.65f;
+
+
+        //====================================================
+        // Depth差に応じたSoft Weight
+        //====================================================
+        const float depthWeight =
+            saturate(1.0f - depthDifference / max(RejectionParam.x, 0.000001f));
+
+
+        //====================================================
+        // Velocity差に応じたSoft Weight
+        //====================================================
+        const float velocityWeight =
+            saturate(1.0f - velocityDifference / max(RejectionParam.y, 0.000001f));
+
+
+        //====================================================
+        // 最終Weight
+        //====================================================
+        const float weight =
+            spatialWeight * depthWeight * velocityWeight;
+
+
+        //====================================================
+        // 非常に小さいWeightはSampleしない
+        //====================================================
+        if (weight <= 0.001f)
+        {
+            continue;
+        }
+
+        accumulatedColor += txScene.SampleLevel(samLinear, sampleUV ,0.0f) * weight;
+
+        totalWeight += weight;
+    }
+
+
+    //========================================================
+    // Normalize
+    //========================================================
+    return accumulatedColor / max(totalWeight, 0.0001f);
+}

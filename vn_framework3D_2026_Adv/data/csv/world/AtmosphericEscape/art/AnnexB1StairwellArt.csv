@@ -1,0 +1,31 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Annex B1 - Stairwell
+#
+# 地下階段
+#
+# Center:
+#   X=68.0
+#   Y=-4.50
+#   Z=10.95
+#
+# 階段18段と左右の壁。
+# 既存階段Colliderはそのまま使う。
+#============================================================
+
+Art_AnnexB1_Stairwell_Architecture,MansionArt,68.0,-4.50,10.95,0,180,0,1,1,1,data/model/mansion/architecture/annexb1/annexb1_stairwell.vnm
+
+
+#============================================================
+# STEP 28 - Annex B1 Stairwell
+#
+# 階段：
+#   X=68
+#   Z=6.9～15
+#
+# 階段の上には家具を置かない。
+#============================================================
+
+#Art_AnnexB1_Stair_Light_01,MansionArt,68.0,-0.48,11.0,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm

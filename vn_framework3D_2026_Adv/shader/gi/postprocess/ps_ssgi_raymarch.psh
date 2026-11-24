@@ -1,0 +1,682 @@
+//============================================================
+// Basic Screen-Space Global Illumination Ray March
+// t0: Main HDR Scene
+// t1: Main Depth
+// t2: GI Surface Buffer
+// t3: GI Material Buffer
+// t4: Previous Frame Full Resolution GI
+//
+// Surface Buffer:
+//   RGB = World-Space Normal
+//   A   = Roughness
+// Output:
+//   RGB = Raw Indirect Radiance
+//   A   = Hit Confidence
+//============================================================
+
+Texture2D<float4> txScene : register(t0);
+
+Texture2D<float> txDepth : register(t1);
+
+Texture2D<float4> txGISurface : register(t2);
+
+Texture2D<float4> txGIMaterial : register(t3);
+
+Texture2D<float4> txPreviousGI : register(t4);
+
+SamplerState samLinear : register(s0);
+
+SamplerState samPoint : register(s1);
+
+
+//============================================================
+// Constant Buffer
+//============================================================
+cbuffer SSGIRayMarchBuffer : register(b0)
+{
+    float4x4 ViewProjection;
+
+    float4x4 InverseViewProjection;
+
+    // xyz Camera Position
+    float4 CameraPosition;
+
+    // Half Resolution
+    float4 ScreenParameters;
+    
+     // Full Resolution
+    float4 FullScreenParameters;
+
+    // x Max Distance
+    // y Step Count
+    // z Hit Thickness
+    // w Normal Bias
+    float4 RayParameters;
+
+    // x Ray Count
+    // y GI Intensity
+    // z Sky Depth Threshold
+    // w Frame Index
+    float4 SamplingParameters;
+    
+    // x: Maximum sampled HDR radiance
+    float4 RadianceParameters;
+    
+    // x Multi Bounce Enabled
+    // y Multi Bounce Strength
+    // z Previous GI History Valid
+    // w unused
+    float4 MultiBounceParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+
+static const float SSGI_PI = 3.14159265359f;
+
+static const int MAX_SSGI_RAYS = 8;
+
+static const int MAX_SSGI_STEPS = 32;
+
+
+//============================================================
+// Pixelごとの安定したPseudo Random
+//============================================================
+float Hash12(float2 p)
+{
+    float3 p3 = frac(float3(p.x, p.y, p.x) * 0.1031f);
+
+    p3 += dot(p3, p3.yzx + 33.33f);
+
+    return frac((p3.x +p3.y)*p3.z);
+}
+
+
+//============================================================
+// Depth → World Position
+//============================================================
+bool ReconstructWorldPosition(
+    float2 uv,
+    float depth,
+    out float3 worldPosition
+)
+{
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    float4 worldPositionH = mul(clipPosition, InverseViewProjection);
+
+    if (abs(worldPositionH.w) <= 0.000001f )
+    {
+        worldPosition = 0.0f;
+        return false;
+    }
+
+    worldPosition = worldPositionH.xyz / worldPositionH.w;
+
+    return true;
+}
+
+
+//============================================================
+// World Position → Screen UV
+//============================================================
+bool ProjectWorldPosition(float3 worldPosition,out float2 uv)
+{
+    const float4 clipPosition = mul(float4(worldPosition, 1.0f), ViewProjection);
+
+    //========================================================
+    // Camera後方
+    //========================================================
+    if (clipPosition.w <=0.000001f)
+    {
+        uv = 0.0f;
+        return false;
+    }
+
+
+    const float3 ndc = clipPosition.xyz / clipPosition.w;
+
+
+    //========================================================
+    // DirectX NDC → UV
+    //========================================================
+    uv =
+        float2(
+            ndc.x * 0.5f + 0.5f,
+            0.5f - ndc.y * 0.5f
+        );
+
+
+    //========================================================
+    // Screen外
+    //========================================================
+    if (uv.x <= 0.0f ||
+        uv.x >= 1.0f ||
+        uv.y <= 0.0f ||
+        uv.y >= 1.0f ||
+        ndc.z <= 0.0f ||
+        ndc.z >= 1.0f)
+    {
+        return false;
+    }
+
+
+    return true;
+}
+
+
+//============================================================
+// Normalを基準にTangent Basisを作る
+//============================================================
+void BuildTangentBasis(
+    float3 normal,
+    out float3 tangent,
+    out float3 bitangent
+)
+{
+    //========================================================
+    // Normalと平行になりにくいAxisを選ぶ
+    //========================================================
+    const float3 helperAxis =
+        abs(normal.z) < 0.999f ? float3(0.0f, 0.0f, 1.0f) : float3(1.0f, 0.0f, 0.0f);
+
+    tangent = normalize(cross(helperAxis, normal));
+
+    bitangent = normalize(cross(normal, tangent));
+}
+
+
+//============================================================
+// Cosine Weighted Hemisphere Sampling
+// Diffuse GI向け
+//============================================================
+float3 GenerateHemisphereDirection(
+    float3 normal,
+    int rayIndex,
+    int rayCount,
+    float randomRotation
+)
+{
+    //========================================================
+    // 0～1
+    //========================================================
+    const float u1 =
+        ((float) rayIndex + 0.5f) / max((float) rayCount, 1.0f);
+
+
+    const float u2 =
+        frac(randomRotation + (float) rayIndex * 0.61803398875f);
+
+
+    //========================================================
+    // Cosine Weighted Hemisphere
+    //========================================================
+    const float radius = sqrt(u1);
+
+
+    const float phi = 2.0f * SSGI_PI * u2;
+
+    const float x = radius * cos(phi);
+    const float y = radius * sin(phi);
+    const float z = sqrt(max(1.0f - u1, 0.0f));
+
+
+    //========================================================
+    // Local → World
+    //========================================================
+    float3 tangent;
+    float3 bitangent;
+
+
+    BuildTangentBasis(
+        normal,
+        tangent,
+        bitangent
+    );
+
+
+    return
+        normalize(
+            tangent * x +
+            bitangent * y +
+            normal * z
+        );
+}
+
+
+//============================================================
+// 1本のRayをScreen SpaceでMarch
+// true: GeometryへHit
+// hitUV: HitしたScreen UV
+// hitDistance: Ray開始地点からの距離
+//============================================================
+bool TraceScreenSpaceRay(
+    float3 rayOrigin,
+    float3 rayDirection,
+    out float2 hitUV,
+    out float hitDistance
+)
+{
+    hitUV = 0.0f;
+
+    hitDistance = 0.0f;
+
+    const int stepCount =
+        clamp((int) (RayParameters.y + 0.5f), 1, MAX_SSGI_STEPS);
+
+    const float maxDistance =
+        max(RayParameters.x, 0.001f);
+
+    const float stepLength =
+        maxDistance / (float) stepCount;
+
+    const float hitThickness =
+        max(RayParameters.z, 0.0001f);
+
+    //========================================================
+    // Ray March
+    //========================================================
+    [loop]
+    for (int stepIndex = 1; stepIndex <= MAX_SSGI_STEPS; ++stepIndex)
+    {
+        if (stepIndex > stepCount)
+        {
+            break;
+        }
+
+
+        //====================================================
+        // World Space上でRayを前進
+        //====================================================
+        const float currentDistance =
+            stepLength * (float) stepIndex;
+
+
+        const float3 rayPosition =
+            rayOrigin + rayDirection * currentDistance;
+
+
+        //====================================================
+        // World → Screen
+        //====================================================
+        float2 sampleUV;
+
+
+        if (!ProjectWorldPosition(rayPosition, sampleUV))
+        {
+            //================================================
+            // ※Screen外へ出たらそれ以上MarchしてもScreen-Spaceでは追えない
+            //================================================
+            break;
+        }
+
+
+        //====================================================
+        // Scene Depth
+        //====================================================
+        const float sceneDepth =
+            txDepth.SampleLevel(
+                samPoint,
+                sampleUV,
+                0.0f
+            );
+
+
+        //====================================================
+        // SkyはGeometryではないので除外
+        //====================================================
+        if (sceneDepth >= SamplingParameters.z)
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // Scene側World Position
+        //====================================================
+        float3 sceneWorldPosition;
+
+
+        if (!ReconstructWorldPosition(
+                sampleUV,
+                sceneDepth,
+                sceneWorldPosition))
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // 同じScreen Pixel上で、
+        // Scene Surface と Ray Position
+        // のCameraからの距離を比較する
+        // RayがScene Surfaceより奥へ入った瞬間が
+        // 交差候補になる
+        //====================================================
+        const float rayCameraDistance =
+            length(rayPosition - CameraPosition.xyz);
+
+        const float sceneCameraDistance =
+            length(sceneWorldPosition - CameraPosition.xyz);
+
+        const float depthDifference =
+            rayCameraDistance - sceneCameraDistance;
+
+
+        //====================================================
+        // RayがSurfaceを通過したか
+        // depthDifference < 0: まだSurfaceよりCamera側
+        // 0 ～ thickness: Surface付近にHit
+        //====================================================
+        if (depthDifference >= 0.0f && depthDifference <= hitThickness)
+        {
+            //================================================
+            // Hit側Normal
+            // 背面を拾うFalse Positiveを減らす
+            //================================================
+            const float3 hitNormal =
+                normalize(
+                    txGISurface.SampleLevel(
+                        samPoint,
+                        sampleUV,
+                        0.0f
+                    ).xyz
+                );
+
+            const float facing = dot(hitNormal, -rayDirection);
+
+            if (facing <= 0.05f)
+            {
+                continue;
+            }
+
+
+            hitUV = sampleUV;
+
+            hitDistance = currentDistance;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main( PixelInput input) : SV_Target
+{
+        
+    //========================================================
+    // Current Depth
+    //========================================================
+    const float depth =
+        txDepth.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+    
+    //========================================================
+    // Sky
+    //========================================================
+    if (depth >= SamplingParameters.z)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // World Position
+    //========================================================
+    float3 worldPosition;
+
+
+    if (!ReconstructWorldPosition(
+            input.uv,
+            depth,
+            worldPosition))
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // GI Surface
+    //========================================================
+    const float4 surface =
+        txGISurface.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    float3 normal = surface.xyz;
+
+    //============================================================
+    // Receiver Material
+    //============================================================
+    const float4 receiverMaterial =
+    txGIMaterial.SampleLevel(
+        samPoint,
+        input.uv,
+        0.0f
+    );
+
+
+    const float3 receiverBaseColor =
+        max(receiverMaterial.rgb, 0.0f);
+
+
+    const float receiverMetallic =
+        saturate(receiverMaterial.a);
+
+
+    //============================================================
+    // Diffuse Reflectance
+    //============================================================
+    const float3 diffuseReflectance = receiverBaseColor * (1.0f - receiverMetallic);
+
+
+    //============================================================
+    // 完全Metalの場合、Diffuse GIは不要
+    //============================================================
+    if (max(diffuseReflectance.r, max(diffuseReflectance.g, diffuseReflectance.b)) <= 0.0001f)
+    {
+        return 0.0f;
+    }
+
+
+    //============================================================
+    // Ray Origin
+    //============================================================
+    const float3 rayOrigin =
+        worldPosition + normal * max(RayParameters.w, 0.0f);
+
+
+    const int rayCount = clamp((int) (SamplingParameters.x + 0.5f), 1, MAX_SSGI_RAYS);
+
+    //============================================================
+    // Full-Resolution相当Pixel座標
+    //============================================================
+    const float2 fullResolutionPixel = input.uv * FullScreenParameters.xy;
+
+    //============================================================
+    // Pixel固有Random
+    //============================================================
+    const float pixelRandom = Hash12(floor(fullResolutionPixel));
+
+    //============================================================
+    // Golden Ratioを使ってFrameごとにSampling Patternを回転
+    //============================================================
+    const float frameRotation = frac(SamplingParameters.w * 0.61803398875f);
+
+    const float randomRotation = frac(pixelRandom + frameRotation);
+
+    float3 accumulatedRadiance = 0.0f;
+
+    float hitCount = 0.0f;
+
+
+    //============================================================
+    // Hemisphere Ray
+    //============================================================
+[loop]
+    for (int rayIndex = 0; rayIndex < MAX_SSGI_RAYS; ++rayIndex)
+    {
+        if (rayIndex >= rayCount)
+        {
+            break;
+        }
+
+
+        const float3 rayDirection =
+            GenerateHemisphereDirection(
+                normal,
+                rayIndex,
+                rayCount,
+                randomRotation
+            );
+
+
+        float2 hitUV;
+
+        float hitDistance;
+
+
+        if (!TraceScreenSpaceRay(
+            rayOrigin,
+            rayDirection,
+            hitUV,
+            hitDistance))
+        {
+            continue;
+        }
+
+
+        //============================================================
+        // Current Frame Scene Radiance
+        // ※ここにはまだ今FrameのSSGIはCompositeされていない
+        // ※したがってSame-Frame Feedbackは起きない
+        //============================================================
+        float3 hitRadiance =
+             max(txScene.SampleLevel(samLinear, hitUV, 0.0f).rgb, 0.0f);
+
+
+        //============================================================
+        // Multi Bounce Approximation
+        // Previous FrameのGIをHit地点のOutgoing Radianceとして少量追加する
+        // ※Previous GI自体はすでにDiffuse Reflection結果なので
+        // ※Hit SurfaceのBaseColorをここでもう一度掛けない
+        //============================================================
+        if (MultiBounceParameters.x > 0.5f && MultiBounceParameters.z > 0.5f)
+        {
+            const float4 previousGI =
+                txPreviousGI.SampleLevel(
+                    samLinear,
+                    hitUV,
+                    0.0f
+                );
+
+
+            //========================================================
+            // Confidenceが低いHistoryは少し弱くする
+            // 0でも完全除外はせずTemporalによる欠けを極端に目立たせない
+            //========================================================
+            const float historyConfidence =
+                lerp(0.25f, 1.0f, saturate(previousGI.a));
+
+
+            const float multiBounceStrength =
+                max(MultiBounceParameters.y, 0.0f);
+
+
+            hitRadiance +=
+                max(previousGI.rgb, 0.0f) * multiBounceStrength * historyConfidence;
+        }
+
+
+        //============================================================
+        // Firefly / Extreme HDR抑制
+        // RGBを個別にClampすると色相が変わりやすいため
+        // 最大Channelを基準にScaleする
+        //============================================================
+        const float maxChannel =
+            max(hitRadiance.r, max(hitRadiance.g, hitRadiance.b));
+
+
+        const float maxRadiance =
+            max(RadianceParameters.x, 0.001f);
+
+
+        if (maxChannel > maxRadiance)
+        {
+            hitRadiance *= maxRadiance / maxChannel;
+        }
+
+
+        //========================================================
+        // Screen-Space Distance Fade
+        //========================================================
+        const float distanceFade = 1.0f - saturate(hitDistance / max(RayParameters.x, 0.001f));
+
+
+        const float smoothDistanceFade =
+            distanceFade * distanceFade * (3.0f - 2.0f * distanceFade);
+
+
+        //========================================================
+        // Incoming Radiance
+        //========================================================
+        accumulatedRadiance += hitRadiance * smoothDistanceFade;
+
+        hitCount += 1.0f;
+    }
+
+
+    //============================================================
+    // Hitなし
+    //============================================================
+    if (hitCount <= 0.0f)
+    {
+        return 0.0f;
+    }
+
+
+    //============================================================
+    // Cosine Weighted Monte Carlo Average
+    // Hit数ではなくRay総数で割る
+    //============================================================
+    const float3 averageIncomingRadiance = accumulatedRadiance / max((float) rayCount, 1.0f);
+
+
+    //============================================================
+    // Lambertian Indirect Diffuse
+    //============================================================
+    const float3 indirectDiffuse =
+        averageIncomingRadiance *
+        diffuseReflectance *
+        max(SamplingParameters.y, 0.0f);
+
+
+    //============================================================
+    // Confidence
+    //============================================================
+    const float confidence = hitCount / max((float) rayCount, 1.0f);
+
+    return float4(max(indirectDiffuse, 0.0f), saturate(confidence));
+}

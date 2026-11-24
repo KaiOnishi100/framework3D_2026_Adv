@@ -1,0 +1,216 @@
+
+Id,Prefab,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ,DataId
+
+#============================================================
+# Main1F Power Room - Floor
+#
+# 範囲:
+#   X=16～26
+#   Z=12～20
+#
+# 中心:
+#   X=21
+#   Z=16
+#
+# Blender側で10m×8mに調整した床を配置。
+#============================================================
+Art_Main1F_PowerRoom_Floor,MansionArt,21,0.01,16,0,0,0,1,1,1,data/model/mansion/architecture/power_room/power_room_floor_10x8.vnm
+
+
+#============================================================
+# Power Room - South Wall
+#
+# Z=12
+# X=16～26
+#
+# 2mモジュール × 5本 = 10m
+#
+# 装飾面を室内側（+Z）へ向ける。
+#============================================================
+Art_Main1F_PowerRoom_SouthWall_01,MansionArt,17,0,12.2305,0,180,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_SouthWall_02,MansionArt,19,0,12.2305,0,180,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_SouthWall_03,MansionArt,21,0,12.2305,0,180,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_SouthWall_04,MansionArt,23,0,12.2305,0,180,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_SouthWall_05,MansionArt,25,0,12.2305,0,180,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+
+#============================================================
+# Power Room - North Wall
+#
+# Z=20
+# X=16～26
+#
+# 南壁と同じモデルを5本再利用。
+# 装飾面は室内側（-Z）。
+#============================================================
+Art_Main1F_PowerRoom_NorthWall_01,MansionArt,17,0,19.7695,0,0,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_NorthWall_02,MansionArt,19,0,19.7695,0,0,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_NorthWall_03,MansionArt,21,0,19.7695,0,0,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_NorthWall_04,MansionArt,23,0,19.7695,0,0,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_NorthWall_05,MansionArt,25,0,19.7695,0,0,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+
+#============================================================
+# Power Room - West Wall
+#============================================================
+
+# Z=12～15 : 2m + 1m
+Art_Main1F_PowerRoom_WestWall_S01,MansionArt,16.2305,0,13,0,-90,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_WestWall_S02,MansionArt,16.2305,0,14.5,0,-90,0,0.5,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+# Z=15～17 : 東廊下への入口
+# 壁を配置しない。
+
+# Z=17～20 : 2m + 1m
+Art_Main1F_PowerRoom_WestWall_N01,MansionArt,16.2305,0,18,0,-90,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_WestWall_N02,MansionArt,16.2305,0,19.5,0,-90,0,0.5,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+
+#============================================================
+# Power Room - East Wall
+#============================================================
+
+# Z=12～17 : 2m + 2m + 1m
+Art_Main1F_PowerRoom_EastWall_S01,MansionArt,25.7695,0,13,0,90,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_EastWall_S02,MansionArt,25.7695,0,15,0,90,0,1,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+Art_Main1F_PowerRoom_EastWall_S03,MansionArt,25.7695,0,16.5,0,90,0,0.5,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+# Z=17～19 : 中庭への扉
+# 壁を配置しない
+
+# Z=19～20 : 1m
+Art_Main1F_PowerRoom_EastWall_N01,MansionArt,25.7695,0,19.5,0,90,0,0.5,1,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+
+#============================================================
+# Main1F Power Room - Machinery
+#============================================================
+
+
+#============================================================
+# Portable Generator
+#============================================================
+Art_Main1F_PowerRoom_Generator_01,MansionArt,19.0,0,13.8,0,180,0,1,1,1,data/model/mansion/props/power_room/portable_generator_01.vnm
+
+
+#============================================================
+# Electrical Distribution Boxes
+#============================================================
+Art_Main1F_PowerRoom_ElectricalBox_01,MansionArt,20.0,0.8,19.3,0,180,0,1,1,1,data/model/mansion/props/power_room/electrical_box_01.vnm
+
+Art_Main1F_PowerRoom_ElectricalBox_02,MansionArt,22.4,0.8,19.3,0,180,0,1,1,1,data/model/mansion/props/power_room/electrical_box_01.vnm
+
+
+#============================================================
+# Main1F Power Room - Industrial Pipes
+#============================================================
+
+#============================================================
+# North Wall - Horizontal Pipe
+#============================================================
+Art_Main1F_PowerRoom_Pipe_North_H01,MansionArt,21.0,3.65,19.50,0,0,90,1,7,1,data/model/mansion/props/power_room/power_room_pipe_straight_01.vnm
+
+
+#============================================================
+# North Wall - Vertical Pipes
+#============================================================
+
+# 左側
+Art_Main1F_PowerRoom_Pipe_North_V01,MansionArt,17.5,2.55,19.50,0,0,0,1,2.2,1,data/model/mansion/props/power_room/power_room_pipe_straight_01.vnm
+
+# 右側
+Art_Main1F_PowerRoom_Pipe_North_V02,MansionArt,24.5,2.55,19.50,0,0,0,1,2.2,1,data/model/mansion/props/power_room/power_room_pipe_straight_01.vnm
+
+
+#============================================================
+# South Wall - Horizontal Pipe
+#============================================================
+Art_Main1F_PowerRoom_Pipe_South_H01,MansionArt,21.0,3.65,12.50,0,0,90,1,7,1,data/model/mansion/props/power_room/power_room_pipe_straight_01.vnm
+
+#============================================================
+# South Wall - Vertical Pipe
+#============================================================
+Art_Main1F_PowerRoom_Pipe_South_V01,MansionArt,24.5,2.55,12.50,0,0,0,1,2.2,1,data/model/mansion/props/power_room/power_room_pipe_straight_01.vnm
+
+#============================================================
+# Power Terminal - Thin Conduit
+#============================================================
+Art_Main1F_PowerRoom_Pipe_Terminal_01,MansionArt,25.50,2.80,16.0,0,0,0,0.35,1.6,0.35,data/model/mansion/props/power_room/power_room_pipe_straight_01.vnm
+
+
+#============================================================
+# Power Room - Doorway Decoration
+#
+# 金属製ドア枠を2か所で再利用する。
+#
+# 壁の上部には既存のコンクリート壁モデルを使用。
+#
+# 既存のMansionDoor、MansionPowerTerminal、
+# Colliderは変更しない。
+#============================================================
+
+
+#============================================================
+# West Entrance - East Corridor
+#============================================================
+
+# 金属製ドア枠
+Art_Main1F_PowerRoom_WestDoorFrame,MansionArt,16.30,0,16,0,-90,0,1,1,1,data/model/mansion/architecture/doorframe/power_room_doorframe_metal_200.vnm
+
+# ドア上部のコンクリート壁
+# ScaleY=1.9/4.5
+Art_Main1F_PowerRoom_WestDoorUpper,MansionArt,16.2305,2.60,16,0,-90,0,1,0.45,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+
+#============================================================
+# East Entrance - Courtyard
+#============================================================
+
+# 金属製ドア枠
+Art_Main1F_PowerRoom_EastDoorFrame,MansionArt,26.0,0.0,18.0,0,90,0,1,1,1,data/model/mansion/architecture/doorframe/main_to_courtyard_doorframe_200.vnm
+
+# ドア上部のコンクリート壁
+Art_Main1F_PowerRoom_EastDoorUpper,MansionArt,25.7695,2.3,18,0,90,0,1,0.5,1,data/model/mansion/architecture/power_room/power_room_wall_200.vnm
+
+
+#============================================================
+# STEP29 - Main 1F Power Room Ceiling
+#
+# Room:
+#   X=16 ～ 26
+#   Z=12 ～ 20
+#============================================================
+
+Art_Main_Repair_PowerRoomCeiling,MansionArt,21.0,4.41,16.0,0,180,0,1,1,1,data/model/mansion/repair/step29/main1f_powerroom_ceiling.vnm
+
+Art32_Main1F_PowerRoom_CeilingLight,MansionArt,21.0,4.26,16.0,0,180,0,1,1,1,data/model/mansion/props/annexb1/annexb1_ceiling_light_01.vnm
+
+
+#============================================================
+# STEP46 - Power Room Props
+#
+# 主電源ターミナル付近の操作空間は確保する。
+#============================================================
+
+Art46_PowerRoom_Canister_01,MansionArt,18.6,0.00,14.0,0,30,0,1,1,1,data/model/mansion/props/prop_metal_canister_01.vnm
+Art46_PowerRoom_Toolbox_01,MansionArt,20.1,0.00,14.0,0,-20,0,1,1,1,data/model/mansion/props/prop_toolbox_metal_01.vnm
+Art46_PowerRoom_Stain_01,MansionArt,19.4,0.022,18.1,0,0,0,1,1,1,data/model/mansion/props/prop_floor_stain_large_01.vnm
+
+
+#============================================================
+# STEP46-2 PowerRoom Props
+#
+# 主電源ターミナル前と中庭出口は空ける。
+#============================================================
+
+# 大きさを少し変えた金属ボンベ
+Art46B_PowerRoom_Canister_02,MansionArt,21.00,0.00,14.90,0,35,0,0.85,1.15,0.85,data/model/mansion/props/prop_metal_canister_01.vnm
+
+# 横倒しの金属ボンベ
+# ボンベ半径を考慮してY=0.22
+Art46B_PowerRoom_FallenCanister,MansionArt,21.90,0.22,15.50,90,25,0,1.00,1.00,1.00,data/model/mansion/props/prop_metal_canister_01.vnm
+
+# 転倒した木製机
+# 機材の片付けが途中で中断されたような配置
+Art46B_PowerRoom_FallenDesk,MansionArt,20.40,0.40,20.40,90,20,0,1.00,1.00,1.00,data/model/mansion/props/prop_desk_wood_01.vnm
+

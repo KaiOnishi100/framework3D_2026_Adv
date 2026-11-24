@@ -1,0 +1,349 @@
+//============================================================
+// SSGI Bilateral Spatial Filter
+// t0: Half Resolution SSGI
+// t1: Full Resolution Depth
+// t2: Full Resolution Normal + Roughness
+// RGB: Indirect Diffuse
+// A: Confidence
+//============================================================
+
+Texture2D<float4> txSSGI : register(t0);
+
+Texture2D<float> txDepth : register(t1);
+
+Texture2D<float4> txGISurface : register(t2);
+
+
+SamplerState samLinear : register(s0);
+SamplerState samPoint : register(s1);
+
+
+cbuffer SSGIFilterBuffer : register(b0)
+{
+    float4x4 InverseViewProjection;
+
+    float4 CameraPosition;
+
+    float4 ScreenParameters;
+
+    // xy Direction
+    // z Radius
+    // w Depth Falloff
+    float4 FilterParameters;
+
+    // x Normal Power
+    // y Confidence Minimum
+    // z Sky Depth Threshold
+    // w unused
+    float4 EdgeParameters;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+static const int MAX_SSGI_FILTER_RADIUS = 8;
+
+//============================================================
+// Depth → World Position
+//============================================================
+bool ReconstructWorldPosition(
+    float2 uv,
+    float depth,
+    out float3 worldPosition
+)
+{
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    const float4 worldH = mul(clipPosition, InverseViewProjection);
+
+    if (abs(worldH.w) <= 0.000001f)
+    {
+        worldPosition = 0.0f;
+        return false;
+    }
+
+    worldPosition = worldH.xyz / worldH.w;
+
+    return true;
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main( PixelInput input) : SV_Target
+{
+    //========================================================
+    // Center SSGI
+    //========================================================
+    const float4 centerGI =
+        txSSGI.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Center Depth
+    //========================================================
+    const float centerDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    //========================================================
+    // Sky
+    //========================================================
+    if (centerDepth >= EdgeParameters.z)
+    {
+        return 0.0f;
+    }
+
+
+    //========================================================
+    // Center Normal
+    //========================================================
+    float3 centerNormal =
+        txGISurface.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        ).xyz;
+
+
+    if (dot(centerNormal, centerNormal) < 0.25f)
+    {
+        return centerGI;
+    }
+
+    centerNormal = normalize(centerNormal);
+
+    //========================================================
+    // Center World Position
+    //========================================================
+    float3 centerWorldPosition;
+
+
+    if (!ReconstructWorldPosition(
+            input.uv,
+            centerDepth,
+            centerWorldPosition ))
+    {
+        return centerGI;
+    }
+
+
+    const float centerCameraDistance =
+        length(centerWorldPosition - CameraPosition.xyz);
+
+
+    //========================================================
+    // Filter Direction
+    //========================================================
+    const float2 texelDirection =
+        FilterParameters.xy * ScreenParameters.zw;
+
+
+    const int radius =
+        clamp((int) (FilterParameters.z + 0.5f), 1, MAX_SSGI_FILTER_RADIUS);
+
+
+    float3 accumulatedColor = centerGI.rgb;
+
+    float accumulatedColorWeight = 1.0f;
+
+    float accumulatedConfidence = centerGI.a;
+
+    float accumulatedConfidenceWeight = 1.0f;
+
+
+    //========================================================
+    // Separable Bilateral Filter
+    //========================================================
+    [loop]
+    for (int offset = -MAX_SSGI_FILTER_RADIUS; offset <= MAX_SSGI_FILTER_RADIUS; ++offset)
+    {
+        if (offset == 0 || abs(offset) > radius)
+        {
+            continue;
+        }
+
+
+        const float2 sampleUV =
+            input.uv + texelDirection * (float) offset;
+
+
+        //====================================================
+        // Screen外
+        //====================================================
+        if (sampleUV.x <= 0.0f ||
+            sampleUV.x >= 1.0f ||
+            sampleUV.y <= 0.0f ||
+            sampleUV.y >= 1.0f)
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // Spatial Gaussian
+        //====================================================
+        const float sigma = max((float) radius * 0.5f, 1.0f);
+
+        const float spatialWeight =
+            exp(-0.5f * ((float) (offset * offset) / (sigma * sigma)));
+
+
+        //====================================================
+        // Sample Depth
+        //====================================================
+        const float sampleDepth =
+            txDepth.SampleLevel(
+                samPoint,
+                sampleUV,
+                0.0f
+            );
+
+
+        if (sampleDepth >= EdgeParameters.z)
+        {
+            continue;
+        }
+
+
+        //====================================================
+        // Sample World Position
+        //====================================================
+        float3 sampleWorldPosition;
+
+
+        if (!ReconstructWorldPosition(
+                sampleUV,
+                sampleDepth,
+                sampleWorldPosition))
+        {
+            continue;
+        }
+
+
+        const float sampleCameraDistance =
+            length(sampleWorldPosition - CameraPosition.xyz);
+
+
+        //====================================================
+        // Relative Depth Difference
+        // ※Cameraから遠いほど絶対Depth差も大きくなるため
+        // ※Center Distanceで正規化する
+        //====================================================
+        const float relativeDepthDifference =
+            abs(sampleCameraDistance - centerCameraDistance) / max(centerCameraDistance, 0.01f);
+
+
+        const float depthWeight =
+            exp(-relativeDepthDifference * max(FilterParameters.w, 0.0f));
+
+
+        //====================================================
+        // Sample Normal
+        //====================================================
+        float3 sampleNormal =
+            txGISurface.SampleLevel(
+                samPoint,
+                sampleUV,
+                0.0f
+            ).xyz;
+
+
+        if (dot(sampleNormal, sampleNormal) < 0.25f)
+        {
+            continue;
+        }
+
+
+        sampleNormal = normalize(sampleNormal);
+
+
+        //====================================================
+        // Normal Similarity
+        // 1: 同じ方向
+        // 0: 90度以上違う
+        // pow()で境界を強く保持する
+        //====================================================
+        const float normalSimilarity =
+            saturate(dot(centerNormal, sampleNormal));
+
+        const float normalWeight =
+            pow(normalSimilarity, max(EdgeParameters.x, 1.0f));
+
+
+        //====================================================
+        // SSGI Sample
+        //====================================================
+        const float4 sampleGI =
+            txSSGI.SampleLevel(
+                samLinear,
+                sampleUV,
+                0.0f
+            );
+
+
+        //====================================================
+        // Confidence Weight
+        // ※Confidence 0のPixelが周囲へ大量に広がるのを防ぐ
+        //====================================================
+        const float confidenceWeight =
+            lerp(EdgeParameters.y, 1.0f, saturate(sampleGI.a));
+
+
+        //====================================================
+        // Final Bilateral Weight
+        //====================================================
+        const float weight =
+            spatialWeight *
+            depthWeight *
+            normalWeight *
+            confidenceWeight;
+
+        accumulatedColor += sampleGI.rgb * weight;
+
+        accumulatedColorWeight += weight;
+
+
+        //====================================================
+        // Confidence自体もFilterする
+        //====================================================
+        const float confidenceFilterWeight =
+            spatialWeight * depthWeight * normalWeight;
+
+        accumulatedConfidence += sampleGI.a * confidenceFilterWeight;
+
+        accumulatedConfidenceWeight += confidenceFilterWeight;
+    }
+
+
+    //========================================================
+    // Normalize
+    //========================================================
+    const float3 filteredColor =
+        accumulatedColor / max(accumulatedColorWeight, 0.0001f);
+
+    const float filteredConfidence =
+        accumulatedConfidence / max(accumulatedConfidenceWeight, 0.0001f);
+
+    return float4(max(filteredColor, 0.0f), saturate(filteredConfidence));
+}

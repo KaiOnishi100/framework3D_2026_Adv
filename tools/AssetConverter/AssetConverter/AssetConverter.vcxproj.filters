@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Importer">
+      <UniqueIdentifier>{ef2b3887-811c-4fdb-987c-e4a9651dd609}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\writer">
+      <UniqueIdentifier>{0d5c7d4d-a24f-45e5-9446-a3d1217c95e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\texture">
+      <UniqueIdentifier>{dfd138a3-705d-4448-a19a-c99df2974541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\processor">
+      <UniqueIdentifier>{5cdbbd31-4e69-43e0-9d52-09e6c1100d3d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssetConverter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Importer\TextureResolver.cpp">
+      <Filter>ソース ファイル\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="Importer\ModelImporter.cpp">
+      <Filter>ソース ファイル\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="writer\ModelWriter.cpp">
+      <Filter>ソース ファイル\writer</Filter>
+    </ClCompile>
+    <ClCompile Include="texture\TextureProcessor.cpp">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="writer\BoneWriter.cpp">
+      <Filter>ソース ファイル\writer</Filter>
+    </ClCompile>
+    <ClCompile Include="texture\TextureSourceProcessor.cpp">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="texture\MaterialTexturePipeline.cpp">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="writer\AnimationWriter.cpp">
+      <Filter>ソース ファイル\writer</Filter>
+    </ClCompile>
+    <ClCompile Include="processor\AssetScaleProcessor.cpp">
+      <Filter>ソース ファイル\processor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Importer\ImportedModel.h">
+      <Filter>ソース ファイル\Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="Importer\TextureResolver.h">
+      <Filter>ソース ファイル\Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="Importer\ModelImporter.h">
+      <Filter>ソース ファイル\Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="writer\ModelWriter.h">
+      <Filter>ソース ファイル\writer</Filter>
+    </ClInclude>
+    <ClInclude Include="texture\TextureProcessor.h">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="writer\BoneWriter.h">
+      <Filter>ソース ファイル\writer</Filter>
+    </ClInclude>
+    <ClInclude Include="texture\TextureSourceTypes.h">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="texture\TextureSourceProcessor.h">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="texture\MaterialTexturePipeline.h">
+      <Filter>ソース ファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="writer\AnimationWriter.h">
+      <Filter>ソース ファイル\writer</Filter>
+    </ClInclude>
+    <ClInclude Include="processor\AssetScaleProcessor.h">
+      <Filter>ソース ファイル\processor</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

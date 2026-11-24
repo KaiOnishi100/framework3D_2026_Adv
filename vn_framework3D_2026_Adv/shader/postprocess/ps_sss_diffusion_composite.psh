@@ -1,0 +1,345 @@
+//============================================================
+// SSS Diffusion Composite
+//
+// t0 : Original HDR Scene
+// t1 : Original Diffusion Source PBR Diffuse + Transmission SSS
+// t2 : Blurred Diffusion Source
+// t3 : SSS Mask
+// t4 : Full Resolution Depth
+//============================================================
+
+Texture2D<float4> txScene : register(t0);
+
+Texture2D<float4> txOriginalDiffusion : register(t1);
+
+Texture2D<float4> txBlurredDiffusion : register(t2);
+
+Texture2D<float> txSSSMask : register(t3);
+
+Texture2D<float> txDepth : register(t4);
+
+SamplerState samLinear : register(s0);
+SamplerState samPoint : register(s1);
+
+
+cbuffer SSSDiffusionBuffer : register(b0)
+{
+    float4x4 InverseViewProjection;
+
+    float4 CameraPosition;
+
+    float4 ScreenParameters;
+
+    // xy : Blur Direction
+    // z  : Max Pixel Radius
+    // w  : Depth Falloff
+    float4 BlurParameters;
+
+    // x : Global Diffusion Strength
+    // y : Mask Threshold
+    // z : Sky Depth Threshold
+    // w : World-Space Diffusion Radius
+    float4 DiffusionParameters;
+
+    float4 ScatteringProfile;
+};
+
+
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+//============================================================
+// Depth → Camera Distance
+// Half-Resolution Upsampling時に
+// 別SurfaceのSampleを除外するために使用する
+//============================================================
+bool ReconstructCameraDistance(
+    float2 uv,
+    float depth,
+    out float cameraDistance
+)
+{
+    if (depth >= DiffusionParameters.z)
+    {
+        cameraDistance = 0.0f;
+
+        return true;
+    }
+
+
+    const float2 ndc =
+        float2(
+            uv.x * 2.0f - 1.0f,
+            1.0f - uv.y * 2.0f
+        );
+
+    const float4 clipPosition = float4(ndc, depth, 1.0f);
+
+    float4 worldPosition = mul(clipPosition, InverseViewProjection);
+
+
+    if (abs(worldPosition.w) <= 0.000001f)
+    {
+        cameraDistance = 0.0f;
+        return false;
+    }
+
+
+    worldPosition /= worldPosition.w;
+
+    cameraDistance = length(worldPosition.xyz - CameraPosition.xyz);
+
+    return true;
+}
+
+//============================================================
+// Half Resolution SSSをFull ResolutionへUpsample
+// ・Bilinear Weight
+// ・Depth Weight
+//============================================================
+float3 UpsampleSSSDiffusion(float2 uv)
+{
+    //========================================================
+    // Fallback Color
+    //========================================================
+    const float3 fallbackColor =
+        txBlurredDiffusion.SampleLevel(
+            samLinear,
+            uv,
+            0.0f
+        ).rgb;
+
+
+    //========================================================
+    // Current Full Resolution Depth
+    //========================================================
+    const float centerDepth =
+        txDepth.SampleLevel(
+            samPoint,
+            uv,
+            0.0f
+        );
+
+
+    const bool centerIsSky =
+        centerDepth >= DiffusionParameters.z;
+
+    float centerDistance = 0.0f;
+
+    //========================================================
+    // World Position復元に失敗したらFallback
+    //========================================================
+    if (!ReconstructCameraDistance(
+        uv,
+        centerDepth,
+        centerDistance))
+    {
+        return fallbackColor;
+    }
+
+
+    //========================================================
+    // Half Resolution Texture内のPixel座標
+    //========================================================
+    const float2 halfPosition = uv * ScreenParameters.xy - 0.5f;
+
+    const float2 basePixel = floor(halfPosition);
+    
+    const float2 fraction = frac(halfPosition);
+
+
+    //========================================================
+    // Accumulation
+    //========================================================
+    float3 accumulatedColor = float3(0.0f, 0.0f, 0.0f);
+
+
+    float accumulatedWeight = 0.0f;
+
+
+    //========================================================
+    // 2x2 Half Resolution Samples
+    //========================================================
+    [unroll]
+    for (int y = 0; y < 2; ++y)
+    {
+        [unroll]
+        for (int x = 0; x < 2; ++x)
+        {
+            const float2 offset = float2((float) x, (float) y);
+
+
+            const float2 sampleUV =
+                (basePixel + offset + 0.5f) * ScreenParameters.zw;
+
+
+            //================================================
+            // Bilinear Weight
+            //================================================
+            const float weightX =
+                (x == 0) ? 1.0f - fraction.x : fraction.x;
+
+            const float weightY =
+                (y == 0) ? 1.0f - fraction.y : fraction.y;
+
+            const float bilinearWeight = weightX * weightY;
+
+            //================================================
+            // Depth
+            //================================================
+            const float sampleDepth =
+                txDepth.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                );
+
+
+            const bool sampleIsSky =
+                sampleDepth >= DiffusionParameters.z;
+
+
+            //================================================
+            // ※Sky / Geometry境界をまたがない
+            //================================================
+            if (sampleIsSky != centerIsSky)
+            {
+                continue;
+            }
+
+
+            //================================================
+            // Depth Weight
+            //================================================
+            float depthWeight = 1.0f;
+
+
+            if (!centerIsSky)
+            {
+                float sampleDistance = 0.0f;
+
+
+                if (!ReconstructCameraDistance(
+                    sampleUV,
+                    sampleDepth,
+                    sampleDistance))
+                {
+                    continue;
+                }
+
+
+                const float depthDifference = abs(sampleDistance - centerDistance);
+
+                depthWeight = exp(-depthDifference * max(BlurParameters.w, 0.0f));
+            }
+
+
+            //================================================
+            // Diffusion Sample
+            //================================================
+            const float3 sampleColor =
+                txBlurredDiffusion.SampleLevel(
+                    samPoint,
+                    sampleUV,
+                    0.0f
+                ).rgb;
+
+
+            const float finalWeight = bilinearWeight * depthWeight;
+
+            accumulatedColor += sampleColor * finalWeight;
+
+            accumulatedWeight += finalWeight;
+        }
+    }
+
+
+    //========================================================
+    // Result
+    //========================================================
+    float3 result = fallbackColor;
+
+
+    //========================================================
+    // 有効Sampleが1つ以上あった場合のみNormalize
+    //========================================================
+    if (accumulatedWeight > 0.0001f)
+    {
+        result = accumulatedColor / accumulatedWeight;
+    }
+
+    return result;
+}
+
+float4 main(PixelInput input) : SV_Target
+{
+    //============================================================
+    // 元の完成HDR Scene
+    //============================================================
+    const float4 scene =
+        txScene.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        );
+
+
+    //============================================================
+    // SSS Mask
+    //============================================================
+    const float mask =
+        txSSSMask.SampleLevel(
+            samPoint,
+            input.uv,
+            0.0f
+        );
+
+
+    if (mask <= 0.0001f)
+    {
+        return scene;
+    }
+
+
+    //============================================================
+    // Blur前のDiffuse + Transmission
+    //============================================================
+    const float3 originalDiffusion =
+        txOriginalDiffusion.SampleLevel(
+            samLinear,
+            input.uv,
+            0.0f
+        ).rgb;
+
+
+    //============================================================
+    // Blur後
+    //============================================================
+    const float3 blurredDiffusion =
+        UpsampleSSSDiffusion(input.uv);
+
+
+    //============================================================
+    // Diffusionによる変化量だけ取得
+    //============================================================
+    const float3 diffusionDelta =
+        blurredDiffusion - originalDiffusion;
+
+
+    //============================================================
+    // SSS Mask × Global Strength
+    //============================================================
+    const float weight =
+        saturate(mask * max(DiffusionParameters.x, 0.0f));
+
+
+    //============================================================
+    // Original SceneへDiffuse変化分だけ反映
+    //============================================================
+    const float3 resultColor = scene.rgb + diffusionDelta * weight;
+
+    return float4(max(resultColor, 0.0f), scene.a);
+}

@@ -1,0 +1,204 @@
+//============================================================
+// Equirectangular HDR → Environment CubeMap
+// Input:
+//   Poly Havenなどの
+//   2:1 Equirectangular HDR Texture
+//
+// Output: Environment CubeMapの各Face
+// HDR RadianceをLinearのまま保存する
+//============================================================
+
+
+//============================================================
+// Vertex Shaderからの入力
+// VS_PrefilterEnvironmentを再利用するため
+// directionにはCubeのローカル方向が入ってくる
+//============================================================
+struct PixelInput
+{
+    float4 position : SV_POSITION;
+    float3 direction : TEXCOORD0;
+};
+
+
+//============================================================
+// Equirectangular HDR
+// Linear HDR Texture2D
+//============================================================
+Texture2D<float4> txHDR : register(t0);
+
+
+//============================================================
+// Sampler
+// U: Equirectangular画像は左右端がつながっているのでWrap
+// V: 上下はつながらないのでClamp
+//============================================================
+SamplerState samHDR : register(s0);
+
+//============================================================
+// HDR → Cube変換パラメータ
+// x : Environment Y Rotation [radian]
+// y: Environment Exposure Scale
+// zw : unused
+//============================================================
+cbuffer HDRToCubeBuffer : register(b1)
+{
+    float4 HDRToCubeParam;
+}
+
+//============================================================
+// 定数
+//============================================================
+static const float PI = 3.14159265359f;
+
+static const float TWO_PI = 6.28318530718f;
+
+//============================================================
+// World DirectionをY軸回転する
+// DirectXのY Rotationと同じ向き:
+// x' = x * cos + z * sin
+// z' = -x * sin + z * cos
+//============================================================
+float3 RotateDirectionY(float3 direction,float angle)
+{
+    const float cosAngle = cos(angle);
+    const float sinAngle = sin(angle);
+
+    const float3 rotatedDirection =
+        float3(
+            direction.x * cosAngle + direction.z * sinAngle,
+            direction.y,
+            -direction.x * sinAngle + direction.z * cosAngle
+        );
+
+    return normalize(rotatedDirection);
+}
+
+//============================================================
+// Environment CubeMap方向
+//      ↓
+// Engine World方向
+//============================================================
+float3 ConvertEnvironmentDirectionToWorld(float3 environmentDirection)
+{
+    const float3 direction =
+        normalize(environmentDirection);
+
+
+    const float3 worldDirection =
+        float3(
+            direction.y,
+            direction.z,
+            direction.x
+        );
+
+
+    return normalize(worldDirection);
+}
+
+
+//============================================================
+// 3D Direction
+//      ↓
+// Equirectangular UV
+//
+// World:
+//
+// X = Right
+// Y = Up
+// Z = Forward
+// U: Longitude
+// V: Latitude
+//============================================================
+float2 DirectionToEquirectangularUV( float3 direction)
+{
+    direction = normalize(direction);
+
+
+    //========================================================
+    // 水平方向
+    //
+    // -PI ～ +PI
+    //========================================================
+    const float longitude = atan2(direction.z, direction.x);
+
+    //========================================================
+    // 上下方向
+    //
+    // -PI/2 ～ +PI/2
+    //========================================================
+    const float latitude = asin(clamp(direction.y, -1.0f, 1.0f));
+
+    //========================================================
+    // Longitude → 0～1
+    //========================================================
+    float u = longitude / TWO_PI + 0.5f;
+
+    //========================================================
+    // Latitude → 0～1
+    // Textureの上側がV=0なので反転
+    //========================================================
+    float v = 0.5f - latitude / PI;
+
+    //========================================================
+    // 横方向は360度つながっている
+    //========================================================
+    u = frac(u);
+
+    //========================================================
+    // 縦方向はClamp
+    //========================================================
+    v = saturate(v);
+
+
+    return float2(u, v);
+}
+
+
+//============================================================
+// Main
+//============================================================
+float4 main(PixelInput IN) : SV_TARGET
+{
+    //============================================================
+    // CubeMap側の方向
+    //============================================================
+    const float3 environmentDirection = normalize(IN.direction);
+
+
+    //============================================================
+    // Environment座標 → Engine World座標
+    //============================================================
+    const float3 worldDirection =
+        ConvertEnvironmentDirectionToWorld(environmentDirection);
+
+
+    //============================================================
+    // HDRI Rotation
+    //============================================================
+    const float3 rotatedWorldDirection =
+        RotateDirectionY(worldDirection, HDRToCubeParam.x);
+
+
+    //============================================================
+    // World Direction → Equirectangular UV
+    //============================================================
+    const float2 hdrUV =
+        DirectionToEquirectangularUV(rotatedWorldDirection);
+
+
+    //============================================================
+    // HDR Radiance取得
+    //============================================================
+    const float3 sourceHDRColor = txHDR.SampleLevel(samHDR, hdrUV, 0.0f).rgb;
+
+
+    //============================================================
+    // Environment Exposure
+    //============================================================
+    const float exposureScale = max(HDRToCubeParam.y, 0.0f);
+
+    const float3 exposedHDRColor = sourceHDRColor * exposureScale;
+
+    return float4(exposedHDRColor, 1.0f);
+}
